@@ -1,0 +1,11 @@
+{
+  "name": "sunvalleyweddings-webapp",
+  "version": "1.0.0",
+  "description": "Re-design and enhance the Wedding section of the website to include a booking system for an administrator to track and manage bookings and registered users",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Johan Brits",
+  "license": "ISC"
+}
