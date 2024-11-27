@@ -4,11 +4,25 @@
   "description": "Re-design and enhance the Wedding section of the website to include a booking system for an administrator to track and manage bookings and registered users",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "author": "Johan Brits",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.1"
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.8.3",
+    "validator": "^13.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7"
+  },
+  "engines": {
+    "node": "16"
   }
 }
