@@ -1,0 +1,107 @@
+.navbar {
+  position: fixed;
+  z-index: 99;
+  width: 100vw;
+  background-color: transparent;
+  background-color: transparent;
+  height: calc(3 * var(--unit));
+  transition: all 0.5s;
+
+  /* Position on Page Grid */
+  grid-column: margin-left-start 1 / margin-right-end 2;
+
+  // As Container
+  display: grid;
+  /* columns */
+  grid-template-columns:
+    [margin-left-start] calc(10% - var(--unit)) [margin-left-end]
+    repeat(1, [nav-col-start] 1fr [nav-col-end])
+    [margin-right-start] calc(10% - var(--unit)) [margin-right-end];
+  /* Rows */
+  grid-auto-rows: minmax(var(--unit), auto);
+
+  /* Modifier for an active scrolled state */
+  &--active {
+    background-color: var(--color-paper);
+    height: calc(2 * var(--unit));
+    padding: 0.5rem 0;
+  }
+
+  /* Navbar Content */
+  &-content {
+    // position
+    grid-column: nav-col-start 1 / nav-col-end 1;
+    // As Container
+    display: grid;
+    align-items: center;
+    /* columns */
+    grid-template-columns: repeat(
+      12,
+      [content-col-start] 1fr [content-col-end]
+    );
+    column-gap: var(--unit);
+  }
+
+  /* Homepage Only Menu */
+  &-home {
+    opacity: 0;
+    transition: all 0.5s;
+    &--active {
+      opacity: 1;
+    }
+  }
+  /* Navbar Menu */
+  &-nav,
+  &-home,
+  &-login {
+    position: relative;
+    // position
+    grid-column: content-col-start 4 / content-col-end 9;
+    // as container
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+
+    &-tab {
+      flex: 1 0 auto;
+      text-decoration: none;
+      font-size: 1.4rem;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--color-ink);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      letter-spacing: 1px;
+    }
+    &-tab:hover {
+      color: var(--color-primary-med);
+    }
+    &-tab--active {
+      flex: 1 0 auto;
+      text-decoration: none;
+      font-size: 1.4rem;
+      font-family: Arial, Helvetica, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      letter-spacing: 1px;
+      color: var(--color-primary);
+    }
+    &-tab--active::after {
+      content: "";
+      display: block;
+      position: absolute;
+      height: .5rem;
+      width: 10rem;
+      background-color: var(--color-primary-med);
+      align-self: flex-end;
+      bottom: -.5rem;
+    }
+  }
+  &-login {
+    // position
+    grid-column: content-col-start 11 / content-col-end 12;
+  }
+}

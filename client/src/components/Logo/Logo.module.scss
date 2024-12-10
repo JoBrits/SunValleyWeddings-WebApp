@@ -1,0 +1,26 @@
+.logo {
+    position: relative;
+    
+    // position
+    grid-column: content-col-start 1 / content-col-end 3; 
+
+    & h2 {
+      font-family: "Sacramento", cursive;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 3rem;
+      line-height: 2rem;
+      margin-top: 1rem;
+      color: var(--color-primary);
+    }
+
+    & h3 {
+      font-family: "Raleway", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 1rem;
+      color: var(--color-ink);
+    }
+
+  }

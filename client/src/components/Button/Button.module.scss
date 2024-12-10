@@ -1,0 +1,24 @@
+.button {
+    position: relative;
+    background-color: var(--color-primary);
+    border-radius: .5rem;
+    min-width: 2rem;
+    border: 0;
+    color: var(--color-paper);
+    padding: 1.25rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    text-align: center;
+    width: 100%;
+    height: calc(var(--unit) * 2);
+    
+    // as container
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &:hover{
+        color: var(--color-primary-light);
+        background-color: var(--color-primary-med);
+    }
+}

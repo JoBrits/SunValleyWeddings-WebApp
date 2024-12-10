@@ -1,0 +1,7 @@
+.highlight-block {
+    background-color: var(--color-primary-light); 
+    position: absolute;  
+    z-index: -1;
+    transform: translateY(-50%);
+    top: calc(5rem + 50%);
+}
