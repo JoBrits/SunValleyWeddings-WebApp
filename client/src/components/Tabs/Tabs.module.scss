@@ -1,0 +1,24 @@
+.tabs {
+    position: relative;
+    // as container
+    display: flex;
+    justify-content: space-between;
+    height: 100%;
+    width: 100%;
+    
+    &-tab{
+        flex: 1 0 auto;
+        text-decoration: none;
+        font-size: 1.4rem;
+        font-family: Arial, Helvetica, sans-serif;
+        color: var(--color-ink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all .2s;
+        letter-spacing:1px;
+    }
+    &-tab:hover{
+        color: var(--color-primary-med);
+    }
+}
