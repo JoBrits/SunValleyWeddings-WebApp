@@ -1,46 +1,54 @@
-import { useState } from "react";
-
-
 // Components
 import Button from "../Button";
 
 // Hooks
-// import { useLogin } from "../hooks/useLogin";
+import { useContactForm } from "../../hooks/useContactForm";
 
 const ContactForm = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-
-  // Submit function
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // Logic to handle form submission
-    console.log({ name, email, message });
-  };
+  const {
+    name,
+    setName,
+    email,
+    setEmail,
+    message,
+    setMessage,
+    handleSubmit,
+    isSubmitting,
+    error,
+    success,
+  } = useContactForm();
 
   return (
     <form className="general-form" onSubmit={handleSubmit}>
       <h2>Drop us a line!</h2>
       <hr />
       <label>Name:</label>
-      <input id="text" type="text" onChange={(e) => setName(e.target.value)} />
+      <input
+        id="text"
+        type="text"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
       <label>Email:</label>
       <input
         id="email"
         type="email"
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <label>Message:</label>
       <textarea
         id="message"
         type="text"
+        value={message}
         onChange={(e) => setMessage(e.target.value)}
         placeholder="Enter your message"
         rows="4"
       />
       <hr />
-      <Button label={"Send"} />
+      <Button label={isSubmitting ? "Sending..." : "Send"} disabled={isSubmitting} />
+      {error && <p className="error-message">{error}</p>}
+      {success && <p className="success-message">Message sent successfully!</p>}
     </form>
   );
 };
