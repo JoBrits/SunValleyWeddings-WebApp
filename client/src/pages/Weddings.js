@@ -61,7 +61,7 @@ const Home = () => {
         </ContentBlock>
 
         <ContentBlock start={4} end={6} alignItems={"center"}>
-          <Button label={"WE OFFER"} />
+          <Button label={"WE OFFER"} type={"scroll"} sectionLink={"Weddings-Venue"}/>
         </ContentBlock>
         <ContentBlock start={7} end={9} alignItems={"center"}>
           <Button label={"BOOK NOW"} />
@@ -69,7 +69,6 @@ const Home = () => {
       </Section>
 
       {/* Slide 2 - Venue */}
-      
       <Section id={"Weddings-Venue"} height={"100vh"} padding={"7.5rem 0"}>
         <HighLightBlock width={80} height={80} left={-10} />
         <ContentBlock start={1} end={5}></ContentBlock>
@@ -86,7 +85,7 @@ const Home = () => {
           </div>
         </ContentBlock>
         <ContentBlock start={7} end={9}>
-          <Button label={"SERVICE PROVIDERS"} />
+          <Button label={"SERVICE PROVIDERS"} type={"scroll"} sectionLink={"Weddings-Service"}/>
         </ContentBlock>
         <ContentBlock start={10} end={12}>
           <Button label={"BOOK NOW"} />
@@ -108,7 +107,7 @@ const Home = () => {
           </div>
         </ContentBlock>
         <ContentBlock start={2} end={4}>
-          <Button label={"SERVICE PROVIDERS"} />
+          <Button label={"Nature as Your Setting"} type={"scroll"} sectionLink={"Weddings-Nature"}/>
         </ContentBlock>
         <ContentBlock start={5} end={7}>
           <Button label={"BOOK NOW"} />
@@ -130,7 +129,7 @@ const Home = () => {
           </div>
         </ContentBlock>
         <ContentBlock start={7} end={9}>
-          <Button label={"CATERING and EVENTS"} />
+          <Button label={"CATERING and EVENTS"} type={"scroll"} sectionLink={"Weddings-Catering"}/>
         </ContentBlock>
         <ContentBlock start={10} end={12}>
           <Button label={"BOOK NOW"} />
@@ -155,14 +154,14 @@ const Home = () => {
           </div>
         </ContentBlock>
         <ContentBlock start={2} end={4}>
-          <Button label={"Photo Gallery"} />
+          <Button label={"Photo Gallery"} type={"scroll"} sectionLink={"Weddings-Photo"}/>
         </ContentBlock>
         <ContentBlock start={5} end={7}>
           <Button label={"BOOK NOW"} />
         </ContentBlock>
       </Section>
 
-      {/* Slide 6 - Catering and Events*/}
+      {/* Slide 6 - Photo Gallery*/}
       <Section id={"Weddings-Photo"} height={"100vh"} padding={"7.5rem 0"}>
         <ContentBlock start={2} end={7} alignItems={"self-start"}>
           <div>

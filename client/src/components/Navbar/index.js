@@ -8,6 +8,11 @@ import styles from "./Navbar.module.scss";
 // Components
 import Logo from "../Logo";
 
+// Hooks
+import { useLogout } from "../../hooks/useLogout";
+import { useAuthContext } from "../../hooks/useAuthContext";
+
+
 const NavbarNavTabs = ({ tabs, isActive, activeTab, target }) => {
   return (
     <nav
@@ -38,13 +43,13 @@ const NavbarLogin = ({ activeTab }) => {
     <div className={classNames(styles["navbar-login"])}>
       <Link
         className={
-          activeTab === "/Subscribe"
+          activeTab === "/SignUp"
             ? classNames(styles["navbar-nav-tab--active"])
             : classNames(styles["navbar-nav-tab"])
         }
-        to={`/Subscribe`}
+        to={`/SignUp`}
       >
-        Subscribe
+        Sign Up
       </Link>
       <div className={classNames(styles["navbar-login-tab"])}>|</div>
       <Link
@@ -61,9 +66,26 @@ const NavbarLogin = ({ activeTab }) => {
   );
 };
 
+const NavbarLogout = ({ user, onLogout }) => {
+  return (
+    <div className={classNames(styles["navbar-login"])}>
+      <span>{user.name}</span>
+      <button onClick={onLogout}>Logout</button>
+    </div>
+  );
+};
+
 const Navbar = () => {
   const [isActive, setIsActive] = useState(false);
   const [activeTab, setActiveTab] = useState("");
+
+  // From Hook
+  const { logout } = useLogout();
+  const { user } = useAuthContext();
+
+  const handleClick = () => {
+    logout();
+  };
 
   const location = useLocation(); // React Router hook to get the current location
 
@@ -93,36 +115,77 @@ const Navbar = () => {
     >
       <div className={classNames(styles["navbar-content"])}>
         <Logo section={"Wedding and Golf Venue"} headingMainMargin={0} />
-        <NavbarNavTabs
-          isActive={isActive}
-          activeTab={activeTab}
-          tabs={[
-            {
-              label: "Home",
-              link: "/",
-            },
-            {
-              label: "Weddings",
-              link: "/Weddings",
-            },
-            {
-              label: "Golf",
-              target: "blank",
-              link: "https://sunvalleyweddingandgolfvenue.co.za/sun-valley-golf",
-            },
-            {
-              label: "Testimonials",
-              target: "blank",
-              link: "https://sunvalleyweddingandgolfvenue.co.za/testimonials",
-            },
-            {
-              label: "Contact Us",
-              target: "blank",
-              link: "https://sunvalleyweddingandgolfvenue.co.za/contact-us",
-            },
-          ]}
-        />
+        
+        {/* Conditional to check whether user is logged in */}
+        {user && (
+        <>
+          <NavbarNavTabs
+            isActive={isActive}
+            activeTab={activeTab}
+            tabs={[
+              {
+                label: "Overview",
+                link: "/Home",
+              },
+              {
+                label: "Booking Management",
+                link: "/Weddings",
+              },
+              {
+                label: "RSVP Tracking",
+                ink: "/Home",
+              },
+              {
+                label: "Guest Profiles",
+                ink: "/Home",
+              },
+              {
+                label: "Event Management",
+                ink: "/Home",
+              },
+            ]}
+          />
+          <NavbarLogout user={user} onLogout={handleClick} />
+        </>
+        )}
+        
+        {/* Conditional to check whether user is logged out */}
+        {!user && (
+        <>
+          <NavbarNavTabs
+            isActive={isActive}
+            activeTab={activeTab}
+            tabs={[
+              {
+                label: "Home",
+                link: "/Home",
+              },
+              {
+                label: "Weddings",
+                link: "/Weddings",
+              },
+              {
+                label: "Golf",
+                target: "blank",
+                link: "https://sunvalleyweddingandgolfvenue.co.za/sun-valley-golf",
+              },
+              {
+                label: "Testimonials",
+                target: "blank",
+                link: "https://sunvalleyweddingandgolfvenue.co.za/testimonials",
+              },
+              {
+                label: "Contact Us",
+                target: "blank",
+                link: "https://sunvalleyweddingandgolfvenue.co.za/contact-us",
+              },
+            ]}
+          />
         <NavbarLogin activeTab={activeTab} />
+        </>
+        )}
+        
+        
       </div>
     </div>
   );

@@ -166,6 +166,8 @@ p {
 
   input,
   textarea  {
+    font-family: "Lato", sans-serif;
+    font-size: 1.4rem;
     padding: 10px;
     margin-top: 10px;
     margin-bottom: 20px;
@@ -186,5 +188,34 @@ p {
   }
   textarea {
     resize: vertical; // Allow resizing only vertically
+  }
+}
+
+// Buttons
+
+.button {
+  position: relative;
+  background-color: var(--color-primary);
+  border-radius: .5rem;
+  min-width: 2rem;
+  border: 0;
+  color: var(--color-paper);
+  padding: 1.25rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+  height: calc(var(--unit) * 2);
+  text-decoration: none;
+  font-size: 1.4rem;
+  
+  // as container
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover{
+      color: var(--color-primary-light);
+      background-color: var(--color-primary-med);
   }
 }
