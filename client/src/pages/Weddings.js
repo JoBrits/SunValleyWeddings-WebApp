@@ -5,6 +5,7 @@ import ContentBlock from "../components/ContentBlock";
 import Logo from "../components/Logo";
 import Tabs from "../components/Tabs";
 import Button from "../components/Button";
+import ImageSlider from "../components/ImageSlider";
 
 const Home = () => {
   return (
@@ -29,7 +30,7 @@ const Home = () => {
 
         <ContentBlock start={1} end={12}>
           <Tabs
-          type="page"
+            type="page"
             tabs={[
               { label: "Venue", link: "Weddings-Venue" },
               { label: "Service providers", link: "Weddings-Service" },
@@ -61,10 +62,14 @@ const Home = () => {
         </ContentBlock>
 
         <ContentBlock start={4} end={6} alignItems={"center"}>
-          <Button label={"WE OFFER"} type={"scroll"} sectionLink={"Weddings-Venue"}/>
+          <Button
+            label={"WE OFFER"}
+            type={"scroll"}
+            sectionLink={"Weddings-Venue"}
+          />
         </ContentBlock>
         <ContentBlock start={7} end={9} alignItems={"center"}>
-          <Button label={"BOOK NOW"} />
+          <Button label={"BOOK NOW"} type={"link"}  to={"/bookings"}/>
         </ContentBlock>
       </Section>
 
@@ -85,10 +90,14 @@ const Home = () => {
           </div>
         </ContentBlock>
         <ContentBlock start={7} end={9}>
-          <Button label={"SERVICE PROVIDERS"} type={"scroll"} sectionLink={"Weddings-Service"}/>
+          <Button
+            label={"SERVICE PROVIDERS"}
+            type={"scroll"}
+            sectionLink={"Weddings-Service"}
+          />
         </ContentBlock>
         <ContentBlock start={10} end={12}>
-          <Button label={"BOOK NOW"} />
+          <Button label={"BOOK NOW"} type={"link"}  to={"/bookings"}/>
         </ContentBlock>
       </Section>
 
@@ -107,10 +116,14 @@ const Home = () => {
           </div>
         </ContentBlock>
         <ContentBlock start={2} end={4}>
-          <Button label={"Nature as Your Setting"} type={"scroll"} sectionLink={"Weddings-Nature"}/>
+          <Button
+            label={"Nature as Your Setting"}
+            type={"scroll"}
+            sectionLink={"Weddings-Nature"}
+          />
         </ContentBlock>
         <ContentBlock start={5} end={7}>
-          <Button label={"BOOK NOW"} />
+          <Button label={"BOOK NOW"} type={"link"}  to={"/bookings"}/>
         </ContentBlock>
       </Section>
 
@@ -129,10 +142,14 @@ const Home = () => {
           </div>
         </ContentBlock>
         <ContentBlock start={7} end={9}>
-          <Button label={"CATERING and EVENTS"} type={"scroll"} sectionLink={"Weddings-Catering"}/>
+          <Button
+            label={"CATERING and EVENTS"}
+            type={"scroll"}
+            sectionLink={"Weddings-Catering"}
+          />
         </ContentBlock>
         <ContentBlock start={10} end={12}>
-          <Button label={"BOOK NOW"} />
+          <Button label={"BOOK NOW"} type={"link"}  to={"/bookings"}/>
         </ContentBlock>
       </Section>
 
@@ -154,22 +171,30 @@ const Home = () => {
           </div>
         </ContentBlock>
         <ContentBlock start={2} end={4}>
-          <Button label={"Photo Gallery"} type={"scroll"} sectionLink={"Weddings-Photo"}/>
+          <Button
+            label={"Photo Gallery"}
+            type={"scroll"}
+            sectionLink={"Weddings-Photo"}
+          />
         </ContentBlock>
         <ContentBlock start={5} end={7}>
-          <Button label={"BOOK NOW"} />
+          <Button label={"BOOK NOW"} type={"link"}  to={"/bookings"}/>
         </ContentBlock>
       </Section>
 
       {/* Slide 6 - Photo Gallery*/}
       <Section id={"Weddings-Photo"} height={"100vh"} padding={"7.5rem 0"}>
+        <HighLightBlock width={100} height={80}/>
         <ContentBlock start={2} end={7} alignItems={"self-start"}>
           <div>
             <h2 className="section-heading">Photo Gallery</h2>
           </div>
         </ContentBlock>
-        <ContentBlock start={4} end={8} alignItems={"self-end"}>
-          <Button label={"BOOK NOW"} />
+        <ContentBlock start={2} end={11} alignItems={"self-start"}>
+          <ImageSlider />
+        </ContentBlock>
+        <ContentBlock start={5} end={8} alignItems={"self-end"}>
+          <Button label={"BOOK NOW"} type={"link"}  to={"/bookings"}/>
         </ContentBlock>
       </Section>
     </>

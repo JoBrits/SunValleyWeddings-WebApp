@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 // Styles
 import classNames from "classnames";
 import styles from "./Button.module.scss";
@@ -9,6 +11,7 @@ const Button = ({
   justifyContent,
   alignItems,
   alignContent,
+  to,
 }) => {
   const place = {
     justifyContent: `${justifyContent}`,
@@ -32,6 +35,16 @@ const Button = ({
       >
         {label}
       </a>
+    );
+  } else if (type === "link") {
+    return (
+      <Link
+        className={classNames(styles["button"])}
+        to={to} // Navigate to the specified route
+        style={place}
+      >
+        {label}
+      </Link>
     );
   } else {
     return (
