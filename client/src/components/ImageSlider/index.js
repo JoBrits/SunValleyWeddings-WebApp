@@ -1,4 +1,3 @@
-import { Cursor } from "mongoose";
 import { useState } from "react";
 
 const ImageSlider = () => {

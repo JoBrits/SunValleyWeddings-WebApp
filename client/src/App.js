@@ -12,6 +12,7 @@ import Home from './pages/Home'
 import Weddings from './pages/Weddings'
 import SignIn from './pages/SignIn'
 import SignUp from './pages/SignUp'
+import Bookings from './pages/Bookings'
 
 function App() {
 
@@ -31,6 +32,7 @@ function App() {
           <Route path="/weddings" element={<Weddings />} />
           <Route path="/SignIn" element={<SignIn />} />
           <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/bookings" element={<Bookings />} />
         </Routes>
       </BrowserRouter>
     </div>
