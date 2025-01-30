@@ -7,7 +7,8 @@ import { useAuthContext } from "./hooks/useAuthContext";
 import Navbar from './components/Navbar'
 
 // Page Imports 
-import Dashboard from './pages/Dashboard'
+import AdminDashboard from './pages/AdminDashboard'
+import UserDashboard from './pages/UserDashboard'
 import Home from './pages/Home'
 import Weddings from './pages/Weddings'
 import SignIn from './pages/SignIn'
@@ -24,10 +25,17 @@ function App() {
       <BrowserRouter>
         <Navbar/>
         <Routes>
-          <Route 
-            path="/" 
-            element={ user ? <Dashboard /> : <Navigate to="/Home" />} // Ternary operator if user does not exist redirect to /home
-          />  
+          {/* Route "/" based on user role */}
+          <Route
+            path="/"
+            element={
+              user ? (
+                user.role === "admin" ? <AdminDashboard /> : <UserDashboard />
+              ) : (
+                <Navigate to="/home" />
+              )
+            }
+          /> 
           <Route path="/home" element={<Home />} />
           <Route path="/weddings" element={<Weddings />} />
           <Route path="/SignIn" element={<SignIn />} />

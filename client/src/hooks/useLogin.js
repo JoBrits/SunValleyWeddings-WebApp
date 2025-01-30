@@ -10,28 +10,33 @@ export const useLogin = () => {
     setIsLoading(true)
     setError(null)
 
-    const response = await fetch('/api/user/login', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({ email, password })
-    })
-    const json = await response.json()
+    try {
+      const response = await fetch("/api/user/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (!response.ok) {
-      setIsLoading(false)
-      setError(json.error)
+      const json = await response.json();
+
+      if (!response.ok) {
+        throw new Error(json.error);
+      }
+
+      // Save user to local storage
+      localStorage.setItem("user", JSON.stringify(json));
+
+      // Update AuthContext
+      dispatch({ type: "LOGIN", payload: json });
+
+      setIsLoading(false);
+      return json; // Return user data for role-based navigation
+    } catch (err) {
+      setIsLoading(false);
+      setError(err.message);
+      return null; // Return null if login fails
     }
-    if (response.ok) {
-      // save the user to local storage
-      localStorage.setItem('user', JSON.stringify(json))
-
-      // update the auth context
-      dispatch({type: 'LOGIN', payload: json})
-
-      // update loading state
-      setIsLoading(false)
-    }
-  }
-
+  };
+  
   return { login, isLoading, error }
 }
