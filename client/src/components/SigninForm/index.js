@@ -5,26 +5,37 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { useLogin } from "../../hooks/useLogin";
 
 const SigninForm = () => {
-  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+
   // from useLogin hook
-  const {login, error, isLoading} = useLogin()
+  const { login, error, isLoading } = useLogin();
 
   // Initialize useNavigate
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+
+  // Handle login and navigate based on role
+  const handleLogin = async () => {
+    const userData = await login(email, password);
+
+    if (userData && !error) {
+      // Store user data in local storage
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      // Redirect user based on role
+      // Reworked to route from App.js
+      if (userData.role === "admin") {
+        navigate("/");
+      } else {
+        navigate("/");
+      }
+    }
+  };
 
   // Submit function
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await login(email, password)
-    
-    // Navigate to /SignIn if signup is successful
-    if (!error) {
-      navigate("/");
-    }
-
+    await handleLogin();
   };
 
   return (
@@ -32,9 +43,11 @@ const SigninForm = () => {
       <h2>Sign In</h2>
       <hr />
       <label>Email:</label>
-      <input type="email" onChange={(e) => setEmail(e.target.value)} />
+      <input type="email" onChange={(e) => setEmail(e.target.value)} required />
+      
       <label>Password:</label>
-      <input type="comment" onChange={(e) => setPassword(e.target.value)} />
+      <input type="password" onChange={(e) => setPassword(e.target.value)} required />
+      
       <hr />
       <button className="button" disabled={isLoading}>Sign In</button>
       {error && <div className="error">{error}</div>}
