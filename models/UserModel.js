@@ -26,7 +26,7 @@ const userSchema = new Schema({
 });
 
 // Static Signup Method on the user model
-userSchema.statics.signup = async function (name, email, password) {
+userSchema.statics.signup = async function (name, email, password, role) {
   
   // validation
   if (!email || !password || !name) {
@@ -52,7 +52,7 @@ userSchema.statics.signup = async function (name, email, password) {
   // use bcrypt hash to hide password and add some salt
   const hash = await bcrypt.hash(password, salt);
 
-  const user = await this.create({ name, email, password: hash });
+  const user = await this.create({ name, email, password: hash, role });
 
   return user;
 };

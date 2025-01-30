@@ -22,7 +22,7 @@ const SigninForm = () => {
     
     // Navigate to /SignIn if signup is successful
     if (!error) {
-      navigate("/Dashboard");
+      navigate("/");
     }
 
   };
