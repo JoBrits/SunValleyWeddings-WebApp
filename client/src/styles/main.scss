@@ -16,6 +16,7 @@
 
   --color-cool-gray: #505050;
   --color-cool-gray-light: #ececec;
+  --color-cool-gray-med: #dadada;
   --color-cool-gray-dark: #333333;
 
   --color-primary: #37540a;
@@ -188,6 +189,15 @@ p {
   }
   textarea {
     resize: vertical; // Allow resizing only vertically
+  }
+}
+
+.general-form-date {
+  display: flex;
+  justify-content: space-between;
+
+  p {
+    margin-bottom: 0;
   }
 }
 

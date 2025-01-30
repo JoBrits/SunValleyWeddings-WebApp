@@ -31,16 +31,18 @@ const loginUser = async (req, res) => {
 // Signup user
 const signupUser = async (req, res) => {
   const { name, email, password } = req.body;
+  // Default, Admin se in database for now
+  const role = "user";
 
   try {
     // Static Signup Method on the user model
-    const user = await User.signup(name, email, password);
+    const user = await User.signup(name, email, password, role);
 
     // create token
     const token = createToken(user._id);
 
     // return email and token
-    res.status(200).json({ name, email, token });
+    res.status(200).json({ name, email, role, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

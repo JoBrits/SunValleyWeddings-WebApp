@@ -5,6 +5,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/user");
 const messagesRoute = require("./routes/messages");
+const bookingsRoute = require("./routes/bookings");
 
 // Import middleware
 const rejectNonJsonRequests = require("./middleware/rejectNonJsonRequests");
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
 // specify path to be used with routes
 app.use("/api/user", userRoutes);
 app.use("/api/messages", messagesRoute);
+app.use("/api/bookings", bookingsRoute);
 
 // connext to DB
 mongoose
