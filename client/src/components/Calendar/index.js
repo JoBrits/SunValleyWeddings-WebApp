@@ -88,6 +88,7 @@ const Calendar = ({selectedDate, setSelectedDate, showEventPopup, setShowEventPo
           </h2>
           <h2 className={classNames(styles["year"])}>{currentYear}</h2>
           <div className={classNames(styles["buttons"])}>
+            {/* box icon icons */}
             <i className="bx bx-chevron-left" onClick={prevMonth}></i>
             <i className="bx bx-chevron-right" onClick={nextMonth}></i>
           </div>
@@ -108,24 +109,26 @@ const Calendar = ({selectedDate, setSelectedDate, showEventPopup, setShowEventPo
           {/* Used spread operator to get the rest of the days in month*/}
           {[...Array(daysInMonth).keys()].map((day) => (
             <span
-              key={day + 1}
-              className={
-                // Conditional for current-day class
+            key={day + 1}
+            className={classNames({
+              [styles["current-day"]]:
                 day + 1 === currentDate.getDate() &&
                 currentMonth === currentDate.getMonth() &&
-                currentYear === currentDate.getFullYear()
-                  ? classNames(styles["current-day"])
-                  : // Conditional for past-day class
-                  currentYear < currentDate.getFullYear() ||
-                    (currentMonth <= currentDate.getMonth() &&
-                      day + 1 < currentDate.getDate())
-                  ? classNames(styles["past-day"])
-                  : ""
-              }
-              onClick={() => handleDayClicks(day + 1)} // Event popup
-            >
-              {day + 1}
-            </span>
+                currentYear === currentDate.getFullYear(),
+              [styles["past-day"]]:
+                currentYear < currentDate.getFullYear() ||
+                (currentMonth <= currentDate.getMonth() &&
+                  day + 1 < currentDate.getDate()),
+              [styles["selected-day"]]:
+                selectedDate &&
+                selectedDate.getDate() === day + 1 &&
+                selectedDate.getMonth() === currentMonth &&
+                selectedDate.getFullYear() === currentYear,
+            })}
+            onClick={() => handleDayClicks(day + 1)}
+          >
+            {day + 1}
+          </span>
           ))}
         </div>
       </div>

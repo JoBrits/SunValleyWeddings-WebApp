@@ -1,11 +1,11 @@
 const express = require("express");
 
-// user controller functions
-const { bookingsGeneral } = require('../controllers/bookingsController')
+// Import controller functions
+const { bookingsGeneral, getBookings } = require("../controllers/bookingsController");
 
-const router = express.Router()
+const router = express.Router();
 
-router.post('/request', bookingsGeneral) // POST route to save a new booking
+router.post("/request", bookingsGeneral); // POST route to save a new booking
+router.get("/requests", getBookings); // GET route to retrieve all bookings
 
-module.exports = router
-
+module.exports = router;

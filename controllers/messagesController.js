@@ -22,4 +22,15 @@ const messageGeneral = async (req, res) => {
   }
 };
 
-module.exports = { messageGeneral};
+// Send general message
+const messagesInquiries = async (req, res) => {
+  try {
+    const messages = await Message.find();
+    res.status(200).json(messages);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch bookings" });
+  }
+};
+
+module.exports = { messageGeneral, messagesInquiries };

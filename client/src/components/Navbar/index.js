@@ -10,8 +10,6 @@ import Logo from "../Logo";
 
 // Hooks
 import { useLogout } from "../../hooks/useLogout";
-import { useAuthContext } from "../../hooks/useAuthContext";
-
 
 const NavbarNavTabs = ({ tabs, isActive, activeTab, target }) => {
   return (
@@ -38,7 +36,8 @@ const NavbarNavTabs = ({ tabs, isActive, activeTab, target }) => {
   );
 };
 
-const NavbarLogin = ({ activeTab }) => {
+const NavbarLogin = ({ setIsActive, activeTab }) => {
+  setIsActive(window.scrollY > 100);
   return (
     <div className={classNames(styles["navbar-login"])}>
       <Link
@@ -66,22 +65,29 @@ const NavbarLogin = ({ activeTab }) => {
   );
 };
 
-const NavbarLogout = ({ user, onLogout }) => {
+const NavbarLogout = ({ setIsActive, user, onLogout }) => {
+  setIsActive(true)
   return (
     <div className={classNames(styles["navbar-login"])}>
-      <span>{user.name}</span>
-      <button onClick={onLogout}>Logout</button>
+      <span className={classNames(styles["navbar-nav-tab"])}>
+        Welcome back {user.name}
+      </span>
+      <div className={classNames(styles["navbar-login-tab"])}>|</div>
+      <Link onClick={onLogout} className={classNames(styles["navbar-nav-tab"])}>
+        Logout
+      </Link>
     </div>
   );
 };
 
-const Navbar = () => {
+const Navbar = ({ user }) => {
   const [isActive, setIsActive] = useState(false);
   const [activeTab, setActiveTab] = useState("");
 
+  console.log(user);
+
   // From Hook
   const { logout } = useLogout();
-  const { user } = useAuthContext();
 
   const handleClick = () => {
     logout();
@@ -115,77 +121,112 @@ const Navbar = () => {
     >
       <div className={classNames(styles["navbar-content"])}>
         <Logo section={"Wedding and Golf Venue"} headingMainMargin={0} />
-        
+
         {/* Conditional to check whether user is logged in */}
         {user && (
-        <>
-          <NavbarNavTabs
-            isActive={isActive}
-            activeTab={activeTab}
-            tabs={[
-              {
-                label: "Overview",
-                link: "/Home",
-              },
-              {
-                label: "Booking Management",
-                link: "/Weddings",
-              },
-              {
-                label: "RSVP Tracking",
-                ink: "/Home",
-              },
-              {
-                label: "Guest Profiles",
-                ink: "/Home",
-              },
-              {
-                label: "Event Management",
-                ink: "/Home",
-              },
-            ]}
-          />
-          <NavbarLogout user={user} onLogout={handleClick} />
-        </>
+          <>
+            {/* Conditional to check whether admin logged in */}
+            {user.role === "admin" && (
+              <>
+                <NavbarNavTabs
+                  isActive={isActive}
+                  activeTab={activeTab}
+                  tabs={[
+                    {
+                      label: "Overview",
+                      link: "/",
+                    },
+                    {
+                      label: "Booking Management",
+                      link: "/Weddings",
+                    },
+                    {
+                      label: "RSVP Tracking",
+                      ink: "/Home",
+                    },
+                    {
+                      label: "Guest Profiles",
+                      ink: "/Home",
+                    },
+                    {
+                      label: "Event Management",
+                      ink: "/Home",
+                    },
+                  ]}
+                />
+                <NavbarLogout setIsActive={setIsActive} user={user} onLogout={handleClick} />
+              </>
+            )}
+            {/* Conditional to check whether admin logged in */}
+            {user.role === "user" && (
+              <>
+                <NavbarNavTabs
+                  isActive={true}
+                  activeTab={activeTab}
+                  tabs={[
+                    {
+                      label: "Overview",
+                      link: "/",
+                    },
+                    {
+                      label: "My Details",
+                      link: "/Weddings",
+                    },
+                    {
+                      label: "RSVP's",
+                      ink: "/Home",
+                    },
+                    {
+                      label: "Catering",
+                      ink: "/Home",
+                    },
+                    {
+                      label: "Schedule",
+                      ink: "/Home",
+                    },
+                  ]}
+                />
+                <NavbarLogout setIsActive={setIsActive} user={user} onLogout={handleClick} />
+              </>
+            )}
+          </>
         )}
-        
+
         {/* Conditional to check whether user is logged out */}
         {!user && (
-        <>
-          <NavbarNavTabs
-            isActive={isActive}
-            activeTab={activeTab}
-            tabs={[
-              {
-                label: "Home",
-                link: "/Home",
-              },
-              {
-                label: "Weddings",
-                link: "/Weddings",
-              },
-              {
-                label: "Golf",
-                target: "blank",
-                link: "https://sunvalleyweddingandgolfvenue.co.za/sun-valley-golf",
-              },
-              {
-                label: "Testimonials",
-                target: "blank",
-                link: "https://sunvalleyweddingandgolfvenue.co.za/testimonials",
-              },
-              {
-                label: "Contact Us",
-                target: "blank",
-                link: "https://sunvalleyweddingandgolfvenue.co.za/contact-us",
-              },
-            ]}
-          />
-        <NavbarLogin activeTab={activeTab} />
-        </>
+          <>
+            <NavbarNavTabs
+              isActive={isActive}
+              activeTab={activeTab}
+              tabs={[
+                {
+                  label: "Home",
+                  link: "/",
+                },
+                {
+                  label: "Weddings",
+                  link: "/Weddings",
+                },
+                {
+                  label: "Golf",
+                  target: "blank",
+                  link: "https://sunvalleyweddingandgolfvenue.co.za/sun-valley-golf",
+                },
+                {
+                  label: "Testimonials",
+                  target: "blank",
+                  link: "https://sunvalleyweddingandgolfvenue.co.za/testimonials",
+                },
+                {
+                  label: "Contact Us",
+                  target: "blank",
+                  link: "https://sunvalleyweddingandgolfvenue.co.za/contact-us",
+                },
+              ]}
+            />
+            <NavbarLogin setIsActive={setIsActive} activeTab={activeTab} />
+          </>
         )}
-        
-        
       </div>
     </div>
   );

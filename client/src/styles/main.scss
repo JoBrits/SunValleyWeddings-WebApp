@@ -166,7 +166,7 @@ p {
   }
 
   input,
-  textarea  {
+  textarea {
     font-family: "Lato", sans-serif;
     font-size: 1.4rem;
     padding: 10px;
@@ -174,16 +174,15 @@ p {
     margin-bottom: 20px;
     width: 100%;
     border: 1px solid #ddd;
-    background-color: rgba(0, 0, 0, 0.3);;
+    background-color: rgba(0, 0, 0, 0.3);
     border-radius: 0.5rem;
     box-sizing: border-box;
     color: var(--color-paper);
   }
-  input:active, 
-  input:focus, 
-  textarea:active, 
-  textarea:focus
-  {
+  input:active,
+  input:focus,
+  textarea:active,
+  textarea:focus {
     outline: none;
     border: none;
   }
@@ -202,11 +201,10 @@ p {
 }
 
 // Buttons
-
 .button {
   position: relative;
   background-color: var(--color-primary);
-  border-radius: .5rem;
+  border-radius: 0.5rem;
   min-width: 2rem;
   border: 0;
   color: var(--color-paper);
@@ -218,14 +216,100 @@ p {
   height: calc(var(--unit) * 2);
   text-decoration: none;
   font-size: 1.4rem;
-  
+
   // as container
   display: flex;
   justify-content: center;
   align-items: center;
 
-  &:hover{
-      color: var(--color-primary-light);
-      background-color: var(--color-primary-med);
+  &:hover {
+    color: var(--color-primary-light);
+    background-color: var(--color-primary-med);
+  }
+}
+
+/* - - - - - - */
+/* DASHBOARDS */
+/* - - - - - */
+
+// Dashboard headings
+.dashboard-heading {
+  font-family: "Raleway", cursive;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 4rem;
+  line-height: 4rem;
+  color: var(--color-ink);
+}
+.dashboard-sub-heading {
+  font-family: "Sacramento", cursive;
+  font-weight: 100;
+  font-style: normal;
+  font-size: 2rem;
+  line-height: 2rem;
+  color: var(--color-primary);
+  width: 100%;
+}
+
+// Dashboard Side Menu
+
+.dashboard {
+  &-menu {
+    position: fixed;
+    width: 25%;
+    height: auto;
+    min-height: 100vh;
+    left: 0;
+    top: 0;
+    padding: 7.5rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 2.5rem;
+    justify-content:space-evenly;
+    background-color: var(--color-cool-gray-med);
+
+    &-section {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      row-gap: 2.5rem;
+      margin-bottom: 2.5rem;
+
+      & h3 {
+        font-size: 1.6rem;
+        line-height: 1.6rem;
+      }
+      
+      & a {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+        color: var(--color-primary);
+        text-decoration: none;
+      }
+
+      &-notifications {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+      }
+      
+      &-notification {
+        background-color: var(--color-primary-med);
+        color: var(--color-paper);
+        width: 2.5rem;
+        height: 2.5rem;
+        border-radius: 2.5rem;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-bottom: 0.2rem;
+      }
+    }
+  }
+  &-panel{
+    position: relative;
+    height: 100%;
+    width: 100%;
   }
 }
