@@ -42,6 +42,7 @@ const BookingForm = ({
   // Events Functions
   // Add event
   const handleEventsSubmit = () => {
+    
     const newEvent = {
       id: editingEvent ? editingEvent.id : Date.now(), //handle creating new and existing event
       name: name,
@@ -54,13 +55,13 @@ const BookingForm = ({
       text: eventText,
     };
 
-    // editing event
     let updatedEvents = [...events];
-    if (editingEvent) {
+    
+    if (editingEvent) { // editing event
       updatedEvents = updatedEvents.map((event) =>
         event.id === editingEvent.id ? newEvent : event
       );
-    } else {
+    } else { // new event
       updatedEvents.push(newEvent);
       handleRequest(newEvent);
     }
@@ -105,10 +106,19 @@ const BookingForm = ({
   };
 
   // API Request function
-  const handleRequest = async (requested) => {
-   
+  const handleRequest = async (newEventRequest) => {
+    
+    console.log("newEventRequest:", newEventRequest);
+    console.log("newEventRequest:", newEventRequest.name);
+
+    // console.log("Name:", name);
+    // console.log("Email:", email);
+    // console.log("Date:", date);
+    // console.log("Time:", time);
+    // console.log("Text:", text);
+
     // use custom hook to send a request to backend
-    await request(name, email, requested);
+    await request(newEventRequest.name, newEventRequest.email, newEventRequest.date, newEventRequest.time, newEventRequest.text);
 
   };
 

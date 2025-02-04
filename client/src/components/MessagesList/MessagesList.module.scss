@@ -1,0 +1,46 @@
+.message-list {
+  position: relative;
+  height: 100%;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+
+  & p {
+    font-size: clamp(1.2rem, 1cqi, 1.4rem);
+    margin-bottom: 0;
+    line-height: 2rem;
+  }
+
+  &-item {
+    position: relative;
+    width: 100%;
+    background-color: var(--color-primary-light);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    margin-bottom: 2rem;
+  }
+
+  &-request {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;margin-bottom: 1rem;
+    
+  }
+  &-received {
+    font-size: clamp(1rem, 1cqi, 1.2rem);
+    color: var(--color-primary);
+  }
+  &-time {
+    font-size: clamp(1.4rem, 1cqi, 1.6rem);
+    
+  }
+  &-text {
+    font-size: clamp(1rem, 1cqi, 1.2rem);
+    width: 100%;
+    background-color: var(--color-paper);
+    padding: 1rem!important;
+  }
+
+}
