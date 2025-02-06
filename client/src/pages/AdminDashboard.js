@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 // Components
 import Section from "../components/Section";
@@ -6,8 +7,16 @@ import ContentBlock from "../components/ContentBlock";
 import Calendar from "../components/Calendar";
 import BookingList from "../components/BookingList";
 import MessagesList from "../components/MessagesList";
+import EventForm from "../components/EventForm";
 
 const AdminDashboard = () => {
+  // Current Date
+  const currentDate = new Date();
+
+  // State
+  const [selectedDate, setSelectedDate] = useState(currentDate);
+  const [showEventPopup, setShowEventPopup] = useState(false);
+
   return (
     <>
       {/* Slide 1 - Landing */}
@@ -86,7 +95,13 @@ const AdminDashboard = () => {
         >
           <div className="dashboard-panel">
             <h2 className="dashboard-sub-heading">Upcoming Events</h2>
-            <Calendar />
+
+            <Calendar
+              setSelectedDate={setSelectedDate}
+              selectedDate={selectedDate}
+              setShowEventPopup={setShowEventPopup}
+              showEventPopup={showEventPopup}
+            />
           </div>
         </ContentBlock>
 
@@ -98,6 +113,12 @@ const AdminDashboard = () => {
           alignItems={"start"}
         >
           <div className="dashboard-panel">
+            <EventForm
+              setSelectedDate={setSelectedDate}
+              selectedDate={selectedDate}
+              showEventPopup={showEventPopup}
+              setShowEventPopup={setShowEventPopup}
+            />
             <h2 className="dashboard-sub-heading">Notifications </h2>
             <MessagesList />
           </div>
