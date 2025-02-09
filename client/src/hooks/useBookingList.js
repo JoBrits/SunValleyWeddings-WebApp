@@ -13,7 +13,7 @@ const useBookingList = () => {
     // Function to fetch booking requests from API
     const fetchBookings = async () => {
       try {
-        const response = await fetch("/api/bookings/requests");
+        const response = await fetch("/api/bookings/bookings");
         // Check if response is successful
         if (!response.ok) {
           throw new Error("Failed to fetch bookings");

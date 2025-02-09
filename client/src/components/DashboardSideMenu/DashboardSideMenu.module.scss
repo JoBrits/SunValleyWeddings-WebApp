@@ -1,0 +1,53 @@
+.dashboard-menu {
+  position: fixed;
+  width: 25%;
+  height: auto;
+  min-height: 100vh;
+  left: 0;
+  top: 0;
+  padding: 7.5rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  row-gap: 2.5rem;
+  justify-content: space-evenly;
+  background-color: var(--color-cool-gray-med);
+
+  &-section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    row-gap: 2.5rem;
+    margin-bottom: 2.5rem;
+
+    & h3 {
+      font-size: 1.6rem;
+      line-height: 1.6rem;
+    }
+
+    & a {
+      font-size: 1.4rem;
+      line-height: 1.4rem;
+      color: var(--color-primary);
+      text-decoration: none;
+    }
+
+    &-notifications {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &-notification {
+      background-color: var(--color-primary-med);
+      color: var(--color-paper);
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 2.5rem;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 0.2rem;
+    }
+  }
+}

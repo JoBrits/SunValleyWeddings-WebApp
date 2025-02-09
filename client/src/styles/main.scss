@@ -23,6 +23,10 @@
   --color-primary-med: #a1ae91;
   --color-primary-light: #d9ded3;
 
+  --color-secondary: #b16c1d;
+  --color-secondary-med: #b16c1d85;
+  --color-secondary-light: #b16c1d3b;
+
   /* Tints */
   --tint-ink: rgba(0, 0, 0, 0.5);
 
@@ -189,6 +193,16 @@ p {
   textarea {
     resize: vertical; // Allow resizing only vertically
   }
+  .error {
+    background-color: var(--color-secondary);
+    font-family: "Lato", sans-serif;
+    font-size: 1.4rem;
+    padding: 10px;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    color: var(--color-paper);
+  }
 }
 
 .general-form-date {
@@ -265,7 +279,7 @@ p {
     display: flex;
     flex-direction: column;
     row-gap: 2.5rem;
-    justify-content:space-evenly;
+    justify-content: space-evenly;
     background-color: var(--color-cool-gray-med);
 
     &-section {
@@ -279,7 +293,7 @@ p {
         font-size: 1.6rem;
         line-height: 1.6rem;
       }
-      
+
       & a {
         font-size: 1.4rem;
         line-height: 1.4rem;
@@ -292,7 +306,7 @@ p {
         display: flex;
         justify-content: space-between;
       }
-      
+
       &-notification {
         background-color: var(--color-primary-med);
         color: var(--color-paper);
@@ -307,7 +321,7 @@ p {
       }
     }
   }
-  &-panel{
+  &-panel {
     position: relative;
     height: 100%;
     width: 100%;
