@@ -8,13 +8,16 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 // Page Imports
-import AdminDashboard from "./pages/AdminDashboard";
-import UserDashboard from "./pages/UserDashboard";
+// Pre-Login
 import Home from "./pages/Home";
 import Weddings from "./pages/Weddings";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Bookings from "./pages/Bookings";
+// Post-Login
+import AdminDashboard from "./pages/Admin/Dashboard";
+import AdminBookings from "./pages/Admin/Bookings";
+import UserDashboard from "./pages/UserDashboard";
 
 function App() {
   // fetch user from useAuthContext
@@ -44,6 +47,7 @@ function App() {
           <Route path="/SignIn" element={<SignIn />} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/bookings" element={<Bookings />} />
+          <Route path="admin/bookings" element={<AdminBookings />} />
         </Routes>
         <Footer/>
       </BrowserRouter>

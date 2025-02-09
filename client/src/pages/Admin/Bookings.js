@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 
 // Components
-import Section from "../components/Section";
-import HighLightBlock from "../components/HighLightBlock";
-import ContentBlock from "../components/ContentBlock";
-import Calendar from "../components/Calendar";
-import BookingForm from "../components/BookingForm";
-import BookingFormList from "../components/BookingFormList";
+import Section from "../../components/Section";
+import HighLightBlock from "../../components/HighLightBlock";
+import ContentBlock from "../../components/ContentBlock";
+import Calendar from "../../components/Calendar";
+import BookingForm from "../../components/BookingForm";
+import BookingFormList from "../../components/BookingFormList";
 
-import { BookingContextProvider } from "../context/BookingContext";
+import { BookingContextProvider } from "../../context/BookingContext";
 
 const Bookings = () => {
   // State variables

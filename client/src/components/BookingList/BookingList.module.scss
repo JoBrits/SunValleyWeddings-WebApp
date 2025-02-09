@@ -1,9 +1,16 @@
+.booking-list-container {
+  position: relative;
+  height: calc(100vh - 30rem);
+  overflow-y: hidden;
+}
+
 .booking-list {
   position: relative;
   height: 100%;
   top: 0;
   display: flex;
   flex-direction: column;
+  overflow: scroll;
 
   & p {
     font-size: clamp(1.2rem, 1cqi, 1.4rem);
@@ -20,6 +27,7 @@
     flex-direction: column;
     align-items: start;
     margin-bottom: 2rem;
+    border-radius: 1.5rem;
   }
 
   &-request {
@@ -41,6 +49,11 @@
     width: 100%;
     background-color: var(--color-paper);
     padding: 1rem!important;
+    border-radius: 1rem;
   }
 
+}
+
+.booking-list::-webkit-scrollbar {
+  display: none;
 }

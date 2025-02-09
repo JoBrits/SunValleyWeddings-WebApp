@@ -138,7 +138,7 @@ const Navbar = ({ user }) => {
                     },
                     {
                       label: "Booking Management",
-                      link: "/Weddings",
+                      link: "/admin/bookings",
                     },
                     {
                       label: "RSVP Tracking",
