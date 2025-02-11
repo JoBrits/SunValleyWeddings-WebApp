@@ -1,0 +1,63 @@
+.bookings-table {
+  position: relative;
+  display: flex;
+  justify-content: center;
+
+  table {
+    width: 100%;
+    font-size: 1.2rem;
+  }
+
+  thead {
+    background-color: var(--color-primary-med);
+  }
+
+  th {
+    padding: 1rem;
+    color: var(--color-paper);
+    text-align: left;
+  }
+  tr {
+    color: var(--color-ink);
+    text-align: left;
+  }
+  td {
+    padding: 1rem;
+  }
+  tr:nth-child(even) {
+    background-color: var(--color-primary-light);
+  }
+
+  &-buttons {
+    display: flex;
+    column-gap: 1rem;
+    justify-content: space-between;
+
+    button {
+      font-size: 1.2rem!important;
+      position: relative;
+      background-color: var(--color-primary);
+      border-radius: 0.5rem;
+      min-width: 2rem;
+      border: 0;
+      color: var(--color-paper);
+      padding: 0 .5rem;
+      cursor: pointer;
+      text-transform: uppercase;
+      text-align: center;
+      width: 100%;
+      height: calc(var(--unit) * 2);
+      text-decoration: none;
+
+      // as container
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &:hover {
+        color: var(--color-primary-light);
+        background-color: var(--color-primary-med);
+      }
+    }
+  }
+}
