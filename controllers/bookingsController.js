@@ -87,7 +87,6 @@ const getBookingsRequest = async (req, res) => {
   }
 };
 
-
 // Fetch a specific booking
 const getBookingRequest = async (req, res) => {};
 

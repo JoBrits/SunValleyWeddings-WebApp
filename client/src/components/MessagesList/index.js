@@ -13,7 +13,7 @@ const MessagesList = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <>
+    <div className={classNames(styles["message-list-container"])}>
       <ul className={classNames(styles["message-list"])}>
       {messages.map((message) => {
           const createdAtDate = new Date(message.createdAt); // Convert to date
@@ -36,7 +36,7 @@ const MessagesList = () => {
           );
         })}
       </ul>
-    </>
+    </div>
   );
 };
 

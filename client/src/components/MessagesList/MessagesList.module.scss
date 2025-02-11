@@ -1,3 +1,9 @@
+.message-list-container {
+  position: relative;
+  height: calc(100vh - 30rem);
+  overflow-y: hidden;
+}
+
 .message-list {
   position: relative;
   height: 100%;
@@ -20,6 +26,7 @@
     flex-direction: column;
     align-items: start;
     margin-bottom: 2rem;
+    border-radius: 1.5rem;
   }
 
   &-request {
@@ -41,6 +48,7 @@
     width: 100%;
     background-color: var(--color-paper);
     padding: 1rem!important;
+    border-radius: 1rem;
   }
 
 }

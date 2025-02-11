@@ -37,7 +37,11 @@ const NavbarNavTabs = ({ tabs, isActive, activeTab, target }) => {
 };
 
 const NavbarLogin = ({ setIsActive, activeTab }) => {
-  setIsActive(window.scrollY > 100);
+  // Ensure setIsActive runs only after the component renders
+  useEffect(() => {
+    setIsActive(window.scrollY > 100);
+  }, [setIsActive]); // Dependency array ensures this runs only when setIsActive changes
+
   return (
     <div className={classNames(styles["navbar-login"])}>
       <Link
@@ -66,7 +70,10 @@ const NavbarLogin = ({ setIsActive, activeTab }) => {
 };
 
 const NavbarLogout = ({ setIsActive, user, onLogout }) => {
-  setIsActive(true)
+  // Ensure setIsActive is updated only after rendering, preventing React warnings
+  useEffect(() => {
+    setIsActive(true);
+  }, [setIsActive]); // Runs only when setIsActive changes
   return (
     <div className={classNames(styles["navbar-login"])}>
       <span className={classNames(styles["navbar-nav-tab"])}>
@@ -83,8 +90,6 @@ const NavbarLogout = ({ setIsActive, user, onLogout }) => {
 const Navbar = ({ user }) => {
   const [isActive, setIsActive] = useState(false);
   const [activeTab, setActiveTab] = useState("");
-
-  console.log(user);
 
   // From Hook
   const { logout } = useLogout();
@@ -154,7 +159,11 @@ const Navbar = ({ user }) => {
                     },
                   ]}
                 />
-                <NavbarLogout setIsActive={setIsActive} user={user} onLogout={handleClick} />
+                <NavbarLogout
+                  setIsActive={setIsActive}
+                  user={user}
+                  onLogout={handleClick}
+                />
               </>
             )}
             {/* Conditional to check whether admin logged in */}
@@ -186,7 +195,11 @@ const Navbar = ({ user }) => {
                     },
                   ]}
                 />
-                <NavbarLogout setIsActive={setIsActive} user={user} onLogout={handleClick} />
+                <NavbarLogout
+                  setIsActive={setIsActive}
+                  user={user}
+                  onLogout={handleClick}
+                />
               </>
             )}
           </>
