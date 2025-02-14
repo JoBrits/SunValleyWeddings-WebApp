@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { BookingContextProvider } from "../../context/BookingContext";
 
 // Components
@@ -7,15 +6,8 @@ import ContentBlock from "../../components/ContentBlock";
 import DashboardSideMenu from "../../components/DashboardSideMenu";
 import BookingsTable from "../../components/BookingsTable";
 
-// Hooks
-import useBookingList from "../../hooks/useBookingList";
 
 const AdminDashboard = () => {
-  // Current Date
-
-  // State
-
-  const { bookings } = useBookingList();
 
   return (
     <BookingContextProvider>
@@ -28,7 +20,7 @@ const AdminDashboard = () => {
           justifyContent={"start"}
           alignItems={"center"}
         >
-          <DashboardSideMenu bookings={bookings} events={bookings} />
+          <DashboardSideMenu />
         </ContentBlock>
 
         {/* DASHBOARD HEADING */}

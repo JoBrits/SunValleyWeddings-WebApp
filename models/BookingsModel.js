@@ -10,7 +10,7 @@ const bookingSchema = new mongoose.Schema({
   eventTime: { type: String, required: true },
   eventGuests: { type: Number, required: true },
   eventNote: { type: String, required: true },
-  status: { type: String, required: false },
+  status: { type: String, default: "pending" },
   createdAt: { type: Date, default: Date.now },
 });
 

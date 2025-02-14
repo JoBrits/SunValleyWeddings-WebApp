@@ -20,7 +20,7 @@ const BookingForm = ({
   isLoading,
   setIsLoading,
 }) => {
-  // fetch dispatch from useToDoContext
+  // fetch dispatch from useBookingContext
   const { dispatch } = useBookingContext();
 
   // Form fields state
@@ -64,7 +64,7 @@ const BookingForm = ({
 
     if (editingEvent) {
       // Update existing booking in backend
-      const response = await fetch("/api/bookings/", {
+      const response = await fetch(`/api/bookings/${newBooking._id}`, {
         method: "PUT",
         body: JSON.stringify(newBooking),
         headers: {
@@ -89,6 +89,7 @@ const BookingForm = ({
       }
 
       if (response.ok) {
+        
         // Save to local storage
         storedBookings = storedBookings.map((storedBooking) => {
           if (storedBooking._id === newBooking._id) {

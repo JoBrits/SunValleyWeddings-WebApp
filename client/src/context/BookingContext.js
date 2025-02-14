@@ -4,11 +4,14 @@ export const BookingContext = createContext();
 
 // Reducer function
 export const bookingReducer = (state, action) => {
-  
   switch (action.type) {
     case "SET_BOOKINGS":
       return {
         bookings: action.payload,
+        pendingBookings: action.payload.filter((b) => b.status === "pending"),
+        confirmedBookings: action.payload.filter(
+          (b) => b.status === "confirmed"
+        ),
       };
     case "CREATE_BOOKING":
       return {
@@ -16,13 +19,24 @@ export const bookingReducer = (state, action) => {
       };
     case "DELETE_BOOKING":
       return {
-        bookings: state.bookings.filter((w) => w._id !== action.payload._id), // get to dos from previous array, then filter through and return false if we want to remove a to do
+        bookings: state.bookings.filter((w) => w._id !== action.payload._id),
+        pendingBookings: state.pendingBookings.filter(
+          (w) => w._id !== action.payload._id
+        ),
+        confirmedBookings: state.confirmedBookings.filter(
+          (w) => w._id !== action.payload._id
+        ),
       };
     case "UPDATE_BOOKING":
-        console.log('action.payload = ' + action.payload)
       return {
         bookings: state.bookings.map((booking) =>
-            booking._id === action.payload._id ? action.payload : booking
+          booking._id === action.payload._id ? action.payload : booking
+        ),
+        pendingBookings: state.pendingBookings.map((booking) =>
+          booking._id === action.payload._id ? action.payload : booking
+        ),
+        confirmedBookings: state.confirmedBookings.map((booking) =>
+          booking._id === action.payload._id ? action.payload : booking
         ),
       };
 
@@ -35,6 +49,8 @@ export const bookingReducer = (state, action) => {
 export const BookingContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(bookingReducer, {
     bookings: [],
+    pendingBookings: [],
+    confirmedBookings: [],
   });
 
   return (

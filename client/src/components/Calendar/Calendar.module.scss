@@ -7,6 +7,7 @@
   display: flex;
   column-gap: 5rem;
   transform-style: preserve-3d;
+  margin-bottom: 1.5rem;
 }
 
 .calendar {
@@ -89,6 +90,13 @@
   background-color: var(--color-primary-med);
   color:var(--color-paper)!important;
   border-radius: 50%;
+  scale: 0.8;
+}
+.confirmed-event {
+  background-color: var(--color-secondary);
+  color:var(--color-paper)!important;
+  border-radius: 50%;
+  scale: 0.8;
 }
 
 .past-day {
