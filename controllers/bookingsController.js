@@ -91,12 +91,36 @@ const getBookingsRequest = async (req, res) => {
 const getBookingRequest = async (req, res) => {};
 
 // Delete a booking
-const deleteBookingRequest = async (req, res) => {};
+const deleteBookingRequest = async (req, res) => {
+  try {
+    // Extract ID from request parameters
+    const { _id } = req.params;
+
+    // Check if _id exists
+    if (!_id) {
+      return res.status(400).json({ error: "Booking ID is required" });
+    }
+
+    // Find and delete the booking
+    const deletedBooking = await Booking.findByIdAndDelete(_id);
+
+    // If no booking is found
+    if (!deletedBooking) {
+      return res.status(404).json({ error: "No such booking found" });
+    }
+
+    // Respond with success message
+    res.status(200).json({ message: "Booking deleted successfully", deletedBooking });
+  } catch (error) {
+    console.error("Error deleting booking:", error);
+    res.status(500).json({ error: "Failed to delete booking" });
+  }
+};
 
 // Update a booking
 const updateBookingRequest = async (req, res) => {
   // fetch id from body
-  const { _id } = req.body;
+  const { _id } = req.params;
   // find booking by _id property and update
   const booking = await Booking.findOneAndUpdate(
     { _id: _id },

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 
 // Components
 import Section from "../../components/Section";
@@ -6,11 +6,12 @@ import ContentBlock from "../../components/ContentBlock";
 import Calendar from "../../components/Calendar";
 import BookingList from "../../components/BookingList";
 import MessagesList from "../../components/MessagesList";
-import EventForm from "../../components/EventForm";
 import DashboardSideMenu from "../../components/DashboardSideMenu";
 
-// Hooks
-import useBookingList from "../../hooks/useBookingList";
+import {
+  BookingContextProvider,
+  BookingContext,
+} from "../../context/BookingContext";
 
 const AdminDashboard = () => {
   // Current Date
@@ -19,11 +20,44 @@ const AdminDashboard = () => {
   // State
   const [selectedDate, setSelectedDate] = useState(currentDate);
   const [showEventPopup, setShowEventPopup] = useState(false);
+  const [dbEvents, setDbEvents] = useState([]);
+  const [isLoading, setIsLoading] = useState(null);
 
-  const { bookings } = useBookingList();
+  const { confirmedBookings, dispatch } = useContext(BookingContext);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch("/api/bookings/bookings");
+        const data = await response.json();
+
+        if (Array.isArray(data)) {
+          dispatch({ type: "SET_BOOKINGS", payload: data });
+        } else {
+          console.error("Unexpected data format:", data);
+        }
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchBookings();
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (confirmedBookings) {
+      const confirmedDates = confirmedBookings.map(
+        (booking) => booking.eventDate
+      );
+      setDbEvents(confirmedDates);
+    }
+  }, [confirmedBookings]);
 
   return (
-    <>
+    <BookingContextProvider>
       {/* Slide 1 - Landing */}
       <Section height={"auto"} padding={"7.5rem 0"}>
         {/* DASHBOARD MENU */}
@@ -33,7 +67,7 @@ const AdminDashboard = () => {
           justifyContent={"start"}
           alignItems={"center"}
         >
-          <DashboardSideMenu bookings={bookings} events={bookings} />
+          <DashboardSideMenu />
         </ContentBlock>
 
         {/* DASHBOARD HEADING */}
@@ -50,7 +84,7 @@ const AdminDashboard = () => {
         <ContentBlock start={4} end={6}>
           <div className="dashboard-panel">
             <h2 className="dashboard-sub-heading">Booking Requests</h2>
-            <BookingList />
+            <BookingList view={"pending"} />
           </div>
         </ContentBlock>
 
@@ -69,30 +103,31 @@ const AdminDashboard = () => {
               selectedDate={selectedDate}
               setShowEventPopup={setShowEventPopup}
               showEventPopup={showEventPopup}
+              dbEvents={dbEvents}
             />
-            <EventForm
-              setSelectedDate={setSelectedDate}
-              selectedDate={selectedDate}
-              showEventPopup={showEventPopup}
-              setShowEventPopup={setShowEventPopup}
-            />
+
           </div>
         </ContentBlock>
 
         {/* DASHBOARD NOTIFICATION */}
         <ContentBlock
           start={10}
-          end={12}
-          justifyContent={"start"}
+          end={13}
           alignItems={"start"}
         >
           <div className="dashboard-panel">
             <h2 className="dashboard-sub-heading">Notifications </h2>
             <MessagesList />
+            <BookingList 
+              selectedDate={selectedDate}
+              showEventPopup={showEventPopup}
+              setShowEventPopup={setShowEventPopup}
+              view={"byDate"} 
+            />
           </div>
         </ContentBlock>
       </Section>
-    </>
+    </BookingContextProvider>
   );
 };
 

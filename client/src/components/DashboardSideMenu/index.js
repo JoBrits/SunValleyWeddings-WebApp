@@ -1,3 +1,6 @@
+import { useState, useEffect } from "react";
+import { useBookingContext } from "../../hooks/useBookingContext";
+
 // import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -27,20 +30,47 @@ const DashboardSideMenuNotification = ({ linkLabel, linkTo, notification }) => {
   );
 };
 
-const DashboardSideMenu = ({ bookings, events }) => {
+const DashboardSideMenu = () => {
+  const { pendingBookings, confirmedBookings, dispatch } =
+    useBookingContext();
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch("/api/bookings/bookings");
+        const data = await response.json();
+
+        console.log("Fetched Data:", data); // Log what is received from the API
+
+        if (response.ok) {
+          dispatch({ type: "SET_BOOKINGS", payload: data });
+        }
+      } catch (error) {
+        console.error("Failed to fetch bookings:", error);
+      }
+      setLoading(false);
+    };
+
+    fetchBookings();
+  }, [dispatch]); // Runs only on mount
+
   return (
     <div className={classNames(styles["dashboard-menu"])}>
-
-      <DashboardSideMenuSection heading={"Booking Requests"}>
+      <DashboardSideMenuSection 
+        heading={"Booking Requests"}
+        >
         <DashboardSideMenuNotification
           linkLabel={"Pending"}
           linkTo={"Pending"}
-          notification={bookings.length}
+          notification={pendingBookings.length}
         />
         <DashboardSideMenuNotification
           linkLabel={"Confirmed"}
           linkTo={"Confirmed"}
-          notification={events.length}
+          notification={confirmedBookings.length}
         />
       </DashboardSideMenuSection>
 
@@ -48,12 +78,12 @@ const DashboardSideMenu = ({ bookings, events }) => {
         <DashboardSideMenuNotification
           linkLabel={"Manage"}
           linkTo={"Manage"}
-          notification={bookings.length}
+          notification={"00"}
         />
         <DashboardSideMenuNotification
           linkLabel={"Updates"}
           linkTo={"Updates"}
-          notification={events.length}
+          notification={"00"}
         />
       </DashboardSideMenuSection>
 
@@ -61,15 +91,14 @@ const DashboardSideMenu = ({ bookings, events }) => {
         <DashboardSideMenuNotification
           linkLabel={"Next event"}
           linkTo={"Next event"}
-          notification={bookings.length}
+          notification={"00"}
         />
         <DashboardSideMenuNotification
           linkLabel={"Upcoming"}
           linkTo={"Upcoming"}
-          notification={events.length}
+          notification={"00"}
         />
       </DashboardSideMenuSection>
-      
     </div>
   );
 };

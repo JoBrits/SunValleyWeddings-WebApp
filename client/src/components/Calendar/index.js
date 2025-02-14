@@ -4,7 +4,12 @@ import { useState } from "react";
 import classNames from "classnames";
 import styles from "./Calendar.module.scss";
 
-const Calendar = ({selectedDate, setSelectedDate, showEventPopup, setShowEventPopup}) => {
+const Calendar = ({
+  selectedDate,
+  setSelectedDate,
+  setShowEventPopup,
+  dbEvents,
+}) => {
   const daysOfTheWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const monthsOfYear = [
     "January",
@@ -32,13 +37,20 @@ const Calendar = ({selectedDate, setSelectedDate, showEventPopup, setShowEventPo
   // Calc Day in the week
   const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
 
-  // testing
-  // console.log("currentMonth = " + currentMonth);
-  // console.log("currentYear = " + currentYear);
-  // console.log("currentDate = " + currentDate);
-  // console.log("daysInMonth = " + daysInMonth);
-  // console.log("firstDayOfMonth = " + firstDayOfMonth);
-  // console.log("firstDayOfMonth = " + daysOfTheWeek[firstDayOfMonth]);
+  // Function to check if a given date has a confirmed booking
+  const isConfirmedBooking = (day) => {
+    if (dbEvents) {
+      return dbEvents.some((booking) => {
+        const bookingDate = new Date(booking);
+
+        return (
+          bookingDate.getFullYear() === currentYear &&
+          bookingDate.getMonth() === currentMonth &&
+          bookingDate.getUTCDate() === day
+        );
+      });
+    }
+  };
 
   // Set previous month
   const prevMonth = () => {
@@ -80,7 +92,6 @@ const Calendar = ({selectedDate, setSelectedDate, showEventPopup, setShowEventPo
 
   return (
     <div className={classNames(styles["calendar-container"])}>
-      
       <div className={classNames(styles["calendar"])}>
         <div className={classNames(styles["navigate-date"])}>
           <h2 className={classNames(styles["month"])}>
@@ -109,30 +120,30 @@ const Calendar = ({selectedDate, setSelectedDate, showEventPopup, setShowEventPo
           {/* Used spread operator to get the rest of the days in month*/}
           {[...Array(daysInMonth).keys()].map((day) => (
             <span
-            key={day + 1}
-            className={classNames({
-              [styles["current-day"]]:
-                day + 1 === currentDate.getDate() &&
-                currentMonth === currentDate.getMonth() &&
-                currentYear === currentDate.getFullYear(),
-              [styles["past-day"]]:
-                currentYear < currentDate.getFullYear() ||
-                (currentMonth <= currentDate.getMonth() &&
-                  day + 1 < currentDate.getDate()),
-              [styles["selected-day"]]:
-                selectedDate &&
-                selectedDate.getDate() === day + 1 &&
-                selectedDate.getMonth() === currentMonth &&
-                selectedDate.getFullYear() === currentYear,
-            })}
-            onClick={() => handleDayClicks(day + 1)}
-          >
-            {day + 1}
-          </span>
+              key={day + 1}
+              className={classNames({
+                [styles["current-day"]]:
+                  day + 1 === currentDate.getDate() &&
+                  currentMonth === currentDate.getMonth() &&
+                  currentYear === currentDate.getFullYear(),
+                [styles["past-day"]]:
+                  currentYear < currentDate.getFullYear() ||
+                  (currentMonth <= currentDate.getMonth() &&
+                    day + 1 < currentDate.getDate()),
+                [styles["selected-day"]]:
+                  selectedDate &&
+                  selectedDate.getDate() === day + 1 &&
+                  selectedDate.getMonth() === currentMonth &&
+                  selectedDate.getFullYear() === currentYear,
+                [styles["confirmed-event"]]: isConfirmedBooking(day), // Highlight confirmed bookings
+              })}
+              onClick={() => handleDayClicks(day + 1)}
+            >
+              {day + 1}
+            </span>
           ))}
         </div>
       </div>
-
     </div>
   );
 };
