@@ -3,16 +3,14 @@ import { useState, useEffect, useContext } from "react";
 // Components
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
-import Calendar from "../../components/Calendar";
-import BookingList from "../../components/BookingList";
-import MessagesList from "../../components/MessagesList";
+import DashboardSideMenu from "../../components/DashboardSideMenu";
 
 import {
   BookingContextProvider,
   BookingContext,
 } from "../../context/BookingContext";
 
-const AdminDashboard = () => {
+const UserDashboard = ({id}) => {
   // Current Date
   const currentDate = new Date();
 
@@ -23,6 +21,8 @@ const AdminDashboard = () => {
   const [isLoading, setIsLoading] = useState(null);
 
   const { confirmedBookings, dispatch } = useContext(BookingContext);
+
+  console.log(id)
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -66,7 +66,7 @@ const AdminDashboard = () => {
           justifyContent={"start"}
           alignItems={"center"}
         >
-
+          
         </ContentBlock>
 
         {/* DASHBOARD HEADING */}
@@ -76,14 +76,14 @@ const AdminDashboard = () => {
           justifyContent={"start"}
           alignItems={"center"}
         >
-          <h1 className="dashboard-heading">Admin Dashboard</h1>
+          <h1 className="dashboard-heading">User Dashboard</h1>
         </ContentBlock>
 
         {/* DASHBOARD BOOKINGS */}
         <ContentBlock start={4} end={6}>
           <div className="dashboard-panel">
-            <h2 className="dashboard-sub-heading">Booking Requests</h2>
-            <BookingList view={"pending"} />
+            <h2 className="dashboard-sub-heading">RSVP's Requests</h2>
+
           </div>
         </ContentBlock>
 
@@ -95,15 +95,7 @@ const AdminDashboard = () => {
           alignItems={"start"}
         >
           <div className="dashboard-panel">
-            <h2 className="dashboard-sub-heading">Upcoming Events</h2>
-
-            <Calendar
-              setSelectedDate={setSelectedDate}
-              selectedDate={selectedDate}
-              setShowEventPopup={setShowEventPopup}
-              showEventPopup={showEventPopup}
-              dbEvents={dbEvents}
-            />
+            <h2 className="dashboard-sub-heading">Sun Valley Notifications </h2>
 
           </div>
         </ContentBlock>
@@ -115,14 +107,8 @@ const AdminDashboard = () => {
           alignItems={"start"}
         >
           <div className="dashboard-panel">
-            <h2 className="dashboard-sub-heading">Notifications </h2>
-            <MessagesList />
-            <BookingList 
-              selectedDate={selectedDate}
-              showEventPopup={showEventPopup}
-              setShowEventPopup={setShowEventPopup}
-              view={"byDate"} 
-            />
+            <h2 className="dashboard-sub-heading">Guest Notifications</h2>
+            
           </div>
         </ContentBlock>
       </Section>
@@ -130,4 +116,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default UserDashboard;

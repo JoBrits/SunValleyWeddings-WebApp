@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 const userRoutes = require("./routes/user");
 const messagesRoute = require("./routes/messages");
 const bookingsRoute = require("./routes/bookings");
+const guestsRoute = require("./routes/guests");
 
 // Import middleware
 const rejectNonJsonRequests = require("./middleware/rejectNonJsonRequests");
@@ -34,6 +35,7 @@ app.use((req, res, next) => {
 app.use("/api/user", userRoutes);
 app.use("/api/messages", messagesRoute);
 app.use("/api/bookings", bookingsRoute);
+app.use("/api/guests", guestsRoute);
 
 // connext to DB
 mongoose
