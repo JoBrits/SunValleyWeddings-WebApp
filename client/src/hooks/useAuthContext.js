@@ -10,6 +10,7 @@ export const useAuthContext = () => {
 
     const { user } = context;
     const role = user?.role || null; // Extract user role safely
+    const id = user?.id || null; // Extract user id safely
 
-    return { ...context, role };
+    return { ...context, role, id };
 };

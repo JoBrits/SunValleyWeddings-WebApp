@@ -30,9 +30,8 @@ const DashboardSideMenuNotification = ({ linkLabel, linkTo, notification }) => {
   );
 };
 
-const DashboardSideMenu = () => {
-  const { pendingBookings, confirmedBookings, dispatch } =
-    useBookingContext();
+const DashboardSideMenu = ({user}) => {
+  const { pendingBookings, confirmedBookings, dispatch } = useBookingContext();
 
   const [loading, setLoading] = useState(false);
 
@@ -57,49 +56,97 @@ const DashboardSideMenu = () => {
     fetchBookings();
   }, [dispatch]); // Runs only on mount
 
+  // What type of user is logged in
+  console.log(user.role);
+
   return (
-    <div className={classNames(styles["dashboard-menu"])}>
-      <DashboardSideMenuSection 
-        heading={"Booking Requests"}
-        >
-        <DashboardSideMenuNotification
-          linkLabel={"Pending"}
-          linkTo={"Pending"}
-          notification={pendingBookings.length}
-        />
-        <DashboardSideMenuNotification
-          linkLabel={"Confirmed"}
-          linkTo={"Confirmed"}
-          notification={confirmedBookings.length}
-        />
-      </DashboardSideMenuSection>
+    <>
+      {user.role === "admin" && (
+        <div className={classNames(styles["dashboard-menu"])}>
+          <DashboardSideMenuSection heading={"Booking Requests"}>
+            <DashboardSideMenuNotification
+              linkLabel={"Pending"}
+              linkTo={"Pending"}
+              notification={pendingBookings.length}
+            />
+            <DashboardSideMenuNotification
+              linkLabel={"Confirmed"}
+              linkTo={"Confirmed"}
+              notification={confirmedBookings.length}
+            />
+          </DashboardSideMenuSection>
 
-      <DashboardSideMenuSection heading={"Guests"}>
-        <DashboardSideMenuNotification
-          linkLabel={"Manage"}
-          linkTo={"Manage"}
-          notification={"00"}
-        />
-        <DashboardSideMenuNotification
-          linkLabel={"Updates"}
-          linkTo={"Updates"}
-          notification={"00"}
-        />
-      </DashboardSideMenuSection>
+          <DashboardSideMenuSection heading={"Guests"}>
+            <DashboardSideMenuNotification
+              linkLabel={"Manage"}
+              linkTo={"Manage"}
+              notification={"00"}
+            />
+            <DashboardSideMenuNotification
+              linkLabel={"Updates"}
+              linkTo={"Updates"}
+              notification={"00"}
+            />
+          </DashboardSideMenuSection>
 
-      <DashboardSideMenuSection heading={"Events"}>
-        <DashboardSideMenuNotification
-          linkLabel={"Next event"}
-          linkTo={"Next event"}
-          notification={"00"}
-        />
-        <DashboardSideMenuNotification
-          linkLabel={"Upcoming"}
-          linkTo={"Upcoming"}
-          notification={"00"}
-        />
-      </DashboardSideMenuSection>
-    </div>
+          <DashboardSideMenuSection heading={"Events"}>
+            <DashboardSideMenuNotification
+              linkLabel={"Next event"}
+              linkTo={"Next event"}
+              notification={"00"}
+            />
+            <DashboardSideMenuNotification
+              linkLabel={"Upcoming"}
+              linkTo={"Upcoming"}
+              notification={"00"}
+            />
+          </DashboardSideMenuSection>
+        </div>
+      )}
+
+      {user.role === "user" && (
+        <div className={classNames(styles["dashboard-menu"])}>
+          <DashboardSideMenuSection heading={"RSVP's"}>
+            <DashboardSideMenuNotification
+              linkLabel={"Pending"}
+              linkTo={"Pending"}
+              notification={"00"}
+            />
+            <DashboardSideMenuNotification
+              linkLabel={"Confirmed"}
+              linkTo={"Confirmed"}
+              notification={"00"}
+            />
+          </DashboardSideMenuSection>
+
+          <DashboardSideMenuSection heading={"Guests"}>
+            <DashboardSideMenuNotification
+              linkLabel={"Manage"}
+              linkTo={"Manage"}
+              notification={"00"}
+            />
+            <DashboardSideMenuNotification
+              linkLabel={"Updates"}
+              linkTo={"Updates"}
+              notification={"00"}
+            />
+          </DashboardSideMenuSection>
+
+          <DashboardSideMenuSection heading={"Schedule"}>
+            <DashboardSideMenuNotification
+              linkLabel={"Next event"}
+              linkTo={"Next event"}
+              notification={"00"}
+            />
+            <DashboardSideMenuNotification
+              linkLabel={"Upcoming"}
+              linkTo={"Upcoming"}
+              notification={"00"}
+            />
+          </DashboardSideMenuSection>
+        </div>
+      )}
+    </>
   );
 };
 

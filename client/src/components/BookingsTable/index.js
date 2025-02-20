@@ -26,7 +26,7 @@ const BookingsTable = () => {
     };
 
     fetchBookings();
-  }, [bookings, dispatch]); //This ensures the table updates after every edit
+  }, [dispatch]); //This ensures the table updates after every edit
 
   // Handle input change for editing
   const handleInputChange = (e, field) => {
@@ -149,7 +149,6 @@ const BookingsTable = () => {
               {editingId === booking._id ? (
                 <>
                   <td>
-                    {console.log("editData:", editData)}
                     <input
                       type="text"
                       value={editData.title}
