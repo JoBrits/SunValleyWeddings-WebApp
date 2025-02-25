@@ -36,11 +36,8 @@ const NavbarNavTabs = ({ tabs, isActive, activeTab, target }) => {
   );
 };
 
-const NavbarLogin = ({ setIsActive, activeTab }) => {
-  // Ensure setIsActive runs only after the component renders
-  useEffect(() => {
-    setIsActive(window.scrollY > 100);
-  }, [setIsActive]); // Dependency array ensures this runs only when setIsActive changes
+const NavbarLogin = ({ activeTab }) => {
+
 
   return (
     <div className={classNames(styles["navbar-login"])}>
@@ -107,8 +104,12 @@ const Navbar = ({ user }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      // Activate when scrolled more than 100px
-      setIsActive(window.scrollY > 100);
+      if (user) {
+        setIsActive(true);
+      } else {
+        // Activate when scrolled more than 100px
+        setIsActive(window.scrollY > 100);
+      }
     };
 
     // Attach the scroll event listener
@@ -116,7 +117,7 @@ const Navbar = ({ user }) => {
 
     // Cleanup event listener on component unmount
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [user]);
 
   return (
     <div
@@ -147,15 +148,15 @@ const Navbar = ({ user }) => {
                     },
                     {
                       label: "RSVP Tracking",
-                      ink: "/Home",
+                      link: "/admin/rsvp",
                     },
                     {
                       label: "Guest Profiles",
-                      ink: "/Home",
+                      link: "/admin/guests",
                     },
                     {
                       label: "Event Management",
-                      ink: "/Home",
+                      link: "/admin/events",
                     },
                   ]}
                 />
@@ -237,7 +238,7 @@ const Navbar = ({ user }) => {
                 },
               ]}
             />
-            <NavbarLogin setIsActive={setIsActive} activeTab={activeTab} />
+            <NavbarLogin activeTab={activeTab} />
           </>
         )}
       </div>

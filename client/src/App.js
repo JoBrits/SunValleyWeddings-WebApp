@@ -18,21 +18,24 @@ import Bookings from "./pages/Bookings";
 // Post-Login - Admin
 import AdminDashboard from "./pages/Admin/Dashboard";
 import AdminBookings from "./pages/Admin/Bookings";
-import AdminBooking from "./pages/Admin/Booking";
+import AdminRSVP from "./pages/Admin/Rsvp";
 // Post-Login - User
 import UserDashboard from "./pages/User/Dashboard";
-import UserBookings from "./pages/User/Bookings";
-import UserBooking from "./pages/User/Booking";
+import UserGuests from "./pages/User/Guests";
+import UserGuest from "./pages/User/Guest";
 
 function App() {
+  
   // fetch user from useAuthContext
   const { user } = useAuthContext();
 
   return (
     <div className="layout-page">
       <BrowserRouter>
+        
         {/* Main Nav */}
         <Navbar user={user} />
+        
         {/* Dashboard Nav when logged in */}
         {user && <DashboardSideMenu user={user} />}
         <Routes>
@@ -42,7 +45,7 @@ function App() {
             element={
               user ? (
                 user.role === "admin" ? (
-                  <AdminDashboard />
+                  <AdminDashboard id={user.id}/>
                 ) : (
                   <UserDashboard id={user.id} />
                 )
@@ -51,16 +54,22 @@ function App() {
               )
             }
           />
+          
+          {/* Logged out pages */}
           <Route path="/weddings" element={<Weddings />} />
           <Route path="/SignIn" element={<SignIn />} />
           <Route path="/SignUp" element={<SignUp />} />
           <Route path="/bookings" element={<Bookings />} />
+          
           {/* Admin Section */}
           <Route path="admin/bookings" element={<AdminBookings />} />
-          <Route path="admin/booking" element={<AdminBooking />} />
+          <Route path="admin/rsvp" element={<AdminRSVP />} />
+          
           {/* User Section */}
-          <Route path="user/bookings" element={<UserBookings />} />
-          <Route path="user/booking" element={<UserBooking />} />
+          
+          <Route path="user/guests" element={<UserGuests />} />
+          <Route path="user/guest" element={<UserGuest />} />
+          
         </Routes>
         <Footer />
       </BrowserRouter>

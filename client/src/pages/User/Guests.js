@@ -7,7 +7,7 @@ import DashboardSideMenu from "../../components/DashboardSideMenu";
 import BookingsTable from "../../components/BookingsTable";
 
 
-const AdminDashboard = () => {
+const Guests = () => {
 
   return (
     <BookingContextProvider>
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
           justifyContent={"start"}
           alignItems={"center"}
         >
-          <h1 className="dashboard-heading">Bookings</h1>
+          <h1 className="dashboard-heading">Guest</h1>
         </ContentBlock>
 
         {/* DASHBOARD BOOKINGS */}
@@ -44,4 +44,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default Guests;

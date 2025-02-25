@@ -3,11 +3,11 @@ import { BookingContextProvider } from "../../context/BookingContext";
 // Components
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
-import DashboardSideMenu from "../../components/DashboardSideMenu";
+
 import BookingsTable from "../../components/BookingsTable";
 
 
-const AdminDashboard = () => {
+const Bookings = () => {
 
   return (
     <BookingContextProvider>
@@ -20,7 +20,7 @@ const AdminDashboard = () => {
           justifyContent={"start"}
           alignItems={"center"}
         >
-          <DashboardSideMenu />
+
         </ContentBlock>
 
         {/* DASHBOARD HEADING */}
@@ -44,4 +44,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default Bookings;

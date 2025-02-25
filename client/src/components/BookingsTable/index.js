@@ -145,7 +145,10 @@ const BookingsTable = () => {
         </thead>
         <tbody>
           {bookings.map((booking) => (
-            <tr key={booking._id}>
+            <tr
+              key={booking._id}
+              className={classNames(styles["bookings-table-tr"])}
+            >
               {editingId === booking._id ? (
                 <>
                   <td>
@@ -268,6 +271,12 @@ const BookingsTable = () => {
               )}
             </tr>
           ))}
+          <tr>
+            <td
+              colSpan={9}
+              className={classNames(styles["bookings-table-tr-spacer"])}
+            ></td>
+          </tr>
         </tbody>
       </table>
     </div>

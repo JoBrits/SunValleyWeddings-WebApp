@@ -5,16 +5,20 @@ import { useBookingContext } from "../../hooks/useBookingContext";
 import classNames from "classnames";
 import styles from "./BookingList.module.scss";
 
+// Components
+import Spinner from "../../components/Spinner";
+
 const BookingList = ({
   view,
   selectedDate,
   showEventPopup,
   setShowEventPopup,
 }) => {
-  console.log(view);
-  console.log(selectedDate);
-  console.log(showEventPopup);
-  console.log(setShowEventPopup);
+  // Testing
+  // console.log(view);
+  // console.log(selectedDate);
+  // console.log(showEventPopup);
+  // console.log(setShowEventPopup);
 
   const { bookings, pendingBookings, confirmedBookings, dispatch } =
     useBookingContext();
@@ -27,8 +31,9 @@ const BookingList = ({
       try {
         const response = await fetch("/api/bookings/bookings");
         const data = await response.json();
-
-        console.log("Fetched Data:", data); // Log what is received from the API
+        
+        // Testing
+        // console.log("Fetched Data:", data); // Log what is received from the API
 
         if (response.ok) {
           dispatch({ type: "SET_BOOKINGS", payload: data });
@@ -51,6 +56,7 @@ const BookingList = ({
 
   return (
     <div className={classNames(styles["booking-list-container"])}>
+      {loading && <Spinner/>}
       {!loading && (
         <div className={classNames(styles["booking-list-container-items"])}>
           {view === "pending" && (
@@ -82,7 +88,9 @@ const BookingList = ({
           )}
           {view === "byDate" && (
             <>
-              <h3 className="dashboard-sub-heading">Bookings for {new Date(selectedDate).toDateString()}</h3>
+              <h3 className="dashboard-sub-heading">
+                Bookings for {new Date(selectedDate).toDateString()}
+              </h3>
               {filteredBookings.length > 0 ? (
                 <ul className={classNames(styles["booking-list"])}>
                   {filteredBookings.map((booking) => (

@@ -6,6 +6,7 @@ import ContentBlock from "../../components/ContentBlock";
 import Calendar from "../../components/Calendar";
 import BookingList from "../../components/BookingList";
 import MessagesList from "../../components/MessagesList";
+import Spinner from "../../components/Spinner";
 
 import {
   BookingContextProvider,
@@ -59,15 +60,13 @@ const AdminDashboard = () => {
     <BookingContextProvider>
       {/* Slide 1 - Landing */}
       <Section height={"auto"} padding={"7.5rem 0"}>
-        {/* DASHBOARD MENU */}
+        {/* DASHBOARD MENU PLACEHOLDER */}
         <ContentBlock
           start={1}
           end={3}
           justifyContent={"start"}
           alignItems={"center"}
-        >
-
-        </ContentBlock>
+        ></ContentBlock>
 
         {/* DASHBOARD HEADING */}
         <ContentBlock
@@ -83,7 +82,9 @@ const AdminDashboard = () => {
         <ContentBlock start={4} end={6}>
           <div className="dashboard-panel">
             <h2 className="dashboard-sub-heading">Booking Requests</h2>
-            <BookingList view={"pending"} />
+            {/* PENDING BOOKINGS */}
+            {isLoading && <Spinner />}
+            {!isLoading && <BookingList view={"pending"} />}
           </div>
         </ContentBlock>
 
@@ -104,24 +105,19 @@ const AdminDashboard = () => {
               showEventPopup={showEventPopup}
               dbEvents={dbEvents}
             />
-
           </div>
         </ContentBlock>
 
         {/* DASHBOARD NOTIFICATION */}
-        <ContentBlock
-          start={10}
-          end={13}
-          alignItems={"start"}
-        >
+        <ContentBlock start={10} end={13} alignItems={"start"}>
           <div className="dashboard-panel">
             <h2 className="dashboard-sub-heading">Notifications </h2>
             <MessagesList />
-            <BookingList 
+            <BookingList
               selectedDate={selectedDate}
               showEventPopup={showEventPopup}
               setShowEventPopup={setShowEventPopup}
-              view={"byDate"} 
+              view={"byDate"}
             />
           </div>
         </ContentBlock>

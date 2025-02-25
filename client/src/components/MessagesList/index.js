@@ -5,11 +5,14 @@ import styles from "./MessagesList.module.scss";
 // Hooks
 import useMessagesList from "../../hooks/useMessagesList";
 
+// Components
+import Spinner from "../../components/Spinner";
+
 const MessagesList = () => {
   
   const { messages, loading, error } = useMessagesList();
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <Spinner/>;
   if (error) return <p>Error: {error}</p>;
 
   return (
