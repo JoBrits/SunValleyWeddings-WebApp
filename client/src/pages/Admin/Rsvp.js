@@ -3,11 +3,11 @@ import { BookingContextProvider } from "../../context/BookingContext";
 // Components
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
-import DashboardSideMenu from "../../components/DashboardSideMenu";
-import BookingsTable from "../../components/BookingsTable";
+
+import RsvpTable from "../../components/RsvpTable";
 
 
-const AdminDashboard = () => {
+const Rsvp = () => {
 
   return (
     <BookingContextProvider>
@@ -20,7 +20,7 @@ const AdminDashboard = () => {
           justifyContent={"start"}
           alignItems={"center"}
         >
-          <DashboardSideMenu />
+
         </ContentBlock>
 
         {/* DASHBOARD HEADING */}
@@ -30,13 +30,13 @@ const AdminDashboard = () => {
           justifyContent={"start"}
           alignItems={"center"}
         >
-          <h1 className="dashboard-heading">Bookings</h1>
+          <h1 className="dashboard-heading">RSVP's</h1>
         </ContentBlock>
 
         {/* DASHBOARD BOOKINGS */}
         <ContentBlock start={4} end={12}>
           <div className="dashboard-panel">
-            <BookingsTable />
+            <RsvpTable />
           </div>
         </ContentBlock>
       </Section>
@@ -44,4 +44,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default Rsvp;

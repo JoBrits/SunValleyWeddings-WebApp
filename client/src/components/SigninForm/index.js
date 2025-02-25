@@ -44,12 +44,18 @@ const SigninForm = () => {
       <hr />
       <label>Email:</label>
       <input type="email" onChange={(e) => setEmail(e.target.value)} required />
-      
+
       <label>Password:</label>
-      <input type="password" onChange={(e) => setPassword(e.target.value)} required />
-      
+      <input
+        type="password"
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+
       <hr />
-      <button className="button" disabled={isLoading}>Sign In</button>
+      <button className="button" disabled={isLoading}>
+        Sign In
+      </button>
       {error && <div className="error">{error}</div>}
     </form>
   );

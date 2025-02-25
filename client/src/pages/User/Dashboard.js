@@ -3,7 +3,7 @@ import { useState, useEffect, useContext } from "react";
 // Components
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
-import DashboardSideMenu from "../../components/DashboardSideMenu";
+import Spinner from "../../components/Spinner";
 
 import {
   BookingContextProvider,
@@ -11,18 +11,17 @@ import {
 } from "../../context/BookingContext";
 
 const UserDashboard = ({id}) => {
-  // Current Date
-  const currentDate = new Date();
-
+  
   // State
-  const [selectedDate, setSelectedDate] = useState(currentDate);
-  const [showEventPopup, setShowEventPopup] = useState(false);
+  // const [selectedDate, setSelectedDate] = useState(currentDate);
+  // const [showEventPopup, setShowEventPopup] = useState(false);
   const [dbEvents, setDbEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(null);
 
   const { confirmedBookings, dispatch } = useContext(BookingContext);
 
   console.log(id)
+  console.log(dbEvents)
 
   useEffect(() => {
     const fetchBookings = async () => {
@@ -59,7 +58,7 @@ const UserDashboard = ({id}) => {
     <BookingContextProvider>
       {/* Slide 1 - Landing */}
       <Section height={"auto"} padding={"7.5rem 0"}>
-        {/* DASHBOARD MENU */}
+        {/* DASHBOARD MENU PLACEHOLDER */}
         <ContentBlock
           start={1}
           end={3}
@@ -83,6 +82,10 @@ const UserDashboard = ({id}) => {
         <ContentBlock start={4} end={6}>
           <div className="dashboard-panel">
             <h2 className="dashboard-sub-heading">RSVP's Requests</h2>
+            {isLoading && <Spinner />}
+            {!isLoading && (
+              <p className="dashboard-heading">RSVP's Requests</p>
+            )}
 
           </div>
         </ContentBlock>

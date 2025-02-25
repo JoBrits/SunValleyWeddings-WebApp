@@ -4,6 +4,9 @@ import { useBookingContext } from "../../hooks/useBookingContext";
 // import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+// Components
+import Spinner from "../../components/Spinner";
+
 // Styles
 import classNames from "classnames";
 import styles from "./DashboardSideMenu.module.scss";
@@ -17,32 +20,44 @@ const DashboardSideMenuSection = ({ heading, children }) => {
   );
 };
 
-const DashboardSideMenuNotification = ({ linkLabel, linkTo, notification }) => {
+const DashboardSideMenuNotification = ({
+  linkLabel,
+  linkTo,
+  notification,
+  isLoading,
+}) => {
   return (
     <>
       <div className="dashboard-menu-section-notifications">
         <Link to={linkTo}>{linkLabel}</Link>
-        <div className="dashboard-menu-section-notification">
-          {notification}
-        </div>
+        {isLoading && (
+          <div className="dashboard-menu-section-notification">
+            <Spinner />
+          </div>
+        )}
+        {!isLoading && (
+          <div className="dashboard-menu-section-notification">
+            {notification}
+          </div>
+        )}
       </div>
     </>
   );
 };
 
-const DashboardSideMenu = ({user}) => {
+const DashboardSideMenu = ({ user }) => {
   const { pendingBookings, confirmedBookings, dispatch } = useBookingContext();
 
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(null);
 
   useEffect(() => {
     const fetchBookings = async () => {
-      setLoading(true);
+      setIsLoading(true);
       try {
         const response = await fetch("/api/bookings/bookings");
         const data = await response.json();
 
-        console.log("Fetched Data:", data); // Log what is received from the API
+        // console.log("Fetched Data:", data); // Log what is received from the API
 
         if (response.ok) {
           dispatch({ type: "SET_BOOKINGS", payload: data });
@@ -50,14 +65,14 @@ const DashboardSideMenu = ({user}) => {
       } catch (error) {
         console.error("Failed to fetch bookings:", error);
       }
-      setLoading(false);
+      setIsLoading(false);
     };
 
     fetchBookings();
   }, [dispatch]); // Runs only on mount
 
   // What type of user is logged in
-  console.log(user.role);
+  // console.log(user.role);
 
   return (
     <>
@@ -65,11 +80,13 @@ const DashboardSideMenu = ({user}) => {
         <div className={classNames(styles["dashboard-menu"])}>
           <DashboardSideMenuSection heading={"Booking Requests"}>
             <DashboardSideMenuNotification
+              isLoading={isLoading}
               linkLabel={"Pending"}
               linkTo={"Pending"}
               notification={pendingBookings.length}
             />
             <DashboardSideMenuNotification
+              isLoading={isLoading}
               linkLabel={"Confirmed"}
               linkTo={"Confirmed"}
               notification={confirmedBookings.length}
@@ -78,11 +95,13 @@ const DashboardSideMenu = ({user}) => {
 
           <DashboardSideMenuSection heading={"Guests"}>
             <DashboardSideMenuNotification
+              isLoading={isLoading}
               linkLabel={"Manage"}
               linkTo={"Manage"}
               notification={"00"}
             />
             <DashboardSideMenuNotification
+              isLoading={isLoading}
               linkLabel={"Updates"}
               linkTo={"Updates"}
               notification={"00"}
@@ -91,11 +110,13 @@ const DashboardSideMenu = ({user}) => {
 
           <DashboardSideMenuSection heading={"Events"}>
             <DashboardSideMenuNotification
+              isLoading={isLoading}
               linkLabel={"Next event"}
               linkTo={"Next event"}
               notification={"00"}
             />
             <DashboardSideMenuNotification
+              isLoading={isLoading}
               linkLabel={"Upcoming"}
               linkTo={"Upcoming"}
               notification={"00"}

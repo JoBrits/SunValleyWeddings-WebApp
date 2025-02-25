@@ -32,7 +32,7 @@ export const AuthContextProvider = ({ children }) => {
     }
   }, [])
 
-  console.log("AutContext state : ", state);
+  // console.log("AutContext state : ", state);
 
   return (
     // Spread operator to return object state
