@@ -19,6 +19,8 @@ import Bookings from "./pages/Bookings";
 import AdminDashboard from "./pages/Admin/Dashboard";
 import AdminBookings from "./pages/Admin/Bookings";
 import AdminRSVP from "./pages/Admin/Rsvp";
+import AdminGuests from "./pages/Admin/Guests";
+import AdminEvents from "./pages/Admin/Events";
 // Post-Login - User
 import UserDashboard from "./pages/User/Dashboard";
 import UserGuests from "./pages/User/Guests";
@@ -64,6 +66,8 @@ function App() {
           {/* Admin Section */}
           <Route path="admin/bookings" element={<AdminBookings />} />
           <Route path="admin/rsvp" element={<AdminRSVP />} />
+          <Route path="admin/guests" element={<AdminGuests />} />
+          <Route path="admin/events" element={<AdminEvents />} />
           
           {/* User Section */}
           

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
+
 import { useBookingContext } from "../../hooks/useBookingContext";
+import { useGuestContext } from "../../hooks/useGuestContext";
 
 // import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -46,11 +48,14 @@ const DashboardSideMenuNotification = ({
 };
 
 const DashboardSideMenu = ({ user }) => {
-  const { pendingBookings, confirmedBookings, dispatch } = useBookingContext();
+
+  const { bookings, pendingBookings, confirmedBookings, dispatch: dispatchBookings  } = useBookingContext();
+  const { pendingGuests, confirmedGuests, dispatch: dispatchGuests  } = useGuestContext();
 
   const [isLoading, setIsLoading] = useState(null);
 
   useEffect(() => {
+    
     const fetchBookings = async () => {
       setIsLoading(true);
       try {
@@ -60,16 +65,33 @@ const DashboardSideMenu = ({ user }) => {
         // console.log("Fetched Data:", data); // Log what is received from the API
 
         if (response.ok) {
-          dispatch({ type: "SET_BOOKINGS", payload: data });
+          dispatchBookings({ type: "SET_BOOKINGS", payload: data });
         }
       } catch (error) {
         console.error("Failed to fetch bookings:", error);
       }
       setIsLoading(false);
     };
-
     fetchBookings();
-  }, [dispatch]); // Runs only on mount
+    
+    const fetchGuests = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/guests/${user._id}`);
+        const data = await response.json();
+
+        if (response.ok) {
+          dispatchGuests({ type: "SET_GUESTS", payload: data });
+        }
+      } catch (error) {
+        console.error("Failed to fetch bookings:", error);
+      }
+      setIsLoading(false);
+    };
+    fetchGuests();
+
+
+  }, [dispatchBookings, dispatchGuests, user._id]); // Runs only on mount
 
   // What type of user is logged in
   // console.log(user.role);
@@ -98,13 +120,13 @@ const DashboardSideMenu = ({ user }) => {
               isLoading={isLoading}
               linkLabel={"Manage"}
               linkTo={"Manage"}
-              notification={"00"}
+              notification={bookings.length}
             />
             <DashboardSideMenuNotification
               isLoading={isLoading}
               linkLabel={"Updates"}
               linkTo={"Updates"}
-              notification={"00"}
+              notification={bookings.length}
             />
           </DashboardSideMenuSection>
 
@@ -119,7 +141,7 @@ const DashboardSideMenu = ({ user }) => {
               isLoading={isLoading}
               linkLabel={"Upcoming"}
               linkTo={"Upcoming"}
-              notification={"00"}
+              notification={confirmedBookings.length}
             />
           </DashboardSideMenuSection>
         </div>
@@ -131,12 +153,12 @@ const DashboardSideMenu = ({ user }) => {
             <DashboardSideMenuNotification
               linkLabel={"Pending"}
               linkTo={"Pending"}
-              notification={"00"}
+              notification={pendingGuests}
             />
             <DashboardSideMenuNotification
               linkLabel={"Confirmed"}
               linkTo={"Confirmed"}
-              notification={"00"}
+              notification={confirmedGuests}
             />
           </DashboardSideMenuSection>
 

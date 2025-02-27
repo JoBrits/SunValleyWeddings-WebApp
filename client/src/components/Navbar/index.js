@@ -37,8 +37,6 @@ const NavbarNavTabs = ({ tabs, isActive, activeTab, target }) => {
 };
 
 const NavbarLogin = ({ activeTab }) => {
-
-
   return (
     <div className={classNames(styles["navbar-login"])}>
       <Link
@@ -73,9 +71,9 @@ const NavbarLogout = ({ setIsActive, user, onLogout }) => {
   }, [setIsActive]); // Runs only when setIsActive changes
   return (
     <div className={classNames(styles["navbar-login"])}>
-      <span className={classNames(styles["navbar-nav-tab"])}>
+      <Link to={"/profile"} className={classNames(styles["navbar-nav-tab"])}>
         Welcome back {user.name}
-      </span>
+      </Link>
       <div className={classNames(styles["navbar-login-tab"])}>|</div>
       <Link onClick={onLogout} className={classNames(styles["navbar-nav-tab"])}>
         Logout
