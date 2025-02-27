@@ -1,6 +1,17 @@
 // Import Models
 const Booking = require("../models/BookingsModel");
 
+// Fetch all bookings
+const getBookingsRequest = async (req, res) => {
+  try {
+    const bookingRequests = await Booking.find();
+    res.status(200).json(bookingRequests);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch bookings" });
+  }
+};
+
 // Create a booking
 const createBookingRequest = async (req, res) => {
   const {
@@ -76,20 +87,6 @@ const createBookingRequest = async (req, res) => {
   }
 };
 
-// Fetch all bookings
-const getBookingsRequest = async (req, res) => {
-  try {
-    const bookingRequests = await Booking.find();
-    res.status(200).json(bookingRequests);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Failed to fetch bookings" });
-  }
-};
-
-// Fetch a specific booking
-const getBookingRequest = async (req, res) => {};
-
 // Delete a booking
 const deleteBookingRequest = async (req, res) => {
   try {
@@ -139,7 +136,6 @@ const updateBookingRequest = async (req, res) => {
 module.exports = {
   createBookingRequest,
   getBookingsRequest,
-  getBookingRequest,
   deleteBookingRequest,
   updateBookingRequest,
 };

@@ -15,6 +15,7 @@ import Weddings from "./pages/Weddings";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Bookings from "./pages/Bookings";
+import Profile from "./pages/Profile";
 // Post-Login - Admin
 import AdminDashboard from "./pages/Admin/Dashboard";
 import AdminBookings from "./pages/Admin/Bookings";
@@ -70,9 +71,12 @@ function App() {
           <Route path="admin/events" element={<AdminEvents />} />
           
           {/* User Section */}
-          
           <Route path="user/guests" element={<UserGuests />} />
           <Route path="user/guest" element={<UserGuest />} />
+
+          {/* Shared Section */}
+          <Route path="/profile" element={<Profile  user={user} />} />
+          
           
         </Routes>
         <Footer />

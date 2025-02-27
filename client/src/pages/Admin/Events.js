@@ -5,7 +5,6 @@ import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
 import Calendar from "../../components/Calendar";
 import BookingList from "../../components/BookingList";
-import MessagesList from "../../components/MessagesList";
 import Spinner from "../../components/Spinner";
 
 import {
