@@ -6,7 +6,8 @@ import classNames from "classnames";
 import styles from "./GuestTable.module.scss";
 
 const GuestTable = ({ eventID }) => {
-  const { guests, dispatch } = useGuestContext();
+  const { guests, pendingGuests, confirmedGuests, dispatch } =
+    useGuestContext();
 
   const [editingId, setEditingId] = useState("");
   const [editData, setEditData] = useState({});
@@ -37,7 +38,6 @@ const GuestTable = ({ eventID }) => {
   const handleAddGuestFormCancel = () => {
     setNewGuestForm(false);
   };
-
   // Function to add a new guest
   const handleAddGuest = async () => {
     // Ensure all required fields are filled
@@ -90,7 +90,7 @@ const GuestTable = ({ eventID }) => {
   const handleSaveGuest = useCallback(async () => {
     console.log("This editingId", editingId);
     console.log("This editData", editData);
-  
+
     try {
       const response = await fetch(`/api/guests/${editingId}`, {
         method: "PUT",
@@ -99,13 +99,13 @@ const GuestTable = ({ eventID }) => {
         },
         body: JSON.stringify(editData),
       });
-  
+
       if (response.ok) {
         const guest = await response.json();
-  
+
         // Dispatch update action to context
         dispatch({ type: "UPDATE_GUEST", payload: guest });
-  
+
         // Reset editing state
         setEditingId(null);
         setEditData({});
@@ -161,8 +161,11 @@ const GuestTable = ({ eventID }) => {
 
   return (
     <>
-      <p></p>
-      <h3 className="dashboard-sub-heading">Guests</h3>
+      <div className={classNames(styles["guest-list"])}>
+        <h3 className="dashboard-sub-heading">{`Guest List ${guests.length}`}</h3>
+        <h3 className="dashboard-sub-heading">{`Pending ${pendingGuests.length}`}</h3>
+        <h3 className="dashboard-sub-heading">{`Confirmed ${confirmedGuests.length}`}</h3>
+      </div>
       <div className={styles["guest-table"]}>
         <table>
           <thead>
@@ -207,11 +210,13 @@ const GuestTable = ({ eventID }) => {
                       />
                     </td>
                     <td>
-                      <input
-                        type="text"
+                      <select
                         value={editData.status}
                         onChange={(e) => handleExistingInputChange(e, "status")}
-                      />
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="confirmed">Confirmed</option>
+                      </select>
                     </td>
                     <td>
                       <div

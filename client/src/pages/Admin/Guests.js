@@ -4,10 +4,10 @@ import { BookingContextProvider } from "../../context/BookingContext";
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
 
-import BookingsTable from "../../components/BookingsTable";
+import GuestsTable from "../../components/GuestsTable";
 
 
-const Bookings = () => {
+const Guests = () => {
 
   return (
     <BookingContextProvider>
@@ -30,13 +30,13 @@ const Bookings = () => {
           justifyContent={"start"}
           alignItems={"center"}
         >
-          <h1 className="dashboard-heading">Bookings</h1>
+          <h1 className="dashboard-heading">Guests</h1>
         </ContentBlock>
 
         {/* DASHBOARD BOOKINGS */}
         <ContentBlock start={4} end={12}>
           <div className="dashboard-panel">
-            <BookingsTable view={"all"}/>
+            <GuestsTable />
           </div>
         </ContentBlock>
       </Section>
@@ -44,4 +44,4 @@ const Bookings = () => {
   );
 };
 
-export default Bookings;
+export default Guests;
