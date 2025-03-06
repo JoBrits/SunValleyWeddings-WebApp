@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
 import { useBookingContext } from "../../hooks/useBookingContext";
+import { useUserContext } from "../../hooks/useUserContext";
 
 // Components
 import GuestTable from "../../components/GuestTable";
 
 // Styles
 import classNames from "classnames";
-import styles from "./GuestsTable.module.scss";
+import styles from "./UsersTable.module.scss";
 
-const GuestsTable = ({ view }) => {
-  const { bookings, dispatch:dispatchBookings } = useBookingContext();
+const UsersTable = ({ view }) => {
+  const { bookings, dispatch: dispatchBookings } = useBookingContext();
+  const { users, dispatch: dispatchUsers } = useUserContext();
 
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
@@ -27,9 +29,24 @@ const GuestsTable = ({ view }) => {
         console.error("Failed to fetch bookings:", error);
       }
     };
-
     fetchBookings();
   }, [dispatchBookings]); //This ensures the table updates after every edit
+
+  // Fetch users when component mounts
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch("/api/user/users");
+        const data = await response.json();
+        if (response.ok) {
+          dispatchUsers({ type: "SET_USERS", payload: data });
+        }
+      } catch (error) {
+        console.error("Failed to fetch users:", error);
+      }
+    };
+    fetchUsers();
+  }, [dispatchUsers]); //This ensures the table updates after every edit
 
   // Handle edit button click
   const handleEdit = (booking) => {
@@ -40,6 +57,36 @@ const GuestsTable = ({ view }) => {
   const handleCancel = () => {
     setEditingId(null);
     setEditData({});
+  };
+
+  // Handle send email
+  const handleRegistrationEmail = async (bookingEmail) => {
+
+    
+    // for future use
+    alert("for future use, the user will receive a backend generated email with instructions to complete their profile and guest list");
+
+    // if (!bookingEmail) {
+    //   console.error("No email provided for booking.");
+    //   return;
+    // }
+
+    // try {
+    //   const response = await fetch("/api/email/send-register", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({ email: bookingEmail }),
+    //   });
+
+    //   const data = await response.json();
+    //   if (response.ok) {
+    //     alert("Invitation email sent to " + bookingEmail);
+    //   } else {
+    //     alert("Failed to send email: " + data.error);
+    //   }
+    // } catch (error) {
+    //   console.error("Error sending email:", error);
+    // }
   };
 
   return (
@@ -90,6 +137,7 @@ const GuestsTable = ({ view }) => {
           <GuestTable eventID={editingId} />
         </>
       )}
+
       {!editingId && (
         <div className={classNames(styles["guest-table"])}>
           <table>
@@ -115,17 +163,23 @@ const GuestsTable = ({ view }) => {
                   </td>
                   <td>{booking.email}</td>
                   <td>{booking.status}</td>
-                  <td>"users.status"</td>
                   <td>
-                    <div
-                      className={classNames(styles["guest-table-buttons"])}
-                    >
-                      <button onClick={() => handleEdit(booking)}>
-                        Edit
-                      </button>
-                      <button>
-                        Delete
-                      </button>
+                    <div className={classNames(styles["guest-table-buttons"])}>
+                      {users.some((user) => user.email === booking.email) ? (
+                        "Yes"
+                      ) : (
+                        <button
+                          onClick={() => handleRegistrationEmail(booking.email)}
+                        >
+                          Request Registration
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                  <td>
+                    <div className={classNames(styles["guest-table-buttons"])}>
+                      <button onClick={() => handleEdit(booking)}>Edit</button>
+                      <button>Delete</button>
                     </div>
                   </td>
                 </tr>
@@ -144,4 +198,4 @@ const GuestsTable = ({ view }) => {
   );
 };
 
-export default GuestsTable;
+export default UsersTable;

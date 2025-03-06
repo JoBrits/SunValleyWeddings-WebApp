@@ -39,6 +39,7 @@ const RsvpTable = () => {
       .map((val) => val.trim());
 
     setEditingId(booking._id);
+    // setEditingId(booking.eventID);
     setEditData({
       title: booking.title || "",
       name: booking.name || "",

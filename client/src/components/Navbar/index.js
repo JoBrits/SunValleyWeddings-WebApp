@@ -145,12 +145,12 @@ const Navbar = ({ user }) => {
                       link: "/admin/bookings",
                     },
                     {
-                      label: "RSVP Tracking",
-                      link: "/admin/rsvp",
-                    },
-                    {
                       label: "Guest Profiles",
                       link: "/admin/guests",
+                    },
+                    {
+                      label: "RSVP Tracking",
+                      link: "/admin/rsvp",
                     },
                     {
                       label: "Event Management",
@@ -178,19 +178,19 @@ const Navbar = ({ user }) => {
                     },
                     {
                       label: "My Details",
-                      link: "/Weddings",
+                      link: "/MyDetails",
                     },
                     {
                       label: "RSVP's",
-                      ink: "/Home",
+                      ink: "/",
                     },
                     {
                       label: "Catering",
-                      ink: "/Home",
+                      ink: "/",
                     },
                     {
                       label: "Schedule",
-                      ink: "/Home",
+                      ink: "/",
                     },
                   ]}
                 />
