@@ -9,7 +9,7 @@ import styles from "./BookingsTable.module.scss";
 import Spinner from "../../components/Spinner";
 
 const BookingsTable = ({ view }) => {
-  const { bookings, pendingBookings, confirmedBookings, dispatch } =
+  const { bookings, dispatch } =
     useBookingContext();
   const [loading, setLoading] = useState(false);
 
@@ -192,9 +192,6 @@ const BookingsTable = ({ view }) => {
   const handleTimeChange = (e) => {
     const { name, value } = e.target;
 
-    console.log("name:", name);
-    console.log("value:", value);
-
     setEditData((prev) => ({
       ...prev,
       eventTime: {
@@ -227,442 +224,156 @@ const BookingsTable = ({ view }) => {
             </thead>
             <tbody>
               <>
-                {view === "pending" && (
-                  <>
-                    {pendingBookings.map((booking) => (
-                      <tr
-                        key={booking._id}
-                        className={classNames(styles["bookings-table-tr"])}
-                      >
-                        {editingId === booking._id ? (
-                          <>
-                            <td>
+                {bookings
+                  .filter((booking) => {
+                    if (view === "All") return true;
+                    if (view === "Pending") return booking.status === "pending";
+                    if (view === "Confirmed") return booking.status === "confirmed";
+                    return booking._id === view; // Filter by user ID
+                  })
+                  .map((booking) => (
+                    <tr
+                      key={booking._id}
+                      className={classNames(styles["bookings-table-tr"])}
+                    >
+                      {editingId === booking._id ? (
+                        <>
+                          <td>
+                            <input
+                              type="text"
+                              value={editData.title}
+                              onChange={(e) => handleInputChange(e, "title")}
+                            />
+                          </td>
+                          <td>
+                            <div className={classNames(styles["time-input"])}>
                               <input
                                 type="text"
-                                value={editData.title}
-                                onChange={(e) => handleInputChange(e, "title")}
+                                value={editData.name}
+                                onChange={(e) => handleInputChange(e, "name")}
                               />
-                            </td>
-                            <td>
-                              <div className={classNames(styles["time-input"])}>
-                                <input
-                                  type="text"
-                                  value={editData.name}
-                                  onChange={(e) => handleInputChange(e, "name")}
-                                />
-                                <input
-                                  type="text"
-                                  value={editData.surname}
-                                  onChange={(e) =>
-                                    handleInputChange(e, "surname")
-                                  }
-                                />
-                              </div>
-                            </td>
-                            <td>
-                              <input
-                                type="email"
-                                value={editData.email}
-                                onChange={(e) => handleInputChange(e, "email")}
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="date"
-                                value={
-                                  editData.eventDate
-                                    ? editData.eventDate.split("T")[0]
-                                    : ""
-                                }
-                                onChange={(e) =>
-                                  handleInputChange(e, "eventDate")
-                                }
-                              />
-                            </td>
-                            <td>
-                              <div className={classNames(styles["time-input"])}>
-                                <input
-                                  type="number"
-                                  name="hours"
-                                  min={0}
-                                  max={24}
-                                  className={classNames(styles["hours"])}
-                                  value={editData.eventTime?.hours || "00"} // Default value
-                                  onChange={handleTimeChange}
-                                />
-                                <p>:</p>
-                                <input
-                                  type="number"
-                                  name="minutes"
-                                  min={0}
-                                  max={60}
-                                  className={classNames(styles["minutes"])}
-                                  value={editData.eventTime?.minutes || "00"} // Default value
-                                  onChange={handleTimeChange}
-                                />
-                              </div>
-                            </td>
-                            <td>
                               <input
                                 type="text"
-                                value={editData.eventGuests}
+                                value={editData.surname}
                                 onChange={(e) =>
-                                  handleInputChange(e, "eventGuests")
+                                  handleInputChange(e, "surname")
                                 }
                               />
-                            </td>
-                            <td>
+                            </div>
+                          </td>
+                          <td>
+                            <input
+                              type="email"
+                              value={editData.email}
+                              onChange={(e) => handleInputChange(e, "email")}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="date"
+                              value={
+                                editData.eventDate
+                                  ? editData.eventDate.split("T")[0]
+                                  : ""
+                              }
+                              onChange={(e) =>
+                                handleInputChange(e, "eventDate")
+                              }
+                            />
+                          </td>
+                          <td>
+                            <div className={classNames(styles["time-input"])}>
                               <input
-                                type="text"
-                                value={editData.eventNote}
-                                onChange={(e) =>
-                                  handleInputChange(e, "eventNote")
-                                }
+                                type="number"
+                                name="hours"
+                                min={0}
+                                max={24}
+                                className={classNames(styles["hours"])}
+                                value={editData.eventTime?.hours || "00"}
+                                onChange={handleTimeChange}
                               />
-                            </td>
-                            <td>
-                              <select
-                                value={editData.status}
-                                onChange={(e) => handleInputChange(e, "status")}
-                              >
-                                <option value="pending">Pending</option>
-                                <option value="confirmed">Confirmed</option>
-                              </select>
-                            </td>
-                            <td>
-                              <div
-                                className={classNames(
-                                  styles["bookings-table-buttons"]
-                                )}
-                              >
-                                <button onClick={() => handleSave(booking._id)}>
-                                  Save
-                                </button>
-                                <button onClick={handleCancel}>Cancel</button>
-                              </div>
-                            </td>
-                          </>
-                        ) : (
-                          <>
-                            <td>{booking.title}</td>
-                            <td>{`${booking.name} ${booking.surname}`}</td>
-                            <td>{booking.email}</td>
-                            <td>
-                              {new Date(booking.eventDate).toLocaleDateString()}
-                            </td>
-                            <td>{booking.eventTime}</td>
-                            <td>{booking.eventNote}</td>
-                            <td>{booking.status}</td>
-                            <td>
-                              <div
-                                className={classNames(
-                                  styles["bookings-table-buttons"]
-                                )}
-                              >
-                                <button onClick={() => handleEdit(booking)}>
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(booking._id)}
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </td>
-                          </>
-                        )}
-                      </tr>
-                    ))}
-                  </>
-                )}
-                {view === "confirmed" && (
-                  <>
-                    {confirmedBookings.map((booking) => (
-                      <tr
-                        key={booking._id}
-                        className={classNames(styles["bookings-table-tr"])}
-                      >
-                        {editingId === booking._id ? (
-                          <>
-                            <td>
+                              <p>:</p>
                               <input
-                                type="text"
-                                value={editData.title}
-                                onChange={(e) => handleInputChange(e, "title")}
+                                type="number"
+                                name="minutes"
+                                min={0}
+                                max={60}
+                                className={classNames(styles["minutes"])}
+                                value={editData.eventTime?.minutes || "00"}
+                                onChange={handleTimeChange}
                               />
-                            </td>
-                            <td>
-                              <div className={classNames(styles["time-input"])}>
-                                <input
-                                  type="text"
-                                  value={editData.name}
-                                  onChange={(e) => handleInputChange(e, "name")}
-                                />
-                                <input
-                                  type="text"
-                                  value={editData.surname}
-                                  onChange={(e) =>
-                                    handleInputChange(e, "surname")
-                                  }
-                                />
-                              </div>
-                            </td>
-                            <td>
-                              <input
-                                type="email"
-                                value={editData.email}
-                                onChange={(e) => handleInputChange(e, "email")}
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="date"
-                                value={
-                                  editData.eventDate
-                                    ? editData.eventDate.split("T")[0]
-                                    : ""
-                                }
-                                onChange={(e) =>
-                                  handleInputChange(e, "eventDate")
-                                }
-                              />
-                            </td>
-                            <td>
-                              <div className={classNames(styles["time-input"])}>
-                                <input
-                                  type="number"
-                                  name="hours"
-                                  min={0}
-                                  max={24}
-                                  className={classNames(styles["hours"])}
-                                  value={editData.eventTime?.hours || "00"} // Default value
-                                  onChange={handleTimeChange}
-                                />
-                                <p>:</p>
-                                <input
-                                  type="number"
-                                  name="minutes"
-                                  min={0}
-                                  max={60}
-                                  className={classNames(styles["minutes"])}
-                                  value={editData.eventTime?.minutes || "00"} // Default value
-                                  onChange={handleTimeChange}
-                                />
-                              </div>
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                value={editData.eventNote}
-                                onChange={(e) =>
-                                  handleInputChange(e, "eventNote")
-                                }
-                              />
-                            </td>
-                            <td>
-                              <select
-                                value={editData.status}
-                                onChange={(e) => handleInputChange(e, "status")}
-                              >
-                                <option value="pending">Pending</option>
-                                <option value="confirmed">Confirmed</option>
-                              </select>
-                            </td>
-                            <td>
-                              <div
-                                className={classNames(
-                                  styles["bookings-table-buttons"]
-                                )}
-                              >
-                                <button onClick={() => handleSave(booking._id)}>
-                                  Save
-                                </button>
-                                <button onClick={handleCancel}>Cancel</button>
-                              </div>
-                            </td>
-                          </>
-                        ) : (
-                          <>
-                            <td>{booking.title}</td>
-                            <td>{`${booking.name} ${booking.surname}`}</td>
-                            <td>{booking.email}</td>
-                            <td>
-                              {new Date(booking.eventDate).toLocaleDateString()}
-                            </td>
-                            <td>{booking.eventTime}</td>
-                            <td>{booking.eventNote}</td>
-                            <td>{booking.status}</td>
-                            <td>
-                              <div
-                                className={classNames(
-                                  styles["bookings-table-buttons"]
-                                )}
-                              >
-                                <button onClick={() => handleEdit(booking)}>
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(booking._id)}
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </td>
-                          </>
-                        )}
-                      </tr>
-                    ))}
-                  </>
-                )}
-                {view === "all" && (
-                  <>
-                    {bookings.map((booking) => (
-                      <tr
-                        key={booking._id}
-                        className={classNames(styles["bookings-table-tr"])}
-                      >
-                        {editingId === booking._id ? (
-                          <>
-                            <td>
-                              <input
-                                type="text"
-                                value={editData.title}
-                                onChange={(e) => handleInputChange(e, "title")}
-                              />
-                            </td>
-                            <td>
-                              <div className={classNames(styles["time-input"])}>
-                                <input
-                                  type="text"
-                                  value={editData.name}
-                                  onChange={(e) => handleInputChange(e, "name")}
-                                />
-                                <input
-                                  type="text"
-                                  value={editData.surname}
-                                  onChange={(e) =>
-                                    handleInputChange(e, "surname")
-                                  }
-                                />
-                              </div>
-                            </td>
-                            <td>
-                              <input
-                                type="email"
-                                value={editData.email}
-                                onChange={(e) => handleInputChange(e, "email")}
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="date"
-                                value={
-                                  editData.eventDate
-                                    ? editData.eventDate.split("T")[0]
-                                    : ""
-                                }
-                                onChange={(e) =>
-                                  handleInputChange(e, "eventDate")
-                                }
-                              />
-                            </td>
-                            <td>
-                              <div className={classNames(styles["time-input"])}>
-                                <input
-                                  type="number"
-                                  name="hours"
-                                  min={0}
-                                  max={24}
-                                  className={classNames(styles["hours"])}
-                                  value={editData.eventTime?.hours || "00"} // Default value
-                                  onChange={handleTimeChange}
-                                />
-                                <p>:</p>
-                                <input
-                                  type="number"
-                                  name="minutes"
-                                  min={0}
-                                  max={60}
-                                  className={classNames(styles["minutes"])}
-                                  value={editData.eventTime?.minutes || "00"} // Default value
-                                  onChange={handleTimeChange}
-                                />
-                              </div>
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                value={editData.eventGuests}
-                                onChange={(e) =>
-                                  handleInputChange(e, "eventGuests")
-                                }
-                              />
-                            </td>
-                            <td>
-                              <input
-                                type="text"
-                                value={editData.eventNote}
-                                onChange={(e) =>
-                                  handleInputChange(e, "eventNote")
-                                }
-                              />
-                            </td>
-                            <td>
-                              <select
-                                value={editData.status}
-                                onChange={(e) => handleInputChange(e, "status")}
-                              >
-                                <option value="pending">Pending</option>
-                                <option value="confirmed">Confirmed</option>
-                              </select>
-                            </td>
-                            <td>
-                              <div
-                                className={classNames(
-                                  styles["bookings-table-buttons"]
-                                )}
-                              >
-                                <button onClick={() => handleSave(booking._id)}>
-                                  Save
-                                </button>
-                                <button onClick={handleCancel}>Cancel</button>
-                              </div>
-                            </td>
-                          </>
-                        ) : (
-                          <>
-                            <td>{booking.title}</td>
-                            <td>{`${booking.name} ${booking.surname}`}</td>
-                            <td>{booking.email}</td>
-                            <td>
-                              {new Date(booking.eventDate).toLocaleDateString()}
-                            </td>
-                            <td>{booking.eventTime}</td>
-                            <td>{booking.eventGuests}</td>
-                            <td>{booking.eventNote}</td>
-                            <td>{booking.status}</td>
-                            <td>
-                              <div
-                                className={classNames(
-                                  styles["bookings-table-buttons"]
-                                )}
-                              >
-                                <button onClick={() => handleEdit(booking)}>
-                                  Edit
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(booking._id)}
-                                >
-                                  Delete
-                                </button>
-                              </div>
-                            </td>
-                          </>
-                        )}
-                      </tr>
-                    ))}
-                  </>
-                )}
+                            </div>
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={editData.eventGuests}
+                              onChange={(e) =>
+                                handleInputChange(e, "eventGuests")
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={editData.eventNote}
+                              onChange={(e) =>
+                                handleInputChange(e, "eventNote")
+                              }
+                            />
+                          </td>
+                          <td>
+                            <select
+                              value={editData.status}
+                              onChange={(e) => handleInputChange(e, "status")}
+                            >
+                              <option value="pending">Pending</option>
+                              <option value="confirmed">Confirmed</option>
+                            </select>
+                          </td>
+                          <td>
+                            <div
+                              className={classNames(
+                                styles["bookings-table-buttons"]
+                              )}
+                            >
+                              <button onClick={() => handleSave(booking._id)}>
+                                Save
+                              </button>
+                              <button onClick={handleCancel}>Cancel</button>
+                            </div>
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td>{booking.title}</td>
+                          <td>{`${booking.name} ${booking.surname}`}</td>
+                          <td>{booking.email}</td>
+                          <td>
+                            {new Date(booking.eventDate).toLocaleDateString()}
+                          </td>
+                          <td>{booking.eventTime}</td>
+                          <td>{booking.eventGuests}</td>
+                          <td>{booking.eventNote}</td>
+                          <td>{booking.status}</td>
+                          <td>
+                            <div
+                              className={classNames(
+                                styles["bookings-table-buttons"]
+                              )}
+                            >
+                              <button onClick={() => handleEdit(booking)}>
+                                Edit
+                              </button>
+                              <button onClick={() => handleDelete(booking._id)}>
+                                Delete
+                              </button>
+                            </div>
+                          </td>
+                        </>
+                      )}
+                    </tr>
+                  ))}
               </>
               <tr>
                 <td
@@ -738,15 +449,17 @@ const BookingsTable = ({ view }) => {
                   <td>
                     <input
                       type="text"
-                      value={editData.eventNote}
-                      onChange={(e) => handleInputChange(e, "eventNote")}
+                      name="eventGuests"
+                      value={editData.eventGuests}
+                      onChange={(e) => handleInputChange(e, "eventGuests")}
                     />
                   </td>
                   <td>
                     <input
                       type="text"
-                      value={editData.eventGuests}
-                      onChange={(e) => handleInputChange(e, "eventGuests")}
+                      name="eventNote"
+                      value={editData.eventNote}
+                      onChange={(e) => handleInputChange(e, "eventNote")}
                     />
                   </td>
                   <td>

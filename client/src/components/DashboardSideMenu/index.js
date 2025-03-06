@@ -104,14 +104,20 @@ const DashboardSideMenu = ({ user }) => {
             <DashboardSideMenuNotification
               isLoading={isLoading}
               linkLabel={"Pending"}
-              linkTo={"Pending"}
+              linkTo={"/admin/Bookings/Pending"}
               notification={pendingBookings.length}
             />
             <DashboardSideMenuNotification
               isLoading={isLoading}
               linkLabel={"Confirmed"}
-              linkTo={"Confirmed"}
+              linkTo={"/admin/Bookings/Confirmed"}
               notification={confirmedBookings.length}
+            />
+            <DashboardSideMenuNotification
+              isLoading={isLoading}
+              linkLabel={"All"}
+              linkTo={"/admin/Bookings"}
+              notification={bookings.length}
             />
           </DashboardSideMenuSection>
 
@@ -119,7 +125,7 @@ const DashboardSideMenu = ({ user }) => {
             <DashboardSideMenuNotification
               isLoading={isLoading}
               linkLabel={"Manage"}
-              linkTo={"Manage"}
+              linkTo={"/admin/guests"}
               notification={bookings.length}
             />
             <DashboardSideMenuNotification
@@ -169,8 +175,8 @@ const DashboardSideMenu = ({ user }) => {
               notification={"00"}
             />
             <DashboardSideMenuNotification
-              linkLabel={"Updates"}
-              linkTo={"Updates"}
+              linkLabel={"Notifications"}
+              linkTo={"Notifications"}
               notification={"00"}
             />
           </DashboardSideMenuSection>
@@ -182,8 +188,8 @@ const DashboardSideMenu = ({ user }) => {
               notification={"00"}
             />
             <DashboardSideMenuNotification
-              linkLabel={"Upcoming"}
-              linkTo={"Upcoming"}
+              linkLabel={"Manage"}
+              linkTo={"Manage"}
               notification={"00"}
             />
           </DashboardSideMenuSection>

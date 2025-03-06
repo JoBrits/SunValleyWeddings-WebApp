@@ -1,13 +1,14 @@
 import { BookingContextProvider } from "../../context/BookingContext";
+import { useParams } from "react-router-dom";
 
 // Components
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
-
 import BookingsTable from "../../components/BookingsTable";
 
-
 const Bookings = () => {
+  
+  const { view } = useParams(); // Get the view param from the URL
 
   return (
     <BookingContextProvider>
@@ -19,24 +20,22 @@ const Bookings = () => {
           end={3}
           justifyContent={"start"}
           alignItems={"center"}
-        >
-
-        </ContentBlock>
+        ></ContentBlock>
 
         {/* DASHBOARD HEADING */}
         <ContentBlock
           start={4}
           end={12}
           justifyContent={"start"}
-          alignItems={"center"}
+          alignItems={"start"}
         >
           <h1 className="dashboard-heading">Bookings</h1>
         </ContentBlock>
 
         {/* DASHBOARD BOOKINGS */}
-        <ContentBlock start={4} end={12}>
+        <ContentBlock start={4} end={12} alignItems={"center"}>
           <div className="dashboard-panel">
-            <BookingsTable view={"all"}/>
+            <BookingsTable view={view || "All"} />
           </div>
         </ContentBlock>
       </Section>

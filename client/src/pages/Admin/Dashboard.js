@@ -81,10 +81,16 @@ const AdminDashboard = () => {
         {/* DASHBOARD BOOKINGS */}
         <ContentBlock start={4} end={6}>
           <div className="dashboard-panel">
-            <h2 className="dashboard-sub-heading">Booking Requests</h2>
+            <h2 className="dashboard-sub-heading">Pending Booking Requests</h2>
             {/* PENDING BOOKINGS */}
             {isLoading && <Spinner />}
             {!isLoading && <BookingList view={"pending"} />}
+            <h2 className="dashboard-sub-heading">
+              Confirmed Booking Requests
+            </h2>
+            {/* PENDING BOOKINGS */}
+            {isLoading && <Spinner />}
+            {!isLoading && <BookingList view={"confirmed"} />}
           </div>
         </ContentBlock>
 
@@ -105,6 +111,13 @@ const AdminDashboard = () => {
               showEventPopup={showEventPopup}
               dbEvents={dbEvents}
             />
+
+            <BookingList
+              selectedDate={selectedDate}
+              showEventPopup={showEventPopup}
+              setShowEventPopup={setShowEventPopup}
+              view={"byDate"}
+            />
           </div>
         </ContentBlock>
 
@@ -113,12 +126,6 @@ const AdminDashboard = () => {
           <div className="dashboard-panel">
             <h2 className="dashboard-sub-heading">Notifications </h2>
             <MessagesList />
-            <BookingList
-              selectedDate={selectedDate}
-              showEventPopup={showEventPopup}
-              setShowEventPopup={setShowEventPopup}
-              view={"byDate"}
-            />
           </div>
         </ContentBlock>
       </Section>

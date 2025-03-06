@@ -4,6 +4,7 @@ const express = require("express");
 const { 
     createBookingRequest,
     getBookingsRequest,
+    getBookingRequest,
     deleteBookingRequest,
     updateBookingRequest,
  } = require("../controllers/bookingsController");
@@ -11,6 +12,7 @@ const {
 const router = express.Router();
 
 router.get("/bookings", getBookingsRequest); // fetch all bookings
+router.get("/:email", getBookingRequest); // fetch one booking
 router.post("/", createBookingRequest); // create new booking
 router.put("/:_id", updateBookingRequest); // update booking
 router.delete("/:_id", deleteBookingRequest);  // delete booking

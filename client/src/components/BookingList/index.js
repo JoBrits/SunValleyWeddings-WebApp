@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useBookingContext } from "../../hooks/useBookingContext";
+import { Link } from "react-router-dom";
 
 // Styles
 import classNames from "classnames";
@@ -8,12 +9,7 @@ import styles from "./BookingList.module.scss";
 // Components
 import Spinner from "../../components/Spinner";
 
-const BookingList = ({
-  view,
-  selectedDate,
-  showEventPopup,
-  setShowEventPopup,
-}) => {
+const BookingList = ({ view, selectedDate }) => {
   // Testing
   // console.log(view);
   // console.log(selectedDate);
@@ -31,7 +27,7 @@ const BookingList = ({
       try {
         const response = await fetch("/api/bookings/bookings");
         const data = await response.json();
-        
+
         // Testing
         // console.log("Fetched Data:", data); // Log what is received from the API
 
@@ -56,7 +52,7 @@ const BookingList = ({
 
   return (
     <div className={classNames(styles["booking-list-container"])}>
-      {loading && <Spinner/>}
+      {loading && <Spinner />}
       {!loading && (
         <div className={classNames(styles["booking-list-container-items"])}>
           {view === "pending" && (
@@ -125,28 +121,27 @@ const BookingItem = ({ booking }) => {
   });
 
   return (
-    <li className={classNames(styles["booking-list-item"])}>
-      <div className={classNames(styles["booking-list-request"])}>
-        <p>
-          <strong>{booking.name}</strong> for{" "}
-          <strong>{formattedBookingDate}</strong>
+    <li >
+      <Link to={`/admin/bookings/${booking._id}`} className={classNames(styles["booking-list-item"])}>
+        <div className={classNames(styles["booking-list-request"])}>
+          <p>
+            <strong>{booking.name}</strong> for{" "}
+            <strong>{formattedBookingDate}</strong>
+          </p>
+          <span className={classNames(styles["booking-list-received"])}>
+            {formattedCreatedDate}
+          </span>
+        </div>
+        <div className={classNames(styles["booking-list-time"])}>
+          {booking.eventGuests} Guests
+        </div>
+        <div className={classNames(styles["booking-list-time"])}>
+          {booking.eventTime}
+        </div>
+        <p className={classNames(styles["booking-list-text"])}>
+          {booking.eventNote}
         </p>
-        <span className={classNames(styles["booking-list-received"])}>
-          {formattedCreatedDate}
-        </span>
-      </div>
-      <div className={classNames(styles["booking-list-time"])}>
-        {booking.eventGuests} Guests
-      </div>
-      <div className={classNames(styles["booking-list-time"])}>
-        {booking.eventTime}
-      </div>
-      <p className={classNames(styles["booking-list-text"])}>
-        {booking.eventNote}
-      </p>
-      <p className={classNames(styles["booking-list-received"])}>
-        {booking.status}
-      </p>
+      </Link>
     </li>
   );
 };

@@ -12,6 +12,21 @@ const getBookingsRequest = async (req, res) => {
   }
 };
 
+// Fetch individual bookings by email
+const getBookingRequest = async (req, res) => {
+  
+  console.log("req.params.email =", req.params.email);
+
+  try {
+    const booking = await Booking.find({ email: req.params.email });
+    if (!booking) return res.status(404).json({ error: "Booking not found" });
+    
+    res.status(200).json(booking);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch Booking" });
+  }
+};
+
 // Create a booking
 const createBookingRequest = async (req, res) => {
   const {
@@ -107,7 +122,9 @@ const deleteBookingRequest = async (req, res) => {
     }
 
     // Respond with success message
-    res.status(200).json({ message: "Booking deleted successfully", deletedBooking });
+    res
+      .status(200)
+      .json({ message: "Booking deleted successfully", deletedBooking });
   } catch (error) {
     console.error("Error deleting booking:", error);
     res.status(500).json({ error: "Failed to delete booking" });
@@ -136,6 +153,8 @@ const updateBookingRequest = async (req, res) => {
 module.exports = {
   createBookingRequest,
   getBookingsRequest,
+  getBookingRequest,
   deleteBookingRequest,
   updateBookingRequest,
 };
+ 

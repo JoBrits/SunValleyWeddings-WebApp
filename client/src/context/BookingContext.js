@@ -13,6 +13,11 @@ export const bookingReducer = (state, action) => {
           (b) => b.status === "confirmed"
         ),
       };
+    case "SET_BOOKING": {
+      return {
+        selectedBookings: action.payload,
+      };
+    }
     case "CREATE_BOOKING":
       return {
         bookings: [action.payload, ...state.bookings],
@@ -51,6 +56,7 @@ export const BookingContextProvider = ({ children }) => {
     bookings: [],
     pendingBookings: [],
     confirmedBookings: [],
+    selectedBookings: [], // Add selectedBookings to state
   });
 
   return (
