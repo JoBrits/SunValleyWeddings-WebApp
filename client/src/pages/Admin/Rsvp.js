@@ -28,7 +28,7 @@ const Rsvp = () => {
           start={4}
           end={12}
           justifyContent={"start"}
-          alignItems={"center"}
+          alignItems={"start"}
         >
           <h1 className="dashboard-heading">RSVP's</h1>
         </ContentBlock>

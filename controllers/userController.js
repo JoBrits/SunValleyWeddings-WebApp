@@ -21,10 +21,10 @@ const loginUser = async (req, res) => {
     // create token
     const token = createToken(user._id);
 
-    // Return role along with name, email and token
+    // Return role along with name, email and other
     res
       .status(200)
-      .json({ name: user.name, email, role: user.role, id: user._id, token });
+      .json({ name: user.name, email, role: user.role, id: user._id, eventID: user.eventID, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -32,21 +32,32 @@ const loginUser = async (req, res) => {
 
 // Signup user
 const signupUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, surname, email, password } = req.body;
   // Default, Admin se in database for now
   const role = "user";
 
   try {
     // Static Signup Method on the user model
-    const user = await User.signup(name, email, password, role);
+    const user = await User.signup(name, surname, email, password, role);
 
     // create token
     const token = createToken(user._id);
 
     // return email and token
-    res.status(200).json({ name, email, role, token });
+    res.status(200).json({ name, surname, email, role, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+// Fetch one users
+const getUser = async (req, res) => {
+  try {
+    const user = await User.find({ _id: req.params.id });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.status(200).json(booking);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch User" });
   }
 };
 
@@ -64,7 +75,7 @@ const getUsers = async (req, res) => {
 // Update user
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { name, email, password } = req.body;
+  const { name, surname, email, password } = req.body;
 
   try {
     // Find user by ID
@@ -75,6 +86,7 @@ const updateUser = async (req, res) => {
 
     // Update user fields if provided
     if (name) user.name = name;
+    if (surname) user.surname = surname;
     if (email) user.email = email;
     if (password) user.password = password;
 
@@ -86,7 +98,7 @@ const updateUser = async (req, res) => {
 
     res
       .status(200)
-      .json({ name: user.name, email: user.email, id: user._id, token });
+      .json({ name: user.name, surname: user.surname, email: user.email, id: user._id, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -94,29 +106,35 @@ const updateUser = async (req, res) => {
 
 // Delete user
 const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
   try {
-      // Extract ID from request parameters
-      const { _id } = req.params;
-  
-      // Check if _id exists
-      if (!_id) {
-        return res.status(400).json({ error: "User ID is required" });
-      }
-  
-      // Find and delete the booking
-      const deletedUser = await User.findByIdAndDelete(_id);
-  
-      // If no booking is found
-      if (!deletedUser) {
-        return res.status(404).json({ error: "No such user found" });
-      }
-  
-      // Respond with success message
-      res.status(200).json({ message: "User deleted successfully", deletedUser });
-    } catch (error) {
-      console.error("Error deleting user:", error);
-      res.status(500).json({ error: "Failed to delete user" });
+    // Check if _id exists
+    if (!id) {
+      return res.status(400).json({ error: "User ID is required" });
     }
+
+    // Find and delete the booking
+    const deletedUser = await User.findByIdAndDelete(id);
+
+    // If no booking is found
+    if (!deletedUser) {
+      return res.status(404).json({ error: "No such user found" });
+    }
+
+    // Respond with success message
+    res.status(200).json({ message: "User deleted successfully", deletedUser });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    res.status(500).json({ error: "Failed to delete user" });
+  }
 };
 
-module.exports = { loginUser, signupUser, updateUser, deleteUser, getUsers };
+module.exports = {
+  loginUser,
+  signupUser,
+  updateUser,
+  deleteUser,
+  getUsers,
+  getUser,
+};

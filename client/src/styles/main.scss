@@ -319,6 +319,12 @@ p {
         justify-content: center;
         padding-bottom: 0.2rem;
       }
+      &-date {
+        font-size: 1.4rem;
+        line-height: 1.4rem;
+        color: var(--color-primary);
+        text-decoration: none;
+      }
     }
   }
   &-panel {

@@ -89,7 +89,6 @@ const BookingForm = ({
       }
 
       if (response.ok) {
-        
         // Save to local storage
         storedBookings = storedBookings.map((storedBooking) => {
           if (storedBooking._id === newBooking._id) {
@@ -157,28 +156,28 @@ const BookingForm = ({
         // sort and update events
         updatedEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
         updatedEvents.push(newBooking);
+
+        // Reset form fields
+        setTitle("");
+        setName("");
+        setSurname("");
+        setEmail("");
+        setEventTime({ hours: "00", minutes: "00" });
+        setEventGuests("");
+        setEventNote("");
+        setSelectedDate("");
+
+        // Reset error states
+        setError(null);
+        setEmptyFields([]);
+        setCharacterLimitFields([]);
+
+        // Update Events for UI
+        setEvents(updatedEvents);
+        setEditingEvent(null);
+        setShowEventPopup(false);
       }
     }
-
-    // Reset form fields
-    setTitle("");
-    setName("");
-    setSurname("");
-    setEmail("");
-    setEventTime({ hours: "00", minutes: "00" });
-    setEventGuests("");
-    setEventNote("");
-    setSelectedDate("");
-
-    // Reset error states
-    setError(null);
-    setEmptyFields([]);
-    setCharacterLimitFields([]);
-
-    // Update Events for UI
-    setEvents(updatedEvents);
-    setEditingEvent(null);
-    setShowEventPopup(false);
   };
 
   // Memoized function to prevent unnecessary re-renders
@@ -268,6 +267,7 @@ const BookingForm = ({
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        className={emptyFields.includes("email") ? "error" : ""} // turnery to check if emptyFields include load
       />
       <label>Time:</label>
       <div className={classNames(styles["time-input"])}>
@@ -296,6 +296,7 @@ const BookingForm = ({
         type="number"
         value={eventGuests}
         onChange={(e) => setEventGuests(e.target.value)}
+        className={emptyFields.includes("eventGuests") ? "error" : ""} // turnery to check if emptyFields include load
       />
       <label>Booking Note:</label>
       <textarea

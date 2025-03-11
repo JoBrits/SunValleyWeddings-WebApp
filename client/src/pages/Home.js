@@ -67,12 +67,12 @@ const Home = () => {
         </ContentBlock>
 
         <ContentBlock start={5} end={8} alignItems={"center"}>
-          <Button label={"About Us"} />
+          <Button label={"About Us"} type={"scroll"} sectionLink={"About-Us"} />
         </ContentBlock>
       </Section>
 
       {/* Slide 2 - About */}
-      <Section height={"100vh"} padding={"7.5rem 0"}>
+      <Section id={"About-Us"} height={"100vh"} padding={"7.5rem 0"}>
         <HighLightBlock width={80} height={80} left={-10} />
         <ContentBlock />
         <ContentBlock start={8} end={12} alignItems={"self-end"}>
@@ -91,7 +91,7 @@ const Home = () => {
             aims to provide the ambiance where fairytale weddings, at the garden
             venue, comes true.
           </p>
-          <Button label={`SAY "I DO"`} />
+          <Button label={`SAY "I DO"`} type={"link"} to={"/Weddings"} />
         </ContentBlock>
         <ContentBlock start={8} end={12}>
           <h2>Golf</h2>
@@ -105,7 +105,11 @@ const Home = () => {
             open for membership. *** Golf carts must be booked and is subject to
             availability ***
           </p>
-          <Button label={"PITCH, PAY AND PLAY"} />
+          <Button
+            label={"PITCH, PAY AND PLAY"}
+            type={"link"}
+            to={"https://sunvalleyweddingandgolfvenue.co.za/sun-valley-golf"}
+          />
         </ContentBlock>
         <ContentBlock />
       </Section>

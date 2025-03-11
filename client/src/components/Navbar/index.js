@@ -145,8 +145,8 @@ const Navbar = ({ user }) => {
                       link: "/admin/bookings",
                     },
                     {
-                      label: "Guest Profiles",
-                      link: "/admin/guests",
+                      label: "User Profiles",
+                      link: "/admin/users",
                     },
                     {
                       label: "RSVP Tracking",
@@ -169,7 +169,7 @@ const Navbar = ({ user }) => {
             {user.role === "user" && (
               <>
                 <NavbarNavTabs
-                  isActive={true}
+                  isActive={isActive}
                   activeTab={activeTab}
                   tabs={[
                     {
@@ -178,19 +178,19 @@ const Navbar = ({ user }) => {
                     },
                     {
                       label: "My Details",
-                      link: "/MyDetails",
+                      link: "/user/my-details",
                     },
                     {
-                      label: "RSVP's",
-                      ink: "/",
+                      label: "RSVPs",
+                      link: "/user/guests",
                     },
                     {
                       label: "Catering",
-                      ink: "/",
+                      link: "/user/catering",
                     },
                     {
                       label: "Schedule",
-                      ink: "/",
+                      link: "/user/schedule",
                     },
                   ]}
                 />

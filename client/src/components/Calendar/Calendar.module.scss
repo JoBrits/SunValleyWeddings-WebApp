@@ -82,8 +82,9 @@
 }
 
 .current-day {
-  background-color: var(--color-primary);
-  color:var(--color-paper)!important;
+  background-color: var(--color-primary-light);
+  color:var(--color-primary)!important;
+  scale: 0.8;
   border-radius: 50%;
 }
 .selected-day {
@@ -101,6 +102,8 @@
 
 .past-day {
   color:var(--color-cool-gray-med)!important;
+  background-color: transparent;
+  scale: 1;
   cursor: default!important;
 }
 

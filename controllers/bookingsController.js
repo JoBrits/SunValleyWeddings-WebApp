@@ -14,9 +14,6 @@ const getBookingsRequest = async (req, res) => {
 
 // Fetch individual bookings by email
 const getBookingRequest = async (req, res) => {
-  
-  console.log("req.params.email =", req.params.email);
-
   try {
     const booking = await Booking.find({ email: req.params.email });
     if (!booking) return res.status(404).json({ error: "Booking not found" });

@@ -1,12 +1,18 @@
 import { createContext, useReducer } from "react";
 
-export const BookingContext = createContext();
+// Initial state
+const initialState = {
+  bookings: [],
+  pendingBookings: [],
+  confirmedBookings: []
+};
 
 // Reducer function
 export const bookingReducer = (state, action) => {
   switch (action.type) {
     case "SET_BOOKINGS":
       return {
+        ...state,
         bookings: action.payload,
         pendingBookings: action.payload.filter((b) => b.status === "pending"),
         confirmedBookings: action.payload.filter(
@@ -15,15 +21,18 @@ export const bookingReducer = (state, action) => {
       };
     case "SET_BOOKING": {
       return {
+        ...state,
         selectedBookings: action.payload,
       };
     }
     case "CREATE_BOOKING":
       return {
+        ...state,
         bookings: [action.payload, ...state.bookings],
       };
     case "DELETE_BOOKING":
       return {
+        ...state,
         bookings: state.bookings.filter((w) => w._id !== action.payload._id),
         pendingBookings: state.pendingBookings.filter(
           (w) => w._id !== action.payload._id
@@ -34,6 +43,7 @@ export const bookingReducer = (state, action) => {
       };
     case "UPDATE_BOOKING":
       return {
+        ...state,
         bookings: state.bookings.map((booking) =>
           booking._id === action.payload._id ? action.payload : booking
         ),
@@ -50,14 +60,12 @@ export const bookingReducer = (state, action) => {
   }
 };
 
+// Custom Hook
+export const BookingContext = createContext();
+
 // property provider
 export const BookingContextProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(bookingReducer, {
-    bookings: [],
-    pendingBookings: [],
-    confirmedBookings: [],
-    selectedBookings: [], // Add selectedBookings to state
-  });
+  const [state, dispatch] = useReducer(bookingReducer, initialState);
 
   return (
     // Spread operator to return object state

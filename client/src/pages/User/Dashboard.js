@@ -1,7 +1,7 @@
 // Components
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
-import RsvpList from "../../components/RsvpList";
+import BookingList from "../../components/BookingList";
 
 const UserDashboard = ({ user }) => {
   return (
@@ -29,8 +29,13 @@ const UserDashboard = ({ user }) => {
         {/* DASHBOARD BOOKINGS */}
         <ContentBlock start={4} end={6}>
           <div className="dashboard-panel">
-            <h2 className="dashboard-sub-heading">Your Booking</h2>
-            <RsvpList user={user}/>
+            <h2 className="dashboard-sub-heading">
+              Bookings for {user.email}{" "}
+            </h2>
+            <BookingList
+              view={"byEmail"}
+              user={user}
+            />
           </div>
         </ContentBlock>
 

@@ -4,22 +4,19 @@ import { useState, useEffect, useContext } from "react";
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
 import Calendar from "../../components/Calendar";
-import BookingList from "../../components/BookingList";
 import Spinner from "../../components/Spinner";
+import BookingForm from "../../components/BookingForm";
+import BookingList from "../../components/BookingList";
 
-import {
-  BookingContextProvider,
-  BookingContext,
-} from "../../context/BookingContext";
+import { BookingContext } from "../../context/BookingContext";
 
 const Events = () => {
-  // Current Date
-  const currentDate = new Date();
-
-  // State
-  const [selectedDate, setSelectedDate] = useState(currentDate);
+  // State variables
+  const [selectedDate, setSelectedDate] = useState("");
   const [showEventPopup, setShowEventPopup] = useState(false);
   const [dbEvents, setDbEvents] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [editingEvent, setEditingEvent] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
 
   const { confirmedBookings, dispatch } = useContext(BookingContext);
@@ -56,7 +53,7 @@ const Events = () => {
   }, [confirmedBookings]);
 
   return (
-    <BookingContextProvider>
+    <>
       {/* Slide 1 - Landing */}
       <Section height={"auto"} padding={"7.5rem 0"}>
         {/* DASHBOARD MENU PLACEHOLDER */}
@@ -78,48 +75,65 @@ const Events = () => {
         </ContentBlock>
 
         {/* DASHBOARD BOOKINGS */}
-        <ContentBlock start={4} end={6}>
+        <ContentBlock start={4} end={7}>
           <div className="dashboard-panel">
-            <h2 className="dashboard-sub-heading">Events</h2>
             {/* PENDING BOOKINGS */}
             {isLoading && <Spinner />}
-            {!isLoading && <BookingList view={"confirmed"} />}
+            {!isLoading && (
+              <>
+                <Calendar
+                  selectedDate={selectedDate}
+                  setSelectedDate={setSelectedDate}
+                  showEventPopup={showEventPopup}
+                  setShowEventPopup={setShowEventPopup}
+                  isLoading={isLoading}
+                  setIsLoading={setIsLoading}
+                  dbEvents={dbEvents}
+                />
+              </>
+            )}
           </div>
         </ContentBlock>
 
         {/* DASHBOARD CALENDAR */}
         <ContentBlock
-          start={7}
-          end={9}
-          justifyContent={"start"}
+          start={9}
+          end={12}
+          justifyContent={"stretch"}
           alignItems={"start"}
         >
           <div className="dashboard-panel">
-            <h2 className="dashboard-sub-heading">Upcoming Events</h2>
-
-            <Calendar
-              setSelectedDate={setSelectedDate}
-              selectedDate={selectedDate}
-              setShowEventPopup={setShowEventPopup}
-              showEventPopup={showEventPopup}
-              dbEvents={dbEvents}
-            />
-          </div>
-        </ContentBlock>
-
-        {/* DASHBOARD NOTIFICATION */}
-        <ContentBlock start={10} end={13} alignItems={"start"}>
-          <div className="dashboard-panel">
-            <BookingList
-              selectedDate={selectedDate}
-              showEventPopup={showEventPopup}
-              setShowEventPopup={setShowEventPopup}
-              view={"byDate"}
-            />
+            {showEventPopup && (
+              <>
+                <BookingList
+                  selectedDate={selectedDate}
+                  showEventPopup={showEventPopup}
+                  setShowEventPopup={setShowEventPopup}
+                  view={"byDate"}
+                />
+                {!dbEvents.includes(selectedDate) && (
+                  <BookingForm
+                    selectedDate={selectedDate}
+                    setSelectedDate={setSelectedDate}
+                    events={events}
+                    setEvents={setEvents}
+                    editingEvent={editingEvent}
+                    setEditingEvent={setEditingEvent}
+                    showEventPopup={showEventPopup}
+                    setShowEventPopup={setShowEventPopup}
+                  />
+                )}
+              </>
+            )}
+            {!showEventPopup && (
+              <>
+                <BookingList view={"confirmed"} />
+              </>
+            )}
           </div>
         </ContentBlock>
       </Section>
-    </BookingContextProvider>
+    </>
   );
 };
 

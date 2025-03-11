@@ -46,7 +46,7 @@ const Calendar = ({
         return (
           bookingDate.getFullYear() === currentYear &&
           bookingDate.getMonth() === currentMonth &&
-          bookingDate.getUTCDate() === day
+          bookingDate.getUTCDate() === day + 1
         );
       });
     }
@@ -122,20 +122,27 @@ const Calendar = ({
             <span
               key={day + 1}
               className={classNames({
+                // Highlight current day
                 [styles["current-day"]]:
                   day + 1 === currentDate.getDate() &&
                   currentMonth === currentDate.getMonth() &&
                   currentYear === currentDate.getFullYear(),
-                [styles["past-day"]]:
-                  currentYear < currentDate.getFullYear() ||
-                  (currentMonth <= currentDate.getMonth() &&
-                    day + 1 < currentDate.getDate()),
+
+                // Highlight selected day bookings
                 [styles["selected-day"]]:
                   selectedDate &&
                   selectedDate.getDate() === day + 1 &&
                   selectedDate.getMonth() === currentMonth &&
                   selectedDate.getFullYear() === currentYear,
-                [styles["confirmed-event"]]: isConfirmedBooking(day), // Highlight confirmed bookings
+
+                // Down weight past days
+                [styles["past-day"]]:
+                  currentYear < currentDate.getFullYear() ||
+                  (currentMonth <= currentDate.getMonth() &&
+                    day + 1 < currentDate.getDate()),
+
+                // Highlight confirmed bookings
+                [styles["confirmed-event"]]: isConfirmedBooking(day),
               })}
               onClick={() => handleDayClicks(day + 1)}
             >

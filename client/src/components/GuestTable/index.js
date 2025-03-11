@@ -1,14 +1,18 @@
 import { useEffect, useState, useCallback } from "react";
 import { useGuestContext } from "../../hooks/useGuestContext";
 
+// Components
+import Spinner from "../../components/Spinner";
+
 // Styles
 import classNames from "classnames";
 import styles from "./GuestTable.module.scss";
 
-const GuestTable = ({ eventID }) => {
+const GuestTable = ({ userEventID }) => {
   const { guests, pendingGuests, confirmedGuests, dispatch } =
     useGuestContext();
 
+  // State to store existing guest input data
   const [editingId, setEditingId] = useState("");
   const [editData, setEditData] = useState({});
 
@@ -16,10 +20,14 @@ const GuestTable = ({ eventID }) => {
   const [newGuestForm, setNewGuestForm] = useState(false);
   const [newGuest, setNewGuest] = useState({
     name: "",
+    surname: "",
     email: "",
     contact_number: "",
+    role: "",
     status: "pending",
   });
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // Handle input changes for new guest fields
   const handleInputChange = (e) => {
@@ -41,15 +49,25 @@ const GuestTable = ({ eventID }) => {
   // Function to add a new guest
   const handleAddGuest = async () => {
     // Ensure all required fields are filled
-    if (!newGuest.name || !newGuest.email || !newGuest.contact_number) return;
+    if (
+      !newGuest.name ||
+      !newGuest.surname ||
+      !newGuest.email ||
+      !newGuest.contact_number ||
+      !newGuest.role
+    )
+      return;
 
     try {
       const response = await fetch("/api/guests", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...newGuest, event_id: eventID }), // Associate guest with event ID
+        body: JSON.stringify({ ...newGuest, eventID: userEventID }), // Associate guest with user ID
       });
       const data = await response.json();
+
+      console.log("data");
+      console.log(data);
 
       if (response.ok) {
         // Add the new guest to the context state
@@ -58,8 +76,10 @@ const GuestTable = ({ eventID }) => {
         // Reset the input fields
         setNewGuest({
           name: "",
+          surname: "",
           email: "",
           contact_number: "",
+          role: "",
           status: "pending",
         });
       }
@@ -81,41 +101,37 @@ const GuestTable = ({ eventID }) => {
     setEditData({
       _id: guest._id || "",
       name: guest.name || "",
+      surname: guest.surname || "",
       email: guest.email || "",
       contact_number: guest.contact_number || "",
+      role: guest.role || "",
       status: guest.status || "pending",
     });
   };
 
-  const handleSaveGuest = useCallback(async () => {
-    console.log("This editingId", editingId);
-    console.log("This editData", editData);
-
+  const handleSaveGuest = async () => {
     try {
       const response = await fetch(`/api/guests/${editingId}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editData),
       });
 
-      if (response.ok) {
-        const guest = await response.json();
-
-        // Dispatch update action to context
-        dispatch({ type: "UPDATE_GUEST", payload: guest });
-
-        // Reset editing state
-        setEditingId(null);
-        setEditData({});
-      } else {
-        console.error("Failed to update guest:", await response.json());
+      if (!response.ok) {
+        throw new Error("Failed to update guest");
       }
+
+      await response.json();
+      setEditingId(null);
+      setEditData({});
+
+      // Refresh guest list
+      fetchGuests();
     } catch (error) {
-      console.error("Failed to update guest:", error);
+      console.error("Error updating guest:", error.message);
+      alert("Something went wrong. Please try again.");
     }
-  }, [editingId, editData, dispatch]); // Dependencies array ensures the function doesn't change unless these values change.
+  };
 
   // Handle delete booking
   const handleDeleteGuest = async (id) => {
@@ -125,7 +141,8 @@ const GuestTable = ({ eventID }) => {
       });
 
       if (response.ok) {
-        dispatch({ type: "DELETE_GUEST", payload: { _id: id } });
+        // Refresh guest list after deletion
+        fetchGuests();
       } else {
         console.error("Failed to delete guest:", await response.json());
       }
@@ -140,177 +157,269 @@ const GuestTable = ({ eventID }) => {
     setEditData({});
   };
 
-  // Fetch guests for the given user ID when the component mounts
-  useEffect(() => {
-    const fetchGuests = async () => {
-      try {
-        const response = await fetch(`/api/guests/${eventID}`);
-        const data = await response.json();
+  // Fetch guests function
+  const fetchGuests = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`/api/guests/${userEventID}`);
+      const data = await response.json();
 
-        if (response.ok) {
-          // Dispatch the fetched guests to the context state
-          dispatch({ type: "SET_GUESTS", payload: data });
-        }
-      } catch (error) {
-        console.error("Failed to fetch guests:", error);
+      console.log(data);
+
+      if (response.ok) {
+        dispatch({ type: "SET_GUESTS", payload: data });
+        setIsLoading(false);
       }
-    };
+    } catch (error) {
+      console.error("Failed to fetch guests:", error);
+    }
+  }, [dispatch, userEventID]);
 
+  // Fetch guests on mount
+  useEffect(() => {
     fetchGuests();
-  }, [dispatch, eventID, handleSaveGuest]);
+  }, [fetchGuests]);
 
   return (
     <>
-      <div className={classNames(styles["guest-list"])}>
-        <h3 className="dashboard-sub-heading">{`Guest List ${guests.length}`}</h3>
-        <h3 className="dashboard-sub-heading">{`Pending ${pendingGuests.length}`}</h3>
-        <h3 className="dashboard-sub-heading">{`Confirmed ${confirmedGuests.length}`}</h3>
-      </div>
-      <div className={styles["guest-table"]}>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Contact Number</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* Render existing guests in the table */}
-            {guests.map((guest) => (
-              <tr
-                key={guest._id}
-                className={classNames(styles["guest-table-tr"])}
-              >
-                {editingId === guest._id ? (
+      {isLoading && <Spinner />}
+      {!isLoading && (
+        <>
+          <div className={classNames(styles["guest-list"])}>
+            <h3 className="dashboard-sub-heading">{`Guest List ${
+              guests ? guests.length : 0
+            }`}</h3>
+            <h3 className="dashboard-sub-heading">{`Pending ${
+              pendingGuests ? pendingGuests.length : 0
+            }`}</h3>
+            <h3 className="dashboard-sub-heading">{`Confirmed ${
+              confirmedGuests ? confirmedGuests.length : 0
+            }`}</h3>
+          </div>
+          <div className={styles["guest-table"]}>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Surname</th>
+                  <th>Email</th>
+                  <th>Contact Number</th>
+                  <th>Wedding Party</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {guests.length > 0 ? (
                   <>
+                    {/* Render existing guests in the table */}
+                    {guests.map((guest) => (
+                      <tr
+                        key={guest._id}
+                        className={classNames(styles["guest-table-tr"])}
+                      >
+                        {editingId === guest._id ? (
+                          <>
+                            <td>
+                              <input
+                                type="text"
+                                value={editData.name}
+                                onChange={(e) =>
+                                  handleExistingInputChange(e, "name")
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={editData.surname}
+                                onChange={(e) =>
+                                  handleExistingInputChange(e, "surname")
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={editData.email}
+                                onChange={(e) =>
+                                  handleExistingInputChange(e, "email")
+                                }
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                value={editData.contact_number}
+                                onChange={(e) =>
+                                  handleExistingInputChange(e, "contact_number")
+                                }
+                              />
+                            </td>
+                            <td>
+                              <select
+                                value={editData.role}
+                                onChange={(e) =>
+                                  handleExistingInputChange(e, "role")
+                                }
+                              >
+                                <option value="Bride">Bride</option>
+                                <option value="Bridesmaid">Bridesmaid</option>
+                                <option value="BridesSide">BridesSide</option>
+                                <option value="Groom">Groom</option>
+                                <option value="Groomsmen">Groomsmen</option>
+                                <option value="GroomsSide">GroomsSide</option>
+                              </select>
+                            </td>
+                            <td>
+                              <select
+                                value={editData.status}
+                                onChange={(e) =>
+                                  handleExistingInputChange(e, "status")
+                                }
+                              >
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                              </select>
+                            </td>
+                            <td>
+                              <div
+                                className={classNames(
+                                  styles["guest-table-buttons"]
+                                )}
+                              >
+                                <button onClick={() => handleSaveGuest()}>
+                                  Save
+                                </button>
+                                <button onClick={handleCancelGuest}>
+                                  Cancel
+                                </button>
+                              </div>
+                            </td>
+                          </>
+                        ) : (
+                          <>
+                            <td>{guest.name}</td>
+                            <td>{guest.surname}</td>
+                            <td>{guest.email}</td>
+                            <td>{guest.contact_number}</td>
+                            <td>{guest.role}</td>
+                            <td>{guest.status}</td>
+                            <td>
+                              <div
+                                className={classNames(
+                                  styles["guest-table-buttons"]
+                                )}
+                              >
+                                <button onClick={() => handleEditGuest(guest)}>
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteGuest(guest._id)}
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            </td>
+                          </>
+                        )}
+                      </tr>
+                    ))}
+                  </>
+                ) : (
+                  <p>No guests available</p>
+                )}
+                <tr>
+                  <td
+                    colSpan={7}
+                    className={classNames(styles["guest-table-tr-spacer"])}
+                  ></td>
+                </tr>
+
+                {/* Last row contains input fields to add a new guest */}
+                {newGuestForm === true ? (
+                  <tr>
                     <td>
                       <input
                         type="text"
-                        value={editData.name}
-                        onChange={(e) => handleExistingInputChange(e, "name")}
+                        name="name"
+                        value={newGuest.name}
+                        onChange={handleInputChange}
+                        placeholder="Enter name"
                       />
                     </td>
                     <td>
                       <input
                         type="text"
-                        value={editData.email}
-                        onChange={(e) => handleExistingInputChange(e, "email")}
+                        name="surname"
+                        value={newGuest.surname}
+                        onChange={handleInputChange}
+                        placeholder="Enter surname"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="email"
+                        name="email"
+                        value={newGuest.email}
+                        onChange={handleInputChange}
+                        placeholder="Enter email"
                       />
                     </td>
                     <td>
                       <input
                         type="text"
-                        value={editData.contact_number}
-                        onChange={(e) =>
-                          handleExistingInputChange(e, "contact_number")
-                        }
+                        name="contact_number"
+                        value={newGuest.contact_number}
+                        onChange={handleInputChange}
+                        placeholder="Enter contact"
                       />
                     </td>
                     <td>
                       <select
-                        value={editData.status}
-                        onChange={(e) => handleExistingInputChange(e, "status")}
+                        value={newGuest.role}
+                        name="role"
+                        onChange={handleInputChange}
                       >
-                        <option value="pending">Pending</option>
-                        <option value="confirmed">Confirmed</option>
+                        <option value="Select">Select</option>
+                        <option value="Bride">Bride</option>
+                        <option value="Bridesmaid">Bridesmaid</option>
+                        <option value="BridesSide">BridesSide</option>
+                        <option value="Groom">Groom</option>
+                        <option value="Groomsmen">Groomsmen</option>
+                        <option value="GroomsSide">GroomsSide</option>
                       </select>
                     </td>
+                    <td></td>
                     <td>
                       <div
                         className={classNames(styles["guest-table-buttons"])}
                       >
-                        <button onClick={() => handleSaveGuest(editingId)}>
-                          Save
+                        <button onClick={handleAddGuest}>Add</button>
+                        <button onClick={handleAddGuestFormCancel}>
+                          cancel
                         </button>
-                        <button onClick={handleCancelGuest}>Cancel</button>
                       </div>
                     </td>
-                  </>
+                  </tr>
                 ) : (
-                  <>
-                    <td>{guest.name}</td>
-                    <td>{guest.email}</td>
-                    <td>{guest.contact_number}</td>
-                    <td>{guest.status}</td>
-                    <td>
+                  <tr>
+                    <td colSpan={7}>
                       <div
                         className={classNames(styles["guest-table-buttons"])}
                       >
-                        <button onClick={() => handleEditGuest(guest)}>
-                          Edit
-                        </button>
-                        <button onClick={() => handleDeleteGuest(guest._id)}>
-                          Delete
+                        <button onClick={handleAddGuestForm}>
+                          Add a new guest
                         </button>
                       </div>
                     </td>
-                  </>
+                  </tr>
                 )}
-              </tr>
-            ))}
-
-            <tr>
-              <td
-                colSpan={5}
-                className={classNames(styles["guest-table-tr-spacer"])}
-              ></td>
-            </tr>
-
-            {/* Last row contains input fields to add a new guest */}
-            {newGuestForm === true ? (
-              <tr>
-                <td>
-                  <input
-                    type="text"
-                    name="name"
-                    value={newGuest.name}
-                    onChange={handleInputChange}
-                    placeholder="Enter name"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="email"
-                    name="email"
-                    value={newGuest.email}
-                    onChange={handleInputChange}
-                    placeholder="Enter email"
-                  />
-                </td>
-                <td>
-                  <input
-                    type="text"
-                    name="contact_number"
-                    value={newGuest.contact_number}
-                    onChange={handleInputChange}
-                    placeholder="Enter contact"
-                  />
-                </td>
-                <td></td>
-                <td>
-                  <div className={classNames(styles["guest-table-buttons"])}>
-                    <button onClick={handleAddGuest}>Add</button>
-                    <button onClick={handleAddGuestFormCancel}>cancel</button>
-                  </div>
-                </td>
-              </tr>
-            ) : (
-              <tr>
-                <td colSpan={5}>
-                  <div className={classNames(styles["guest-table-buttons"])}>
-                    <button onClick={handleAddGuestForm}>
-                      Add a new guest
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </>
   );
 };

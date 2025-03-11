@@ -4,7 +4,6 @@ import { BookingContextProvider } from "../../context/BookingContext";
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
 import DashboardSideMenu from "../../components/DashboardSideMenu";
-import BookingsTable from "../../components/BookingsTable";
 
 
 const Guest = () => {
@@ -36,7 +35,7 @@ const Guest = () => {
         {/* DASHBOARD BOOKINGS */}
         <ContentBlock start={4} end={12}>
           <div className="dashboard-panel">
-            <BookingsTable />
+
           </div>
         </ContentBlock>
       </Section>

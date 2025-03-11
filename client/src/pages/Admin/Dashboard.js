@@ -8,12 +8,9 @@ import BookingList from "../../components/BookingList";
 import MessagesList from "../../components/MessagesList";
 import Spinner from "../../components/Spinner";
 
-import {
-  BookingContextProvider,
-  BookingContext,
-} from "../../context/BookingContext";
+import { BookingContext } from "../../context/BookingContext";
 
-const AdminDashboard = () => {
+const AdminDashboard = ({user}) => {
   // Current Date
   const currentDate = new Date();
 
@@ -57,7 +54,7 @@ const AdminDashboard = () => {
   }, [confirmedBookings]);
 
   return (
-    <BookingContextProvider>
+    <>
       {/* Slide 1 - Landing */}
       <Section height={"auto"} padding={"7.5rem 0"}>
         {/* DASHBOARD MENU PLACEHOLDER */}
@@ -84,13 +81,7 @@ const AdminDashboard = () => {
             <h2 className="dashboard-sub-heading">Pending Booking Requests</h2>
             {/* PENDING BOOKINGS */}
             {isLoading && <Spinner />}
-            {!isLoading && <BookingList view={"pending"} />}
-            <h2 className="dashboard-sub-heading">
-              Confirmed Booking Requests
-            </h2>
-            {/* PENDING BOOKINGS */}
-            {isLoading && <Spinner />}
-            {!isLoading && <BookingList view={"confirmed"} />}
+            {!isLoading && <BookingList view={"pending"}/>}
           </div>
         </ContentBlock>
 
@@ -124,12 +115,12 @@ const AdminDashboard = () => {
         {/* DASHBOARD NOTIFICATION */}
         <ContentBlock start={10} end={13} alignItems={"start"}>
           <div className="dashboard-panel">
-            <h2 className="dashboard-sub-heading">Notifications </h2>
+            <h2 className="dashboard-sub-heading">Notifications</h2>
             <MessagesList />
           </div>
         </ContentBlock>
       </Section>
-    </BookingContextProvider>
+    </>
   );
 };
 
