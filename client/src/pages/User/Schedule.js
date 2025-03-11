@@ -4,9 +4,9 @@ import { useParams } from "react-router-dom";
 // Components
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
-import CateringTable from "../../components/CateringTable";
+import ScheduleTable from "../../components/ScheduleTable";
 
-const Guests = () => {
+const Schedule = () => {
   const { view } = useParams(); // Get the view param from the URL
   return (
     <BookingContextProvider>
@@ -28,9 +28,9 @@ const Guests = () => {
           alignItems={"start"}
         >
           <div className="dashboard-panel">
-            <h1 className="dashboard-heading">Catering</h1>
+            <h1 className="dashboard-heading">Your Schedules</h1>
             <p>
-              Please select from the bookings below to view your guests dietary restrictions.
+              Please select from the bookings below to view your schedule.
             </p>
           </div>
         </ContentBlock>
@@ -38,7 +38,7 @@ const Guests = () => {
         {/* DASHBOARD BOOKINGS */}
         <ContentBlock start={4} end={12}>
           <div className="dashboard-panel">
-            <CateringTable view={view || "email"} />
+            <ScheduleTable view={view || "email"} />
           </div>
         </ContentBlock>
       </Section>
@@ -46,4 +46,4 @@ const Guests = () => {
   );
 };
 
-export default Guests;
+export default Schedule;

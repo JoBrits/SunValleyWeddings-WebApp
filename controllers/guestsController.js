@@ -4,7 +4,8 @@ const Guest = require("../models/GuestsModel");
 // Send new Guest
 const postGuest = async (req, res) => {
   try {
-    const { name, surname, email, contact_number, status, role, eventID } = req.body;
+    const { name, surname, email, contact_number, status, role, eventID } =
+      req.body;
     const newGuest = new Guest({
       name,
       surname,
@@ -18,6 +19,17 @@ const postGuest = async (req, res) => {
     res.status(201).json(newGuest);
   } catch (error) {
     res.status(500).json({ error: "Failed to add guest" });
+  }
+};
+
+// Get all Guests for a specific event
+const getAllGuests = async (req, res) => {
+  try {
+    const guests = await Guest.find();
+    res.status(200).json(guests);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch guests" });
   }
 };
 
@@ -52,64 +64,75 @@ const getGuest = async (req, res) => {
 
 // Update Guest details
 const updateGuest = async (req, res) => {
-    try {
-      const { guest_id } = req.params; // Extract guest ID from request parameters
-      {console.log(guest_id)}
-
-      if (!guest_id) {
-        return res.status(400).json({ error: "Guest ID is required" });
-      }
-  
-      const updatedGuest = await Guest.findByIdAndUpdate(guest_id, req.body, { 
-        new: true, // Return the updated document
-        runValidators: true, // Ensure validations are applied
-      });
-  
-      if (!updatedGuest) {
-        return res.status(404).json({ error: "No such guest found" });
-      }
-  
-      res.status(200).json(updatedGuest);
-    } catch (error) {
-      console.error("Error updating guest:", error);
-      
-      if (error.name === "CastError") {
-        return res.status(400).json({ error: "Invalid guest ID format" });
-      }
-  
-      res.status(500).json({ error: "Failed to update guest" });
+  try {
+    const { guest_id } = req.params; // Extract guest ID from request parameters
+    {
+      console.log(guest_id);
     }
-  };
+
+    if (!guest_id) {
+      return res.status(400).json({ error: "Guest ID is required" });
+    }
+
+    const updatedGuest = await Guest.findByIdAndUpdate(guest_id, req.body, {
+      new: true, // Return the updated document
+      runValidators: true, // Ensure validations are applied
+    });
+
+    if (!updatedGuest) {
+      return res.status(404).json({ error: "No such guest found" });
+    }
+
+    res.status(200).json(updatedGuest);
+  } catch (error) {
+    console.error("Error updating guest:", error);
+
+    if (error.name === "CastError") {
+      return res.status(400).json({ error: "Invalid guest ID format" });
+    }
+
+    res.status(500).json({ error: "Failed to update guest" });
+  }
+};
 
 // Delete Guest details
 
 const deleteGuest = async (req, res) => {
-    try {
-      const { guest_id } = req.params; // Extract guest ID from request parameters
-      {console.log(guest_id)}
-
-      if (!guest_id) {
-        return res.status(400).json({ error: "Guest ID is required" });
-      }
-  
-      const updatedGuest = await Guest.findByIdAndDelete(guest_id, req.body, { 
-        runValidators: true, // Ensure validations are applied
-      });
-  
-      if (!updatedGuest) {
-        return res.status(404).json({ error: "No such guest found" });
-      }
-  
-      res.status(200).json(updatedGuest);
-    } catch (error) {
-      console.error("Error updating guest:", error);
-      
-      if (error.name === "CastError") {
-        return res.status(400).json({ error: "Invalid guest ID format" });
-      }
-  
-      res.status(500).json({ error: "Failed to update guest" });
+  try {
+    const { guest_id } = req.params; // Extract guest ID from request parameters
+    {
+      console.log(guest_id);
     }
-  };
 
-module.exports = { postGuest, getGuests, getGuest, updateGuest, deleteGuest };
+    if (!guest_id) {
+      return res.status(400).json({ error: "Guest ID is required" });
+    }
+
+    const updatedGuest = await Guest.findByIdAndDelete(guest_id, req.body, {
+      runValidators: true, // Ensure validations are applied
+    });
+
+    if (!updatedGuest) {
+      return res.status(404).json({ error: "No such guest found" });
+    }
+
+    res.status(200).json(updatedGuest);
+  } catch (error) {
+    console.error("Error updating guest:", error);
+
+    if (error.name === "CastError") {
+      return res.status(400).json({ error: "Invalid guest ID format" });
+    }
+
+    res.status(500).json({ error: "Failed to update guest" });
+  }
+};
+
+module.exports = {
+  postGuest,
+  getAllGuests,
+  getGuests,
+  getGuest,
+  updateGuest,
+  deleteGuest,
+};

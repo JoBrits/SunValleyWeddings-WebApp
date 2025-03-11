@@ -3,7 +3,13 @@ import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
 import BookingList from "../../components/BookingList";
 
-const UserDashboard = ({ user }) => {
+// Hooks
+import { useAuthContext } from "../../hooks/useAuthContext";
+
+const UserDashboard = () => {
+  
+  const { user } = useAuthContext();
+  
   return (
     <>
       {/* Slide 1 - Landing */}
@@ -34,7 +40,6 @@ const UserDashboard = ({ user }) => {
             </h2>
             <BookingList
               view={"byEmail"}
-              user={user}
             />
           </div>
         </ContentBlock>

@@ -4,10 +4,10 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const userRoutes = require("./routes/user");
-const usersRoutes = require("./routes/user");
 const messagesRoute = require("./routes/messages");
 const bookingsRoute = require("./routes/bookings");
 const guestsRoute = require("./routes/guests");
+const scheduleRoute = require("./routes/schedule");
 const emailRoutes = require("./routes/email");
 
 // Import middleware
@@ -33,11 +33,12 @@ app.use((req, res, next) => {
 });
 
 // route handlers
-// specify path to be used with routes
+// path to be used with routes
 app.use("/api/user", userRoutes);
 app.use("/api/messages", messagesRoute);
 app.use("/api/bookings", bookingsRoute);
 app.use("/api/guests", guestsRoute);
+app.use("/api/schedule", scheduleRoute);
 app.use("/api/email", emailRoutes); // Future use
 
 // connext to DB
@@ -51,7 +52,7 @@ mongoose
         "Connected to database and listening on port",
         process.env.PORT
       );
-    }); 
+    });
   })
   .catch((error) => {
     console.log(error);

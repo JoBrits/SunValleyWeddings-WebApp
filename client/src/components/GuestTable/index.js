@@ -9,8 +9,7 @@ import classNames from "classnames";
 import styles from "./GuestTable.module.scss";
 
 const GuestTable = ({ userEventID }) => {
-  const { guests, pendingGuests, confirmedGuests, dispatch } =
-    useGuestContext();
+  const { guests = [], dispatch } = useGuestContext();
 
   // State to store existing guest input data
   const [editingId, setEditingId] = useState("");
@@ -66,9 +65,6 @@ const GuestTable = ({ userEventID }) => {
       });
       const data = await response.json();
 
-      console.log("data");
-      console.log(data);
-
       if (response.ok) {
         // Add the new guest to the context state
         dispatch({ type: "CREATE_GUEST", payload: data });
@@ -90,12 +86,6 @@ const GuestTable = ({ userEventID }) => {
 
   // Handle edit button click
   const handleEditGuest = (guest) => {
-    console.log("guest");
-    console.log(guest);
-
-    console.log("guest._id");
-    console.log(guest._id);
-
     setEditingId(guest._id);
 
     setEditData({
@@ -157,50 +147,40 @@ const GuestTable = ({ userEventID }) => {
     setEditData({});
   };
 
-  // Fetch guests function
   const fetchGuests = useCallback(async () => {
     try {
       setIsLoading(true);
       const response = await fetch(`/api/guests/${userEventID}`);
       const data = await response.json();
 
-      console.log(data);
-
-      if (response.ok) {
+      if (response.ok && Array.isArray(data)) {
         dispatch({ type: "SET_GUESTS", payload: data });
-        setIsLoading(false);
+      } else {
+        console.error("Invalid guests data received", data);
+        dispatch({ type: "SET_GUESTS", payload: [] });
       }
+      setIsLoading(false);
     } catch (error) {
       console.error("Failed to fetch guests:", error);
+      dispatch({ type: "SET_GUESTS", payload: [] });
     }
   }, [dispatch, userEventID]);
 
   // Fetch guests on mount
   useEffect(() => {
     fetchGuests();
-  }, [fetchGuests]);
+  }, [fetchGuests, userEventID]);
 
   return (
     <>
       {isLoading && <Spinner />}
       {!isLoading && (
         <>
-          <div className={classNames(styles["guest-list"])}>
-            <h3 className="dashboard-sub-heading">{`Guest List ${
-              guests ? guests.length : 0
-            }`}</h3>
-            <h3 className="dashboard-sub-heading">{`Pending ${
-              pendingGuests ? pendingGuests.length : 0
-            }`}</h3>
-            <h3 className="dashboard-sub-heading">{`Confirmed ${
-              confirmedGuests ? confirmedGuests.length : 0
-            }`}</h3>
-          </div>
           <div className={styles["guest-table"]}>
             <table>
               <thead>
                 <tr>
-                  <th>Name</th>
+                  <th>Guest Name</th>
                   <th>Surname</th>
                   <th>Email</th>
                   <th>Contact Number</th>
@@ -327,7 +307,11 @@ const GuestTable = ({ userEventID }) => {
                     ))}
                   </>
                 ) : (
-                  <p>No guests available</p>
+                  <tr>
+                    <td colSpan="3">
+                      <p>No guests available</p>
+                    </td>
+                  </tr>
                 )}
                 <tr>
                   <td

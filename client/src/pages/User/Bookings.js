@@ -4,10 +4,11 @@ import { useParams } from "react-router-dom";
 // Components
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
-import CateringTable from "../../components/CateringTable";
+import BookingsTable from "../../components/BookingsTable";
 
-const Guests = () => {
+const Bookings = ({ user }) => {
   const { view } = useParams(); // Get the view param from the URL
+
   return (
     <BookingContextProvider>
       {/* Slide 1 - Landing */}
@@ -28,17 +29,18 @@ const Guests = () => {
           alignItems={"start"}
         >
           <div className="dashboard-panel">
-            <h1 className="dashboard-heading">Catering</h1>
+            <h1 className="dashboard-heading">Bookings</h1>
             <p>
-              Please select from the bookings below to view your guests dietary restrictions.
+              Please note, that when editing your event the Booking Email and
+              Status is disabled and can only be updated by an administrator
             </p>
           </div>
         </ContentBlock>
 
         {/* DASHBOARD BOOKINGS */}
-        <ContentBlock start={4} end={12}>
+        <ContentBlock start={4} end={12} alignItems={"center"}>
           <div className="dashboard-panel">
-            <CateringTable view={view || "email"} />
+            <BookingsTable view={view || "email"} />
           </div>
         </ContentBlock>
       </Section>
@@ -46,4 +48,4 @@ const Guests = () => {
   );
 };
 
-export default Guests;
+export default Bookings;

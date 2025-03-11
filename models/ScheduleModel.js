@@ -1,7 +1,7 @@
 // models/Guest.js
 const mongoose = require("mongoose");
 
-const guestSchema = new mongoose.Schema({
+const scheduleSchema = new mongoose.Schema({
   eventID: { 
     type: String, 
     required: true }, // set by user id
@@ -37,4 +37,4 @@ const guestSchema = new mongoose.Schema({
     default: Date.now },
 }); 
 
-module.exports = mongoose.model("Guest", guestSchema);
+module.exports = mongoose.model("Schedule", scheduleSchema);

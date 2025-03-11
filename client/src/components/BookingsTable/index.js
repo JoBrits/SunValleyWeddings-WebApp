@@ -1,5 +1,4 @@
 import { useEffect, useState, useCallback } from "react";
-import { useBookingContext } from "../../hooks/useBookingContext";
 
 // Styles
 import classNames from "classnames";
@@ -8,8 +7,13 @@ import styles from "./BookingsTable.module.scss";
 // Components
 import Spinner from "../../components/Spinner";
 
-const BookingsTable = ({ view, email }) => {
+// Hooks
+import { useBookingContext } from "../../hooks/useBookingContext";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
+const BookingsTable = ({ view }) => {
+  // fetch user from useAuthContext
+  const { user } = useAuthContext();
 
   const { bookings, dispatch } = useBookingContext();
   const [loading, setLoading] = useState(false);
@@ -41,8 +45,6 @@ const BookingsTable = ({ view, email }) => {
         [name]: value.padStart(2, "0"), // Ensure formatting
       },
     }));
-
-    console.log("editData:", editData);
   };
 
   // Handle edit button click
@@ -51,8 +53,6 @@ const BookingsTable = ({ view, email }) => {
     const [splitHours, splitMinutes] = booking.eventTime
       .split(" : ")
       .map((val) => val.trim());
-
-    console.log(booking.eventDate);
 
     setEditingId(booking._id);
     setEditData({
@@ -242,7 +242,7 @@ const BookingsTable = ({ view, email }) => {
                     if (view === "Pending") return booking.status === "pending";
                     if (view === "Confirmed")
                       return booking.status === "confirmed";
-                    if (view === "email") return booking.email === email; // Filter by email
+                    if (view === "email") return booking.email === user.email; // Filter by email
                     return booking._id === view; // Filter by booking ID
                   })
                   .map((booking) => (
@@ -279,6 +279,7 @@ const BookingsTable = ({ view, email }) => {
                               type="email"
                               value={editData.email}
                               onChange={(e) => handleInputChange(e, "email")}
+                              disabled={user.role === "user"}
                             />
                           </td>
                           <td>
@@ -339,6 +340,7 @@ const BookingsTable = ({ view, email }) => {
                             <select
                               value={editData.status}
                               onChange={(e) => handleInputChange(e, "status")}
+                              disabled={user.role === "user"} // only admin can approve
                             >
                               <option value="pending">Pending</option>
                               <option value="confirmed">Confirmed</option>
@@ -504,18 +506,21 @@ const BookingsTable = ({ view, email }) => {
                   </td>
                 </tr>
               ) : (
-                <tr>
-                  <td colSpan={10}>
-                    <div
-                      className={classNames(styles["bookings-table-buttons"])}
-                    >
-                      {/*handleAddBookingForm sets newBookingForm to true  */}
-                      <button onClick={handleAddBookingForm}>
-                        Add a new booking
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                // Only administrators can add new bookings from the table
+                user.role === "admin" && (
+                  <tr>
+                    <td colSpan={10}>
+                      <div
+                        className={classNames(styles["bookings-table-buttons"])}
+                      >
+                        {/*handleAddBookingForm sets newBookingForm to true  */}
+                        <button onClick={handleAddBookingForm}>
+                          Add a new booking
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
               )}
             </tbody>
           </table>
