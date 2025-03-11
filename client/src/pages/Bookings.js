@@ -8,7 +8,7 @@ import Calendar from "../components/Calendar";
 import BookingForm from "../components/BookingForm";
 import BookingFormList from "../components/BookingFormList";
 
-import { BookingContextProvider, BookingContext } from "../context/BookingContext";
+import { BookingContext } from "../context/BookingContext";
 
 const Bookings = () => {
   // State variables
@@ -25,7 +25,7 @@ const Bookings = () => {
     const fetchBookings = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("/api/bookings/bookings"); 
+        const response = await fetch("/api/bookings/bookings");
         const data = await response.json();
 
         if (Array.isArray(data)) {
@@ -37,7 +37,7 @@ const Bookings = () => {
         console.error("Error fetching bookings:", error);
       } finally {
         setIsLoading(false);
-      } 
+      }
     };
 
     fetchBookings();
@@ -45,7 +45,9 @@ const Bookings = () => {
 
   useEffect(() => {
     if (confirmedBookings) {
-      const confirmedDates = confirmedBookings.map((booking) => booking.eventDate);
+      const confirmedDates = confirmedBookings.map(
+        (booking) => booking.eventDate
+      );
       setDbEvents(confirmedDates);
     }
   }, [confirmedBookings]);
@@ -58,53 +60,51 @@ const Bookings = () => {
   }, []);
 
   return (
-      <BookingContextProvider>
-        <Section height={"100vh"} padding={"7.5rem 0"}>
-          <HighLightBlock width={60} height={120} left={-10} />
+    <Section height={"100vh"} padding={"7.5rem 0"}>
+      <HighLightBlock width={60} height={120} left={-10} />
 
-          <ContentBlock start={1} end={5} alignItems={"center"}>
-            <div style={{ textAlign: "center" }}>
-              <h2 className="section-heading">Bookings</h2>
-              <p>Use the calendar below to check available dates</p>
-            </div>
-            <Calendar
-              selectedDate={selectedDate}
-              setSelectedDate={setSelectedDate}
-              showEventPopup={showEventPopup}
-              setShowEventPopup={setShowEventPopup}
-              isLoading={isLoading}
-              setIsLoading={setIsLoading}
-              dbEvents={dbEvents}
-            />
-          </ContentBlock>
+      <ContentBlock start={1} end={5} alignItems={"center"}>
+        <div style={{ textAlign: "center" }}>
+          <h2 className="section-heading">Bookings</h2>
+          <p>Use the calendar below to check available dates</p>
+        </div>
+        <Calendar
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          showEventPopup={showEventPopup}
+          setShowEventPopup={setShowEventPopup}
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          dbEvents={dbEvents}
+        />
+      </ContentBlock>
 
-          <ContentBlock start={8} end={12} alignItems={"center"}>
-            {showEventPopup && (
-              <BookingForm
-                selectedDate={selectedDate}
-                setSelectedDate={setSelectedDate}
-                events={events}
-                setEvents={setEvents}
-                editingEvent={editingEvent}
-                setEditingEvent={setEditingEvent}
-                showEventPopup={showEventPopup}
-                setShowEventPopup={setShowEventPopup}
-              />
-            )}
-            {!showEventPopup && (
-              <BookingFormList
-                events={events}
-                setEvents={setEvents}
-                dbEvents={dbEvents}
-                editingEvent={editingEvent}
-                setEditingEvent={setEditingEvent}
-                showEventPopup={showEventPopup}
-                setShowEventPopup={setShowEventPopup}
-              />
-            )}
-          </ContentBlock>
-        </Section>
-      </BookingContextProvider>
+      <ContentBlock start={8} end={12} alignItems={"center"}>
+        {showEventPopup && (
+          <BookingForm
+            selectedDate={selectedDate}
+            setSelectedDate={setSelectedDate}
+            events={events}
+            setEvents={setEvents}
+            editingEvent={editingEvent}
+            setEditingEvent={setEditingEvent}
+            showEventPopup={showEventPopup}
+            setShowEventPopup={setShowEventPopup}
+          />
+        )}
+        {!showEventPopup && (
+          <BookingFormList
+            events={events}
+            setEvents={setEvents}
+            dbEvents={dbEvents}
+            editingEvent={editingEvent}
+            setEditingEvent={setEditingEvent}
+            showEventPopup={showEventPopup}
+            setShowEventPopup={setShowEventPopup}
+          />
+        )}
+      </ContentBlock>
+    </Section>
   );
 };
 

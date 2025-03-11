@@ -20,12 +20,11 @@ import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/Admin/Dashboard";
 import AdminBookings from "./pages/Admin/Bookings";
 import AdminRSVP from "./pages/Admin/Rsvp";
-import AdminGuests from "./pages/Admin/Guests";
+import AdminUsers from "./pages/Admin/Users";
 import AdminEvents from "./pages/Admin/Events";
 // Post-Login - User
 import UserDashboard from "./pages/User/Dashboard";
 import UserGuests from "./pages/User/Guests";
-import UserGuest from "./pages/User/Guest";
 
 function App() {
   // fetch user from useAuthContext
@@ -45,7 +44,7 @@ function App() {
             element={
               user ? (
                 user.role === "admin" ? (
-                  <AdminDashboard id={user.id} />
+                  <AdminDashboard/>
                 ) : (
                   <UserDashboard user={user} />
                 )
@@ -89,8 +88,8 @@ function App() {
 function AdminRoutes({ user }) {
   return (
     <Routes>
-      <Route path="bookings/:view?" element={<AdminBookings />} />
-      <Route path="guests/:view?" element={<AdminGuests />} />
+      <Route path="bookings/:view?" element={<AdminBookings user={user} />} />
+      <Route path="users/:view?" element={<AdminUsers />} />
       <Route path="rsvp" element={<AdminRSVP />} />
       <Route path="events" element={<AdminEvents />} />
     </Routes>
@@ -101,8 +100,10 @@ function AdminRoutes({ user }) {
 function UserRoutes({ user }) {
   return (
     <Routes>
+      <Route path="my-details" element={<UserGuests user={user}/>} />
       <Route path="guests" element={<UserGuests user={user}/>} />
-      <Route path="guest" element={<UserGuest />} />
+      <Route path="catering" element={<UserGuests user={user}/>} />
+      <Route path="schedule" element={<UserGuests user={user}/>} />
     </Routes>
   );
 }

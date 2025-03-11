@@ -35,7 +35,6 @@ app.use((req, res, next) => {
 // route handlers
 // specify path to be used with routes
 app.use("/api/user", userRoutes);
-app.use("/api/users", usersRoutes);
 app.use("/api/messages", messagesRoute);
 app.use("/api/bookings", bookingsRoute);
 app.use("/api/guests", guestsRoute);

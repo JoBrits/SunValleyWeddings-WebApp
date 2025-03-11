@@ -9,6 +9,7 @@ import ContentBlock from "../components/ContentBlock";
 
 const Profile = ({ user }) => {
   const [name, setName] = useState(user.name);
+  const [surname, setSurname] = useState(user.surname);
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState("*******");
 
@@ -22,7 +23,7 @@ const Profile = ({ user }) => {
     e.preventDefault();
     
     // Prepare updated user data
-    const updatedData = { name, email };
+    const updatedData = { name, surname, email };
     if (password !== "*******") {
       updatedData.password = password;
     }
@@ -60,6 +61,13 @@ const Profile = ({ user }) => {
                 name="name"
                 type="text"
                 onChange={(e) => setName(e.target.value)}
+              />
+              <label>Surname:</label>
+              <input
+                value={surname}
+                name="surname"
+                type="text"
+                onChange={(e) => setSurname(e.target.value)}
               />
               <label>Email:</label>
               <input

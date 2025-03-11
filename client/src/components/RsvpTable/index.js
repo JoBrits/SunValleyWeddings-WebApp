@@ -105,7 +105,7 @@ const RsvpTable = () => {
               </tbody>
             </table>
           </div>
-          <GuestTable eventID={editingId} />
+          <GuestTable userEventID={editingId} />
         </>
       )}
 
@@ -119,6 +119,7 @@ const RsvpTable = () => {
                 <th>Event Date</th>
                 <th>Event Time</th>
                 <th>Guests</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -135,6 +136,11 @@ const RsvpTable = () => {
                   <td>{new Date(booking.eventDate).toLocaleDateString()}</td>
                   <td>{booking.eventTime}</td>
                   <td>{booking.eventGuests}</td>
+                  <td>
+                    <div className={classNames(styles["rsvp-table-buttons"])}>
+                      <button onClick={() => handleEdit(booking)}>View Guests</button>
+                    </div>
+                  </td>
                 </tr>
               ))}
               <tr>

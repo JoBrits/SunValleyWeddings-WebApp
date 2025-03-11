@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useBookingContext } from "../../hooks/useBookingContext";
 
 // Styles
@@ -8,9 +8,10 @@ import styles from "./BookingsTable.module.scss";
 // Components
 import Spinner from "../../components/Spinner";
 
-const BookingsTable = ({ view }) => {
-  const { bookings, dispatch } =
-    useBookingContext();
+const BookingsTable = ({ view, email }) => {
+
+
+  const { bookings, dispatch } = useBookingContext();
   const [loading, setLoading] = useState(false);
 
   const [editingId, setEditingId] = useState(null);
@@ -24,27 +25,24 @@ const BookingsTable = ({ view }) => {
   // State to store new guest input data
   const [newBookingForm, setNewBookingForm] = useState(false);
 
-  // Fetch bookings when component mounts
-  useEffect(() => {
-    const fetchBookings = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch("/api/bookings/bookings");
-        const data = await response.json();
-        if (response.ok) {
-          dispatch({ type: "SET_BOOKINGS", payload: data });
-        }
-      } catch (error) {
-        console.error("Failed to fetch bookings:", error);
-      }
-      setLoading(false);
-    };
-    fetchBookings();
-  }, [dispatch]); //This ensures the table updates after every edit
-
   // Handle input change for editing
   const handleInputChange = (e, field) => {
     setEditData((prev) => ({ ...prev, [field]: e.target.value }));
+  };
+
+  // Format time correctly function
+  const handleTimeChange = (e) => {
+    const { name, value } = e.target;
+
+    setEditData((prev) => ({
+      ...prev,
+      eventTime: {
+        ...prev.eventTime,
+        [name]: value.padStart(2, "0"), // Ensure formatting
+      },
+    }));
+
+    console.log("editData:", editData);
   };
 
   // Handle edit button click
@@ -53,6 +51,8 @@ const BookingsTable = ({ view }) => {
     const [splitHours, splitMinutes] = booking.eventTime
       .split(" : ")
       .map((val) => val.trim());
+
+    console.log(booking.eventDate);
 
     setEditingId(booking._id);
     setEditData({
@@ -70,19 +70,21 @@ const BookingsTable = ({ view }) => {
       status: booking.status || "pending",
     });
   };
-
-  const handleSave = async (id) => {
+  // Handle save edit booking
+  const handleSaveEdit = async (id) => {
     try {
-      // Convert time back to a string before submitting to backend
-      editData.eventTime =
-        editData.eventTime.hours + " : " + editData.eventTime.minutes;
+      // Ensure time format is updated correctly
+      const updatedData = {
+        ...editData,
+        eventTime: `${editData.eventTime.hours} : ${editData.eventTime.minutes}`,
+      };
 
       const response = await fetch(`/api/bookings/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(editData),
+        body: JSON.stringify(updatedData),
       });
 
       if (response.ok) {
@@ -91,9 +93,13 @@ const BookingsTable = ({ view }) => {
         // Dispatch update action to context
         dispatch({ type: "UPDATE_BOOKING", payload: updatedBooking });
 
+        // Refetch bookings to ensure table updates
+        fetchBookings();
+
         // Reset editing state
         setEditingId(null);
         setEditData({});
+        handleCancelEdit();
       } else {
         console.error("Failed to update booking:", await response.json());
       }
@@ -101,13 +107,11 @@ const BookingsTable = ({ view }) => {
       console.error("Failed to update booking:", error);
     }
   };
-
-  // Handle cancel edit
-  const handleCancel = () => {
+  // Handle cancel edit booking
+  const handleCancelEdit = () => {
     setEditingId(null);
     setEditData({});
   };
-
   // Handle delete booking
   const handleDelete = async (id) => {
     try {
@@ -133,10 +137,11 @@ const BookingsTable = ({ view }) => {
     setNewBookingForm(false);
   };
   // Function to add a new guest
-  const handleAddBooking = async () => {
+  const handleSaveBookingForm = async () => {
     // Convert time back to a string before submitting to backend
     editData.eventTime =
       editData.eventTime.hours + " : " + editData.eventTime.minutes;
+
     try {
       // Create new booking
       const response = await fetch("/api/bookings/", {
@@ -173,6 +178,7 @@ const BookingsTable = ({ view }) => {
           name: "",
           surname: "",
           email: "",
+          eventID: "",
           eventDate: "",
           eventTime: {
             hours: "",
@@ -188,20 +194,24 @@ const BookingsTable = ({ view }) => {
     }
   };
 
-  // Format time correctly function
-  const handleTimeChange = (e) => {
-    const { name, value } = e.target;
+  // Fetch bookings when component mounts
+  const fetchBookings = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("/api/bookings/bookings");
+      const data = await response.json();
+      if (response.ok) {
+        dispatch({ type: "SET_BOOKINGS", payload: data });
+      }
+    } catch (error) {
+      console.error("Failed to fetch bookings:", error);
+    }
+    setLoading(false);
+  }, [dispatch]);
 
-    setEditData((prev) => ({
-      ...prev,
-      eventTime: {
-        ...prev.eventTime,
-        [name]: value.padStart(2, "0"), // Ensure formatting
-      },
-    }));
-
-    console.log("editData:", editData);
-  };
+  useEffect(() => {
+    fetchBookings();
+  }, [fetchBookings]);
 
   return (
     <>
@@ -211,31 +221,36 @@ const BookingsTable = ({ view }) => {
           <table>
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Event Date</th>
-                <th>Event Time</th>
-                <th>Guests</th>
-                <th>Notes</th>
-                <th>Status</th>
-                <th>Actions</th>
+                <th width="10%">Title</th>
+                <th width="10%">Name</th>
+                <th width="10%">Surname</th>
+                <th width="10%">Email</th>
+                <th width="10%">Event Date</th>
+                <th width="10%">Event Time</th>
+                <th width="10%">Guests</th>
+                <th width="10%">Notes</th>
+                <th width="10%">Status</th>
+                <th width="10%">Actions</th>
               </tr>
             </thead>
             <tbody>
+              {/* use conditional view as filter from url */}
               <>
                 {bookings
                   .filter((booking) => {
                     if (view === "All") return true;
                     if (view === "Pending") return booking.status === "pending";
-                    if (view === "Confirmed") return booking.status === "confirmed";
-                    return booking._id === view; // Filter by user ID
+                    if (view === "Confirmed")
+                      return booking.status === "confirmed";
+                    if (view === "email") return booking.email === email; // Filter by email
+                    return booking._id === view; // Filter by booking ID
                   })
                   .map((booking) => (
                     <tr
                       key={booking._id}
                       className={classNames(styles["bookings-table-tr"])}
                     >
+                      {/* Editing an existing booking */}
                       {editingId === booking._id ? (
                         <>
                           <td>
@@ -246,20 +261,18 @@ const BookingsTable = ({ view }) => {
                             />
                           </td>
                           <td>
-                            <div className={classNames(styles["time-input"])}>
-                              <input
-                                type="text"
-                                value={editData.name}
-                                onChange={(e) => handleInputChange(e, "name")}
-                              />
-                              <input
-                                type="text"
-                                value={editData.surname}
-                                onChange={(e) =>
-                                  handleInputChange(e, "surname")
-                                }
-                              />
-                            </div>
+                            <input
+                              type="text"
+                              value={editData.name}
+                              onChange={(e) => handleInputChange(e, "name")}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={editData.surname}
+                              onChange={(e) => handleInputChange(e, "surname")}
+                            />
                           </td>
                           <td>
                             <input
@@ -337,17 +350,21 @@ const BookingsTable = ({ view }) => {
                                 styles["bookings-table-buttons"]
                               )}
                             >
-                              <button onClick={() => handleSave(booking._id)}>
+                              <button
+                                onClick={() => handleSaveEdit(booking._id)}
+                              >
                                 Save
                               </button>
-                              <button onClick={handleCancel}>Cancel</button>
+                              <button onClick={handleCancelEdit}>Cancel</button>
                             </div>
                           </td>
                         </>
                       ) : (
+                        // View existing booking
                         <>
                           <td>{booking.title}</td>
-                          <td>{`${booking.name} ${booking.surname}`}</td>
+                          <td>{booking.name}</td>
+                          <td>{booking.surname}</td>
                           <td>{booking.email}</td>
                           <td>
                             {new Date(booking.eventDate).toLocaleDateString()}
@@ -377,7 +394,7 @@ const BookingsTable = ({ view }) => {
               </>
               <tr>
                 <td
-                  colSpan={9}
+                  colSpan={10}
                   className={classNames(styles["bookings-table-tr-spacer"])}
                 ></td>
               </tr>
@@ -392,18 +409,18 @@ const BookingsTable = ({ view }) => {
                     />
                   </td>
                   <td>
-                    <div className={classNames(styles["time-input"])}>
-                      <input
-                        type="text"
-                        value={editData.name}
-                        onChange={(e) => handleInputChange(e, "name")}
-                      />
-                      <input
-                        type="text"
-                        value={editData.surname}
-                        onChange={(e) => handleInputChange(e, "surname")}
-                      />
-                    </div>
+                    <input
+                      type="text"
+                      value={editData.name}
+                      onChange={(e) => handleInputChange(e, "name")}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="text"
+                      value={editData.surname}
+                      onChange={(e) => handleInputChange(e, "surname")}
+                    />
                   </td>
                   <td>
                     <input
@@ -431,7 +448,7 @@ const BookingsTable = ({ view }) => {
                         min={0}
                         max={24}
                         className={classNames(styles["hours"])}
-                        value={editData.eventTime?.hours || "00"} // Default value
+                        value={editData.eventTime?.hours} // Default value
                         onChange={handleTimeChange}
                       />
                       <p>:</p>
@@ -441,7 +458,7 @@ const BookingsTable = ({ view }) => {
                         min={0}
                         max={60}
                         className={classNames(styles["minutes"])}
-                        value={editData.eventTime?.minutes || "00"} // Default value
+                        value={editData.eventTime?.minutes} // Default value
                         onChange={handleTimeChange}
                       />
                     </div>
@@ -477,7 +494,9 @@ const BookingsTable = ({ view }) => {
                     <div
                       className={classNames(styles["bookings-table-buttons"])}
                     >
-                      <button onClick={() => handleAddBooking()}>Save</button>
+                      <button onClick={() => handleSaveBookingForm()}>
+                        Save
+                      </button>
                       <button onClick={handleAddBookingFormCancel}>
                         Cancel
                       </button>
@@ -486,10 +505,11 @@ const BookingsTable = ({ view }) => {
                 </tr>
               ) : (
                 <tr>
-                  <td colSpan={9}>
+                  <td colSpan={10}>
                     <div
                       className={classNames(styles["bookings-table-buttons"])}
                     >
+                      {/*handleAddBookingForm sets newBookingForm to true  */}
                       <button onClick={handleAddBookingForm}>
                         Add a new booking
                       </button>

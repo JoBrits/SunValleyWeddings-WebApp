@@ -21,14 +21,8 @@ const SigninForm = () => {
     if (userData && !error) {
       // Store user data in local storage
       localStorage.setItem("user", JSON.stringify(userData));
-
-      // Redirect user based on role
       // Reworked to route from App.js
-      if (userData.role === "admin") {
-        navigate("/");
-      } else {
-        navigate("/");
-      }
+      navigate("/");
     }
   };
 

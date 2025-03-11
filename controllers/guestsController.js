@@ -4,13 +4,15 @@ const Guest = require("../models/GuestsModel");
 // Send new Guest
 const postGuest = async (req, res) => {
   try {
-    const { name, email, contact_number, status, event_id } = req.body;
+    const { name, surname, email, contact_number, status, role, eventID } = req.body;
     const newGuest = new Guest({
       name,
+      surname,
       email,
       contact_number,
+      role,
       status,
-      event_id,
+      eventID,
     });
     await newGuest.save();
     res.status(201).json(newGuest);
@@ -22,13 +24,13 @@ const postGuest = async (req, res) => {
 // Get all Guests for a specific event
 const getGuests = async (req, res) => {
   try {
-    const { event_id } = req.params; // Extract event_id from request parameters
+    const { eventID } = req.params; // Extract eventID from request parameters
 
-    if (!event_id) {
+    if (!eventID) {
       return res.status(400).json({ error: "Event ID is required" });
     }
 
-    const guests = await Guest.find({ event_id }); // Filter guests by event_id
+    const guests = await Guest.find({ eventID }); // Filter guests by eventID
 
     res.status(200).json(guests);
   } catch (error) {

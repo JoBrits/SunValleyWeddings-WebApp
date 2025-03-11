@@ -9,13 +9,19 @@ export const guestReducer = (state, action) => {
       return {
         guests: action.payload,
         pendingGuests: action.payload.filter((b) => b.status === "pending"),
-        confirmedGuests: action.payload.filter(
-          (b) => b.status === "confirmed"
-        ),
+        confirmedGuests: action.payload.filter((b) => b.status === "confirmed"),
       };
     case "CREATE_GUEST":
       return {
         guests: [action.payload, ...state.guests],
+        pendingGuests:
+          action.payload.status === "pending"
+            ? [action.payload, ...state.pendingGuests]
+            : state.pendingGuests,
+        confirmedGuests:
+          action.payload.status === "confirmed"
+            ? [action.payload, ...state.confirmedGuests]
+            : state.confirmedGuests,
       };
     case "DELETE_GUEST":
       return {

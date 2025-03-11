@@ -8,7 +8,7 @@ import ContentBlock from "../../components/ContentBlock";
 
 import UsersTable from "../../components/UsersTable";
 
-const Guests = () => {
+const Users = () => {
   const { view } = useParams(); // Get the view param from the URL
 
   return (
@@ -31,7 +31,7 @@ const Guests = () => {
             justifyContent={"start"}
             alignItems={"start"}
           >
-            <h1 className="dashboard-heading">Guests</h1>
+            <h1 className="dashboard-heading">Users</h1>
           </ContentBlock>
 
           {/* DASHBOARD BOOKINGS */}
@@ -46,4 +46,4 @@ const Guests = () => {
   );
 };
 
-export default Guests;
+export default Users;

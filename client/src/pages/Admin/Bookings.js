@@ -6,7 +6,7 @@ import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
 import BookingsTable from "../../components/BookingsTable";
 
-const Bookings = () => {
+const Bookings = ({ user }) => {
   
   const { view } = useParams(); // Get the view param from the URL
 

@@ -1,7 +1,8 @@
-.guest-table {
+.user-table {
   position: relative;
   display: flex;
   justify-content: center;
+  margin-bottom: 5rem;
 
   table {
     width: 100%;
@@ -71,6 +72,14 @@
         color: var(--color-primary-light);
         background-color: var(--color-primary-med);
       }
+
+      
+    }
+
+    &--disabled {
+      cursor:default!important;;
+      background-color: var(--color-primary-med)!important;;
+      color: var(--color-primary-light)!important;;
     }
   }
 

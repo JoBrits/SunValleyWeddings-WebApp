@@ -6,8 +6,8 @@ const { postGuest, getGuests, getGuest, updateGuest, deleteGuest } = require("..
 const router = express.Router();
 
 router.post("/", postGuest); // save a new guests
-router.get("/:event_id", getGuests); // retrieve all guests for a user
-router.get("/:guest_id", getGuest); // retrieve guest
+router.get("/:eventID", getGuests); // retrieve all guests for a user
+router.get("/guest/:guest_id", getGuest); // retrieve guest
 router.put("/:guest_id", updateGuest); // update guest
 router.delete("/:guest_id", deleteGuest); // delete guest
 

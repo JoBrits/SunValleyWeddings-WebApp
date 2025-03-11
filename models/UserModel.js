@@ -8,7 +8,12 @@ const userSchema = new Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
+    unique: false,
+  },
+  surname: {
+    type: String,
+    required: true,
+    unique: false,
   },
   email: {
     type: String,
@@ -27,27 +32,27 @@ const userSchema = new Schema({
     type: String,
     required: false,
   },
-  eventId: {
+  eventID: {
     type: Number,
     required: false,
   },
 });
 
 // Static Signup Method on the user model
-userSchema.statics.signup = async function (name, email, password, role, status, event_id) {
+userSchema.statics.signup = async function (name, surname, email, password, role, status, eventID) {
   
   // validation
-  if (!email || !password || !name) {
+  if (!email || !password || !name || !surname) {
     throw Error("All fields must be filled");
   }
   // validator module
   if(!validator.isEmail(email)){
+    console.log("email : ", email);
     throw Error("Please use a valid email address");
   }
   if(!validator.isStrongPassword(password)){
     throw Error("Please use a stronger password");
   }
-
   // If email already exists throw error
   const exists = await this.findOne({ email });
   if (exists) {
@@ -60,7 +65,7 @@ userSchema.statics.signup = async function (name, email, password, role, status,
   // use bcrypt hash to hide password and add some salt
   const hash = await bcrypt.hash(password, salt);
 
-  const user = await this.create({ name, email, password: hash, role, status, event_id });
+  const user = await this.create({ name, surname, email, password: hash, role, status, eventID });
 
   return user;
 };
