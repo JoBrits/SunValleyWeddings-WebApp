@@ -7,12 +7,21 @@ export const guestReducer = (state, action) => {
   switch (action.type) {
     case "SET_GUESTS":
       return {
+        ...state, // Preserve the existing state
         guests: action.payload,
         pendingGuests: action.payload.filter((b) => b.status === "pending"),
         confirmedGuests: action.payload.filter((b) => b.status === "confirmed"),
       };
+    case "SET_ALL_GUESTS":
+      return {
+        ...state,
+        allGuests: action.payload,
+        allPendingGuests: action.payload.filter((b) => b.status === "pending"),
+        allConfirmedGuests: action.payload.filter((b) => b.status === "confirmed"),
+      };
     case "CREATE_GUEST":
       return {
+        ...state,
         guests: [action.payload, ...state.guests],
         pendingGuests:
           action.payload.status === "pending"
@@ -25,6 +34,7 @@ export const guestReducer = (state, action) => {
       };
     case "DELETE_GUEST":
       return {
+        ...state,
         guests: state.guests.filter((w) => w._id !== action.payload._id),
         pendingGuests: state.pendingGuests.filter(
           (w) => w._id !== action.payload._id
@@ -35,6 +45,7 @@ export const guestReducer = (state, action) => {
       };
     case "UPDATE_GUEST":
       return {
+        ...state,
         guests: state.guests.map((guest) =>
           guest._id === action.payload.id ? action.payload : guest
         ),
@@ -57,6 +68,9 @@ export const GuestContextProvider = ({ children }) => {
     guests: [],
     pendingGuests: [],
     confirmedGuests: [],
+    allGuests: [],
+    allPendingGuests: [],
+    allConfirmedGuests: [],
   });
 
   return (

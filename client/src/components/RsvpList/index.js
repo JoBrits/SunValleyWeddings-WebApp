@@ -25,11 +25,6 @@ const RsvpList = ({ user }) => {
         const response = await fetch(`/api/guests/${user.id}`);
         const data = await response.json();
 
-        console.log("data =");
-        console.log(data);
-        console.log("user =");
-        console.log(user);
-
         if (response.ok) {
           // Dispatch the fetched guests to the context state
           guestDispatch({ type: "SET_GUESTS", payload: data });

@@ -24,7 +24,10 @@ import AdminUsers from "./pages/Admin/Users";
 import AdminEvents from "./pages/Admin/Events";
 // Post-Login - User
 import UserDashboard from "./pages/User/Dashboard";
+import UserBookings from "./pages/User/Bookings";
+import UserRsvp from "./pages/User/RSVPs";
 import UserGuests from "./pages/User/Guests";
+import UserSchedule from "./pages/User/Schedule";
 
 function App() {
   // fetch user from useAuthContext
@@ -46,7 +49,7 @@ function App() {
                 user.role === "admin" ? (
                   <AdminDashboard/>
                 ) : (
-                  <UserDashboard user={user} />
+                  <UserDashboard/>
                 )
               ) : (
                 <Home />
@@ -100,10 +103,10 @@ function AdminRoutes({ user }) {
 function UserRoutes({ user }) {
   return (
     <Routes>
-      <Route path="my-details" element={<UserGuests user={user}/>} />
+      <Route path="bookings/:view?" element={<UserBookings user={user} />} />
+      <Route path="rsvp/:view?" element={<UserRsvp user={user}/>} />
       <Route path="guests" element={<UserGuests user={user}/>} />
-      <Route path="catering" element={<UserGuests user={user}/>} />
-      <Route path="schedule" element={<UserGuests user={user}/>} />
+      <Route path="schedule" element={<UserSchedule user={user}/>} />
     </Routes>
   );
 }

@@ -177,16 +177,16 @@ const Navbar = ({ user }) => {
                       link: "/",
                     },
                     {
-                      label: "My Details",
-                      link: "/user/my-details",
+                      label: "My Bookings",
+                      link: "/user/bookings",
                     },
                     {
                       label: "RSVPs",
-                      link: "/user/guests",
+                      link: "/user/rsvp",
                     },
                     {
                       label: "Catering",
-                      link: "/user/catering",
+                      link: "/user/guests",
                     },
                     {
                       label: "Schedule",

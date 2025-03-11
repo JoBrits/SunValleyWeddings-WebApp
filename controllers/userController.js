@@ -24,7 +24,7 @@ const loginUser = async (req, res) => {
     // Return role along with name, email and other
     res
       .status(200)
-      .json({ name: user.name, email, role: user.role, id: user._id, eventID: user.eventID, token });
+      .json({ name: user.name, surname: user.surname, email, role: user.role, id: user._id, eventID: user.eventID, token });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

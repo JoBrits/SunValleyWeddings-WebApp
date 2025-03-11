@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
 // Context
+import { useAuthContext } from "../../hooks/useAuthContext";
 import { useBookingContext } from "../../hooks/useBookingContext";
 import { useGuestContext } from "../../hooks/useGuestContext";
 import { useUserContext } from "../../hooks/useUserContext";
@@ -45,7 +46,7 @@ const DashboardSideMenuNotification = ({
   );
 };
 
-const DashboardSideMenu = ({ user }) => {
+const DashboardSideMenu = () => {
   // Booking Context
   const {
     bookings,
@@ -58,17 +59,21 @@ const DashboardSideMenu = ({ user }) => {
 
   // Guest Context
   const {
-    guests,
-    pendingGuests,
-    confirmedGuests,
+    allGuests,
+    allPendingGuests,
+    allConfirmedGuests,
     dispatch: dispatchGuests,
   } = useGuestContext();
 
+  const [userBookings, setUserBookings] = useState({});
   const [nextEvent, setNextEvent] = useState({});
   const [nextEventsLength, setNextEventsLength] = useState("");
   const [usersAll, setUsersAll] = useState(0);
   const [usersUnregistered, setUsersUnregistered] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // User Context
+  const { user } = useAuthContext();
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -79,8 +84,14 @@ const DashboardSideMenu = ({ user }) => {
         const bookingsRes = await fetch("/api/bookings/bookings");
         const bookingsData = await bookingsRes.json();
         if (bookingsRes.ok) {
+          // set user bookings
+          const userBooking = bookingsData.filter(
+            (booking) => booking.email === user.email
+          );
+
           dispatchBookings({ type: "SET_BOOKINGS", payload: bookingsData });
           getNextUpcomingEvent(bookingsData);
+          setUserBookings(userBooking);
         }
 
         // Fetch Users
@@ -104,21 +115,33 @@ const DashboardSideMenu = ({ user }) => {
           setUsersAll(unregisteredUsers.length + usersData.length);
         }
 
-        // Fetch Guests
-        const guestsRes = await fetch(`/api/guests/${user.id}`);
-        const guestsData = await guestsRes.json();
-        if (guestsRes.ok) {
-          dispatchGuests({ type: "SET_GUESTS", payload: guestsData });
-        }
+        // Fetch Guests for Each Booking for user side menu
+        const guestsData = await Promise.all(
+          bookingsData
+            .filter((booking) => {
+              return booking.email === user.email;
+            })
+            .map(async (booking) => {
+              const guestsRes = await fetch(`/api/guests/${booking._id}`);
+              if (guestsRes.ok) {
+                return guestsRes.json();
+              } else {
+                return [];
+              }
+            })
+        );
+
+        const allGuests = guestsData.flat(); // Merge all guests into a single array
+
+        dispatchGuests({ type: "SET_ALL_GUESTS", payload: allGuests });
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-
       setIsLoading(false);
     };
 
     fetchAllData();
-  }, [dispatchBookings, dispatchUsers, dispatchGuests, user.id]);
+  }, [dispatchBookings, dispatchUsers, dispatchGuests, user.email]);
 
   const getNextUpcomingEvent = (bookings) => {
     const currentDate = new Date();
@@ -180,19 +203,16 @@ const DashboardSideMenu = ({ user }) => {
 
               <DashboardSideMenuSection heading={"Users"}>
                 <DashboardSideMenuNotification
-                  isLoading={isLoading}
                   linkLabel={"Registered"}
                   linkTo={"/admin/users/Registered"}
                   notification={users.length}
                 />
                 <DashboardSideMenuNotification
-                  isLoading={isLoading}
                   linkLabel={"Unregistered"}
                   linkTo={"/admin/users/Unregistered"}
                   notification={usersUnregistered.length}
                 />
                 <DashboardSideMenuNotification
-                  isLoading={isLoading}
                   linkLabel={"All"}
                   linkTo={"/admin/users/"}
                   notification={usersAll}
@@ -201,7 +221,6 @@ const DashboardSideMenu = ({ user }) => {
 
               <DashboardSideMenuSection heading={"Events"}>
                 <DashboardSideMenuNotification
-                  isLoading={isLoading}
                   linkLabel={"Next event"}
                   linkTo={"/admin/events"}
                   date={
@@ -211,7 +230,6 @@ const DashboardSideMenu = ({ user }) => {
                   }
                 />
                 <DashboardSideMenuNotification
-                  isLoading={isLoading}
                   linkLabel={"Upcoming"}
                   linkTo={"/admin/events"}
                   notification={nextEventsLength}
@@ -225,44 +243,43 @@ const DashboardSideMenu = ({ user }) => {
               <DashboardSideMenuSection heading={"RSVP's"}>
                 <DashboardSideMenuNotification
                   linkLabel={"Pending"}
-                  linkTo={"Pending"}
-                  notification={pendingGuests.length}
+                  linkTo={"/user/rsvp/"}
+                  notification={allPendingGuests.length}
                 />
                 <DashboardSideMenuNotification
                   linkLabel={"Confirmed"}
-                  linkTo={"Confirmed"}
-                  notification={confirmedGuests.length}
+                  linkTo={"/user/rsvp/"}
+                  notification={allConfirmedGuests.length}
                 />
                 <DashboardSideMenuNotification
                   linkLabel={"All"}
-                  linkTo={"All"}
-                  notification={guests.length}
+                  linkTo={"/user/rsvp/"}
+                  notification={allGuests.length}
                 />
               </DashboardSideMenuSection>
 
-              <DashboardSideMenuSection heading={"Guests"}>
+              <DashboardSideMenuSection heading={"Bookings"}>
                 <DashboardSideMenuNotification
                   linkLabel={"Manage"}
-                  linkTo={"Manage"}
-                  notification={"00"}
-                />
-                <DashboardSideMenuNotification
-                  linkLabel={"Notifications"}
-                  linkTo={"Notifications"}
-                  notification={"00"}
+                  linkTo={"/user/bookings"}
+                  notification={userBookings.length}
                 />
               </DashboardSideMenuSection>
 
               <DashboardSideMenuSection heading={"Schedule"}>
                 <DashboardSideMenuNotification
                   linkLabel={"Next event"}
-                  linkTo={"Next event"}
-                  notification={"00"}
+                  linkTo={"/admin/events"}
+                  date={
+                    nextEvent
+                      ? new Date(nextEvent.date).toLocaleDateString()
+                      : "No events"
+                  }
                 />
                 <DashboardSideMenuNotification
                   linkLabel={"Manage"}
-                  linkTo={"Manage"}
-                  notification={"00"}
+                  linkTo={"/user/schedule"}
+                  notification={userBookings.length}
                 />
               </DashboardSideMenuSection>
             </div>

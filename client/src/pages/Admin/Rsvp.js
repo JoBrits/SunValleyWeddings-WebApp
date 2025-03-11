@@ -4,7 +4,7 @@ import { BookingContextProvider } from "../../context/BookingContext";
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
 
-import RsvpTable from "../../components/RsvpTable";
+import GuestsTable from "../../components/GuestsTable";
 
 
 const Rsvp = () => {
@@ -36,7 +36,7 @@ const Rsvp = () => {
         {/* DASHBOARD BOOKINGS */}
         <ContentBlock start={4} end={12}>
           <div className="dashboard-panel">
-            <RsvpTable />
+            <GuestsTable view={"All"}/>
           </div>
         </ContentBlock>
       </Section>

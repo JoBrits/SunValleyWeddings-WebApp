@@ -6,9 +6,9 @@ export const AuthContext = createContext();
 export const authReducer = (state, action) => {
   switch (action.type) {
     case "SIGNUP":
-      return {};
+      return { ...state };
     case "LOGIN":
-      return { user: action.payload };
+      return { ...state, user: action.payload };
     case "LOGOUT":
       return { user: null }; // reset state
     case "UPDATE":
@@ -26,7 +26,6 @@ export const AuthContextProvider = ({ children }) => {
 
   // Conditional to check if user is already logged in and update state accordingly
   useEffect(() => {
-    
     // checks local storage for user and parse string to object
     const user = JSON.parse(localStorage.getItem("user"));
 
@@ -37,7 +36,7 @@ export const AuthContextProvider = ({ children }) => {
   }, []);
 
   // Testing
-  console.log("AutContext state : ", state);
+  // console.log("AutContext state : ", state);
 
   return (
     // Spread operator to return object state

@@ -85,7 +85,6 @@ const Calendar = ({
     // Conditional for only current and future dates can be set
     if (clickedDate >= today || isSameDay(clickedDate, today)) {
       setSelectedDate(clickedDate);
-      console.log("Selected date:", clickedDate);
       setShowEventPopup(true);
     }
   };

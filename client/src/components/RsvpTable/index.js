@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useBookingContext } from "../../hooks/useBookingContext";
 
 // Components
 import GuestTable from "../../components/GuestTable";
@@ -8,28 +7,22 @@ import GuestTable from "../../components/GuestTable";
 import classNames from "classnames";
 import styles from "./RsvpTable.module.scss";
 
-const RsvpTable = () => {
-  const { confirmedBookings, dispatch } = useBookingContext();
+// Hooks
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { useBookingContext } from "../../hooks/useBookingContext";
+import { useGuestContext } from "../../hooks/useGuestContext";
+
+const RsvpTable = ({ view }) => {
+  // User Context
+  const { user } = useAuthContext();
+  // Guest Context
+  const { allGuests, dispatch: dispatchGuests } = useGuestContext();
+  // Booking Context
+  const { bookings, dispatch: dispatchBookings } = useBookingContext();
 
   const [editingId, setEditingId] = useState(null);
   const [editData, setEditData] = useState({});
-
-  // Fetch bookings when component mounts
-  useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const response = await fetch("/api/bookings/bookings");
-        const data = await response.json();
-        if (response.ok) {
-          dispatch({ type: "SET_BOOKINGS", payload: data });
-        }
-      } catch (error) {
-        console.error("Failed to fetch bookings:", error);
-      }
-    };
-
-    fetchBookings();
-  }, [dispatch]); //This ensures the table updates after every edit
+  const [isLoading, setIsLoading] = useState(false);
 
   // Handle edit button click
   const handleEdit = (booking) => {
@@ -62,6 +55,48 @@ const RsvpTable = () => {
     setEditData({});
   };
 
+  // Fetch bookings when component mounts
+
+  useEffect(() => {
+    const fetchAllData = async () => {
+      setIsLoading(true);
+
+      try {
+        // Fetch Bookings
+        const bookingsRes = await fetch("/api/bookings/bookings");
+        const bookingsData = await bookingsRes.json();
+        if (bookingsRes.ok) {
+          dispatchBookings({ type: "SET_BOOKINGS", payload: bookingsData });
+        }
+
+        // Fetch Guests for Each Booking for user side menu
+        const guestsData = await Promise.all(
+          bookingsData
+            .filter((booking) => {
+              return booking.email === user.email;
+            })
+            .map(async (booking) => {
+              const guestsRes = await fetch(`/api/guests/${booking._id}`);
+              if (guestsRes.ok) {
+                return guestsRes.json();
+              } else {
+                return [];
+              }
+            })
+        );
+
+        const allGuests = guestsData.flat(); // Merge all guests into a single array
+
+        dispatchGuests({ type: "SET_ALL_GUESTS", payload: allGuests });
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+      setIsLoading(false);
+    };
+
+    fetchAllData();
+  }, [dispatchBookings, dispatchGuests, user.email]);
+
   return (
     <>
       {editingId && (
@@ -71,12 +106,14 @@ const RsvpTable = () => {
             <table>
               <thead>
                 <tr>
-                  <th>Title</th>
-                  <th>Name</th>
-                  <th>Event Date</th>
-                  <th>Event Time</th>
-                  <th>Guests</th>
-                  <th>Actions</th>
+                  <th width="10%">Title</th>
+                  <th width="10%">Name</th>
+                  <th width="10%">Event Date</th>
+                  <th width="10%">Event Time</th>
+                  <th width="10%">Guests</th>
+                  <th width="10%">Guests Pending</th>
+                  <th width="10%">Guests Confirmed</th>
+                  <th width="10%">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -91,6 +128,24 @@ const RsvpTable = () => {
                   </td>
                   <td>{editData.eventGuests}</td>
                   <td>
+                      {
+                        allGuests.filter(
+                          (guest) =>
+                            guest.eventID === editingId &&
+                            guest.status === "pending"
+                        ).length
+                      }
+                    </td>
+                    <td>
+                      {
+                        allGuests.filter(
+                          (guest) =>
+                            guest.eventID === editingId &&
+                            guest.status === "confirmed"
+                        ).length
+                      }
+                    </td>
+                  <td>
                     <div className={classNames(styles["rsvp-table-buttons"])}>
                       <button onClick={handleCancel}>Cancel</button>
                     </div>
@@ -98,7 +153,7 @@ const RsvpTable = () => {
                 </tr>
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={8}
                     className={classNames(styles["rsvp-table-tr-spacer"])}
                   ></td>
                 </tr>
@@ -114,38 +169,66 @@ const RsvpTable = () => {
           <table>
             <thead>
               <tr>
-                <th>Title</th>
-                <th>Name</th>
-                <th>Event Date</th>
-                <th>Event Time</th>
-                <th>Guests</th>
-                <th>Actions</th>
+                <th width="10%">Title</th>
+                <th width="10%">Name</th>
+                <th width="10%">Event Date</th>
+                <th width="10%">Event Time</th>
+                <th width="10%">Guests</th>
+                <th width="10%">Guests Pending</th>
+                <th width="10%">Guests Confirmed</th>
+                <th width="10%">Actions</th>
               </tr>
             </thead>
             <tbody>
-              {confirmedBookings.map((booking) => (
-                <tr
-                  key={booking._id}
-                  className={classNames(styles["rsvp-table-tr"])}
-                  onClick={() => handleEdit(booking)}
-                >
-                  <td>{booking.title}</td>
-                  <td>
-                    {booking.name} {booking.surname}
-                  </td>
-                  <td>{new Date(booking.eventDate).toLocaleDateString()}</td>
-                  <td>{booking.eventTime}</td>
-                  <td>{booking.eventGuests}</td>
-                  <td>
-                    <div className={classNames(styles["rsvp-table-buttons"])}>
-                      <button onClick={() => handleEdit(booking)}>View Guests</button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {bookings
+                .filter((booking) => {
+                  if (view === "All") return booking.email === user.email;
+                  if (view === "email") return booking.email === user.email; // Filter by email
+                  return booking._id === view; // Filter by booking ID
+                })
+                .map((booking) => (
+                  <tr
+                    key={booking._id}
+                    className={classNames(styles["rsvp-table-tr"])}
+                    onClick={() => handleEdit(booking)}
+                  >
+                    <td>{booking.title}</td>
+                    <td>
+                      {booking.name} {booking.surname}
+                    </td>
+                    <td>{new Date(booking.eventDate).toLocaleDateString()}</td>
+                    <td>{booking.eventTime}</td>
+                    <td>{booking.eventGuests} - Requested</td>
+                    <td>
+                      {
+                        allGuests.filter(
+                          (guest) =>
+                            guest.eventID === booking._id &&
+                            guest.status === "pending"
+                        ).length
+                      }
+                    </td>
+                    <td>
+                      {
+                        allGuests.filter(
+                          (guest) =>
+                            guest.eventID === booking._id &&
+                            guest.status === "confirmed"
+                        ).length
+                      }
+                    </td>
+                    <td>
+                      <div className={classNames(styles["rsvp-table-buttons"])}>
+                        <button onClick={() => handleEdit(booking)}>
+                          View Guests
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={8}
                   className={classNames(styles["rsvp-table-tr-spacer"])}
                 ></td>
               </tr>

@@ -2,18 +2,20 @@ import { useState } from "react";
 
 // Hooks
 import { useUpdate } from "../hooks/useUpdate";
+import { useAuthContext } from "../hooks/useAuthContext";
 
 // Components
 import Section from "../components/Section";
 import ContentBlock from "../components/ContentBlock";
 
-const Profile = ({ user }) => {
+const Profile = () => {
+  // User Context
+  const { user } = useAuthContext();
+
   const [name, setName] = useState(user.name);
   const [surname, setSurname] = useState(user.surname);
   const [email, setEmail] = useState(user.email);
   const [password, setPassword] = useState("*******");
-
-  console.log(user)
 
   // from useUpdate hook
   const { updateUser, error, isLoading } = useUpdate();

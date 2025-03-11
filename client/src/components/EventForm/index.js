@@ -107,9 +107,6 @@ const EventForm = ({
 
   // API Request function
   const handleRequest = async (newEventRequest) => {
-    
-    console.log("newEventRequest:", newEventRequest);
-    console.log("newEventRequest:", newEventRequest.name);
 
     // console.log("Name:", name);
     // console.log("Email:", email);

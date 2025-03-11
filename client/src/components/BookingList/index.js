@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { useBookingContext } from "../../hooks/useBookingContext";
 import { Link } from "react-router-dom";
 
 // Hooks
+import { useBookingContext } from "../../hooks/useBookingContext";
 import { useAuthContext } from "../../hooks/useAuthContext";
 
 // Styles
@@ -12,9 +12,13 @@ import styles from "./BookingList.module.scss";
 // Components
 import Spinner from "../../components/Spinner";
 
-const BookingList = ({ view, selectedDate, userEmail }) => {
-  const { bookings, pendingBookings, confirmedBookings, dispatch } =
+const BookingList = ({ view, selectedDate }) => {
+  const { bookings, pendingBookings, confirmedBookings, dispatch: dispatchBookings } =
     useBookingContext();
+
+  const { user } = useAuthContext();
+
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -32,7 +36,7 @@ const BookingList = ({ view, selectedDate, userEmail }) => {
         const data = await response.json();
 
         if (response.ok) {
-          dispatch({ type: "SET_BOOKINGS", payload: data });
+          dispatchBookings({ type: "SET_BOOKINGS", payload: data });
         }
       } catch (error) {
         console.error("Failed to fetch bookings:", error);
@@ -42,7 +46,7 @@ const BookingList = ({ view, selectedDate, userEmail }) => {
     };
 
     fetchBookings();
-  }, [dispatch]); // Runs only on mount
+  }, [dispatchBookings]); // Runs only on mount
 
   const today = new Date();
   today.setHours(0, 0, 0, 0); // Normalize time to avoid mismatches
@@ -61,7 +65,7 @@ const BookingList = ({ view, selectedDate, userEmail }) => {
   const renderBookingList = (bookings) => (
     <ul className={classNames(styles["booking-list"])}>
       {bookings.map((booking) => (
-        <BookingItem key={booking._id} booking={booking}  />
+        <BookingItem key={booking._id} booking={booking} />
       ))}
     </ul>
   );
@@ -122,12 +126,9 @@ const BookingList = ({ view, selectedDate, userEmail }) => {
               {bookings.length > 0 ? (
                 <ul className={classNames(styles["booking-list"])}>
                   {bookings
-                    .filter((booking) => booking.email === userEmail) // Filter by email
+                    .filter((booking) => booking.email === user.email) // Filter by email
                     .map((booking) => (
-                      <BookingItem
-                        key={booking._id}
-                        booking={booking}
-                      />
+                      <BookingItem key={booking._id} booking={booking} />
                     ))}
                 </ul>
               ) : (

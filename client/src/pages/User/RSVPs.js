@@ -1,12 +1,13 @@
 import { BookingContextProvider } from "../../context/BookingContext";
+import { useParams } from "react-router-dom";
 
 // Components
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
-import DashboardSideMenu from "../../components/DashboardSideMenu";
+import RsvpTable from "../../components/RsvpTable";
 
-
-const Guest = () => {
+const RSVPs = () => {
+  const { view } = useParams(); // Get the view param from the URL
 
   return (
     <BookingContextProvider>
@@ -18,24 +19,27 @@ const Guest = () => {
           end={3}
           justifyContent={"start"}
           alignItems={"center"}
-        >
-          <DashboardSideMenu />
-        </ContentBlock>
+        ></ContentBlock>
 
         {/* DASHBOARD HEADING */}
         <ContentBlock
           start={4}
           end={12}
           justifyContent={"start"}
-          alignItems={"center"}
+          alignItems={"start"}
         >
-          <h1 className="dashboard-heading">Guest</h1>
+          <div className="dashboard-panel">
+            <h1 className="dashboard-heading">Guest RSVP's</h1>
+            <p>
+              Please select from the bookings below to view your guest list
+            </p>
+          </div>
         </ContentBlock>
 
         {/* DASHBOARD BOOKINGS */}
         <ContentBlock start={4} end={12}>
           <div className="dashboard-panel">
-
+            <RsvpTable view={view || "email"} />
           </div>
         </ContentBlock>
       </Section>
@@ -43,4 +47,4 @@ const Guest = () => {
   );
 };
 
-export default Guest;
+export default RSVPs;

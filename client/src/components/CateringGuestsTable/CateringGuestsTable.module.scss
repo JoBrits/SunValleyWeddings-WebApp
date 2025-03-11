@@ -1,4 +1,4 @@
-.guests-table {
+.catering-guest-table {
   position: relative;
   display: flex;
   justify-content: center;
@@ -9,12 +9,12 @@
   }
 
   thead {
-    background-color: var(--color-primary-med);
+    background-color: var(--color-primary-light);
   }
 
   th {
     padding: 1rem;
-    color: var(--color-paper);
+    color: var(--color-ink);
     text-align: left;
   }
   tr {
@@ -33,7 +33,7 @@
   &-tr-spacer {
     border-bottom: 2px solid var(--color-primary-med);
     height: 2rem;
-  }  
+  }
   td {
     padding: .5rem;
   }
@@ -133,4 +133,9 @@
     text-align: center;
     font-size: 1.2rem;
   }
+}
+
+.guest-list {
+  display: flex;
+  margin-top: 2.5rem;
 }

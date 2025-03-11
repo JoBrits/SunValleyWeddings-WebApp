@@ -92,8 +92,7 @@ const BookingForm = ({
         // Save to local storage
         storedBookings = storedBookings.map((storedBooking) => {
           if (storedBooking._id === newBooking._id) {
-            console.log("newBooking = ");
-            console.log(newBooking);
+            console.log("newBooking = " + newBooking);
           }
 
           return storedBooking._id === newBooking._id
