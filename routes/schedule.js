@@ -4,7 +4,6 @@ const express = require("express");
 const {
   postSchedule,
   getAllSchedules,
-  getSchedules,
   getSchedule,
   updateSchedule,
   deleteSchedule,
@@ -13,10 +12,9 @@ const {
 const router = express.Router();
 
 router.post("/", postSchedule); // save a new schedules
-router.get("/all", getAllSchedules); // retrieve all schedules for a user
-router.get("/:eventID", getSchedules); // retrieve all schedules for a user
-router.get("/schedule/:Schedule_id", getSchedule); // retrieve schedule
-router.put("/:schedule_id", updateSchedule); // update schedule
-router.delete("/:schedule_id", deleteSchedule); // delete schedule
+router.get("/", getAllSchedules); // retrieve all schedules for a user
+router.get("/:eventID", getSchedule); // retrieve schedule
+router.put("/:eventID", updateSchedule); // update schedule
+router.delete("/:eventID", deleteSchedule); // delete schedule
 
 module.exports = router;

@@ -203,6 +203,17 @@ p {
     width: 100%;
     color: var(--color-paper);
   }
+  legend {
+    margin: 2.5rem 0;
+    font-size: 2.5rem;
+    position: relative;
+    top: 2.5rem;
+  }
+  fieldset {
+    padding: 2.5rem;
+    background-color: var(--color-primary-light);
+    border: none;
+  }
 }
 
 .general-form-date {
@@ -212,6 +223,8 @@ p {
   p {
     margin-bottom: 0;
   }
+  
+  
 }
 
 // Buttons

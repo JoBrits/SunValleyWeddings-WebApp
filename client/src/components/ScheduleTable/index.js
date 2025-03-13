@@ -1,39 +1,38 @@
 import { useEffect, useState } from "react";
 
+// Hooks
+import { useAuthContext } from "../../hooks/useAuthContext";
+import { useBookingContext } from "../../hooks/useBookingContext";
+import { useScheduleContext } from "../../hooks/useScheduleContext";
+
 // Components
-import CateringGuestsTable from "../../components/CateringGuestsTable";
+import ScheduleForm from "../../components/ScheduleForm";
+import ScheduleGuestsTable from "../../components/ScheduleGuestsTable";
 import Spinner from "../../components/Spinner";
 
 // Styles
 import classNames from "classnames";
 import styles from "./ScheduleTable.module.scss";
 
-// Hooks
-import { useAuthContext } from "../../hooks/useAuthContext";
-import { useBookingContext } from "../../hooks/useBookingContext";
-import { useGuestContext } from "../../hooks/useGuestContext";
-
 const ScheduleTable = ({ view }) => {
   // User Context
   const { user } = useAuthContext();
-  // Guest Context
-  const { dispatch: dispatchGuests } = useGuestContext();
   // Booking Context
   const { bookings, dispatch: dispatchBookings } = useBookingContext();
+  // Schedule Context
+  const { schedules, dispatch: dispatchSchedules } = useScheduleContext();
 
-  const [editingId, setEditingId] = useState(null);
+  const [formId, setFormId] = useState(null);
+  const [scheduleId, setScheduleId] = useState(null);
   const [editData, setEditData] = useState({});
 
   const [isLoading, setIsLoading] = useState(false);
 
   // Handle edit button click
-  const handleEdit = (booking) => {
-    // split hours and minutes
-    const [splitHours, splitMinutes] = booking.eventTime
-      .split(" : ")
-      .map((val) => val.trim());
+  const handleExistingSchedule = (booking) => {
+    // set booking ID to display Schedule table
+    setScheduleId(booking._id);
 
-    setEditingId(booking._id);
     // setEditingId(booking.eventID);
     setEditData({
       title: booking.title || "",
@@ -41,19 +40,29 @@ const ScheduleTable = ({ view }) => {
       surname: booking.surname || "",
       email: booking.email || "",
       eventDate: booking.eventDate || "",
-      eventTime: {
-        hours: splitHours,
-        minutes: splitMinutes,
-      },
       eventGuests: booking.eventGuests || 0,
-      eventNote: booking.eventNote || "",
-      status: booking.status || "pending",
+    });
+  };
+
+  // Handle edit button click
+  const handleNewSchedule = (booking) => {
+    // set booking ID to display Schedule table
+    setFormId(booking._id);
+    // setEditingId(booking.eventID);
+    setEditData({
+      title: booking.title || "",
+      name: booking.name || "",
+      surname: booking.surname || "",
+      email: booking.email || "",
+      eventDate: booking.eventDate || "",
+      eventGuests: booking.eventGuests || 0,
     });
   };
 
   // Handle cancel edit
   const handleCancel = () => {
-    setEditingId(null);
+    setFormId(null);
+    setScheduleId(null);
     setEditData({});
   };
 
@@ -70,25 +79,12 @@ const ScheduleTable = ({ view }) => {
           dispatchBookings({ type: "SET_BOOKINGS", payload: bookingsData });
         }
 
-        // Fetch Guests for Each Booking for user side menu
-        const guestsData = await Promise.all(
-          bookingsData
-            .filter((booking) => {
-              return booking.email === user.email;
-            })
-            .map(async (booking) => {
-              const guestsRes = await fetch(`/api/guests/${booking._id}`);
-              if (guestsRes.ok) {
-                return guestsRes.json();
-              } else {
-                return [];
-              }
-            })
-        );
-
-        const allGuests = guestsData.flat(); // Merge all guests into a single array
-
-        dispatchGuests({ type: "SET_ALL_GUESTS", payload: allGuests });
+        // Fetch Schedules
+        const schedulesRes = await fetch("/api/schedule/");
+        const schedulesData = await schedulesRes.json();
+        if (schedulesRes.ok) {
+          dispatchSchedules({ type: "SET_SCHEDULES", payload: schedulesData });
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -96,14 +92,17 @@ const ScheduleTable = ({ view }) => {
     };
 
     fetchAllData();
-  }, [dispatchBookings, dispatchGuests, user.email]);
+  }, [dispatchBookings, dispatchSchedules, user.email]);
+
+  console.log(bookings);
+  console.log(schedules);
 
   return (
     <>
       {isLoading && <Spinner />}
       {!isLoading && (
         <>
-          {editingId && (
+          {scheduleId && (
             <>
               <h3 className="dashboard-sub-heading">Host</h3>
               <div className={classNames(styles["schedule-table"])}>
@@ -113,7 +112,7 @@ const ScheduleTable = ({ view }) => {
                       <th width="20%">Title</th>
                       <th width="20%">Name</th>
                       <th width="20%">Event Date</th>
-                      <th width="20%">Guests</th>
+                      <th width="20%">Schedule</th>
                       <th width="20%">Actions</th>
                     </tr>
                   </thead>
@@ -148,11 +147,63 @@ const ScheduleTable = ({ view }) => {
                   </tbody>
                 </table>
               </div>
-              <CateringGuestsTable userEventID={editingId} />
+              <ScheduleGuestsTable
+                userEventID={scheduleId}
+                userEventDate={editData.eventDate}
+              />
             </>
           )}
 
-          {!editingId && (
+          {formId && (
+            <>
+              <h3 className="dashboard-sub-heading">Host</h3>
+              <div className={classNames(styles["schedule-table"])}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th width="20%">Title</th>
+                      <th width="20%">Name</th>
+                      <th width="20%">Event Date</th>
+                      <th width="20%">Schedule</th>
+                      <th width="20%">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{editData.title}</td>
+                      <td>
+                        {editData.name} : {editData.surname}
+                      </td>
+                      <td>
+                        {new Date(editData.eventDate).toLocaleDateString()}
+                      </td>
+                      <td>{editData.eventGuests}</td>
+                      <td>
+                        <div
+                          className={classNames(
+                            styles["schedule-table-buttons"]
+                          )}
+                        >
+                          <button onClick={handleCancel}>Cancel</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        colSpan={8}
+                        className={classNames(
+                          styles["schedule-table-tr-spacer"]
+                        )}
+                      ></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <ScheduleForm userEventID={formId} />
+            </>
+          )}
+
+          {!scheduleId && !formId && (
             <div className={classNames(styles["schedule-table"])}>
               <table>
                 <thead>
@@ -160,14 +211,12 @@ const ScheduleTable = ({ view }) => {
                     <th width="20%">Title</th>
                     <th width="20%">Name</th>
                     <th width="20%">Event Date</th>
-                    <th width="20%">Guests</th>
                     <th width="20%">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {bookings
                     .filter((booking) => {
-                      if (view === "All") return booking.email === user.email;
                       if (view === "email") return booking.email === user.email; // Filter by email
                       return booking._id === view; // Filter by booking ID
                     })
@@ -175,7 +224,6 @@ const ScheduleTable = ({ view }) => {
                       <tr
                         key={booking._id}
                         className={classNames(styles["schedule-table-tr"])}
-                        onClick={() => handleEdit(booking)}
                       >
                         <td>{booking.title}</td>
                         <td>
@@ -184,17 +232,33 @@ const ScheduleTable = ({ view }) => {
                         <td>
                           {new Date(booking.eventDate).toLocaleDateString()}
                         </td>
-                        <td>{booking.eventGuests} - Requested</td>
-
                         <td>
                           <div
                             className={classNames(
                               styles["schedule-table-buttons"]
                             )}
                           >
-                            <button onClick={() => handleEdit(booking)}>
-                              View schedule
-                            </button>
+                            {(() => {
+                              const matchingSchedules = schedules.filter(
+                                (schedule) => schedule.eventID === booking._id
+                              );
+
+                              return matchingSchedules.length > 0 ? (
+                                <button
+                                  onClick={() =>
+                                    handleExistingSchedule(booking)
+                                  }
+                                >
+                                  Manage schedule
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleNewSchedule(booking)}
+                                >
+                                  Create schedule
+                                </button>
+                              );
+                            })()}
                           </div>
                         </td>
                       </tr>
