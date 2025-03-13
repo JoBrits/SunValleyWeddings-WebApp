@@ -44,6 +44,32 @@ const ScheduleTable = ({ view }) => {
     });
   };
 
+  // Handle delete schedule
+  const handleDeleteSchedule = async (id) => {
+    try {
+      const response = await fetch(`/api/schedule/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        dispatchSchedules({ type: "DELETE_SCHEDULE", payload: { _id: id } });
+        setFormId(null);
+        setScheduleId(null);
+
+        // Refetch the schedules
+        const schedulesRes = await fetch("/api/schedule/");
+        const schedulesData = await schedulesRes.json();
+        if (schedulesRes.ok) {
+          dispatchSchedules({ type: "SET_SCHEDULES", payload: schedulesData });
+        }
+      } else {
+        console.error("Failed to delete schedule:", await response.json());
+      }
+    } catch (error) {
+      console.error("Failed to delete schedule:", error);
+    }
+  };
+
   // Handle edit button click
   const handleNewSchedule = (booking) => {
     // set booking ID to display Schedule table
@@ -64,6 +90,19 @@ const ScheduleTable = ({ view }) => {
     setFormId(null);
     setScheduleId(null);
     setEditData({});
+  };
+
+  // handle updates after a new schedule is added.
+  const handleScheduleUpdate = async () => {
+    try {
+      const schedulesRes = await fetch("/api/schedule/");
+      const schedulesData = await schedulesRes.json();
+      if (schedulesRes.ok) {
+        dispatchSchedules({ type: "SET_SCHEDULES", payload: schedulesData });
+      }
+    } catch (error) {
+      console.error("Error fetching schedules:", error);
+    }
   };
 
   // Fetch bookings when component mounts
@@ -92,10 +131,7 @@ const ScheduleTable = ({ view }) => {
     };
 
     fetchAllData();
-  }, [dispatchBookings, dispatchSchedules, user.email]);
-
-  console.log(bookings);
-  console.log(schedules);
+  }, [dispatchBookings, dispatchSchedules, formId]);
 
   return (
     <>
@@ -199,7 +235,7 @@ const ScheduleTable = ({ view }) => {
                   </tbody>
                 </table>
               </div>
-              <ScheduleForm userEventID={formId} />
+              <ScheduleForm setFormId={setFormId} userEventID={formId} onScheduleUpdate={handleScheduleUpdate} />
             </>
           )}
 
@@ -217,7 +253,7 @@ const ScheduleTable = ({ view }) => {
                 <tbody>
                   {bookings
                     .filter((booking) => {
-                      if (view === "email") return booking.email === user.email; // Filter by email
+                      if (view === "All") return booking.email === user.email; // Filter by email
                       return booking._id === view; // Filter by booking ID
                     })
                     .map((booking) => (
@@ -244,13 +280,22 @@ const ScheduleTable = ({ view }) => {
                               );
 
                               return matchingSchedules.length > 0 ? (
-                                <button
-                                  onClick={() =>
-                                    handleExistingSchedule(booking)
-                                  }
-                                >
-                                  Manage schedule
-                                </button>
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      handleExistingSchedule(booking)
+                                    }
+                                  >
+                                    Manage
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleDeleteSchedule(booking._id)
+                                    }
+                                  >
+                                    Delete
+                                  </button>
+                                </>
                               ) : (
                                 <button
                                   onClick={() => handleNewSchedule(booking)}

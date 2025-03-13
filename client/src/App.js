@@ -25,7 +25,7 @@ import AdminEvents from "./pages/Admin/Events";
 // Post-Login - User
 import UserDashboard from "./pages/User/Dashboard";
 import UserBookings from "./pages/User/Bookings";
-import UserRsvp from "./pages/User/RSVPs";
+import UserRSVP from "./pages/User/Rsvp";
 import UserGuests from "./pages/User/Guests";
 import UserSchedule from "./pages/User/Schedule";
 
@@ -104,7 +104,7 @@ function UserRoutes({ user }) {
   return (
     <Routes>
       <Route path="bookings/:view?" element={<UserBookings user={user} />} />
-      <Route path="rsvp/:view?" element={<UserRsvp user={user}/>} />
+      <Route path="rsvp/:view?" element={<UserRSVP user={user}/>} />
       <Route path="guests" element={<UserGuests user={user}/>} />
       <Route path="schedule" element={<UserSchedule user={user}/>} />
     </Routes>
