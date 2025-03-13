@@ -9,6 +9,8 @@ import { useUpdate } from "../../hooks/useUpdate";
 
 // Components
 import Spinner from "../../components/Spinner";
+import NotificationForm from "../../components/NotificationForm";
+
 // Styles
 import classNames from "classnames";
 import styles from "./UsersTable.module.scss";
@@ -19,6 +21,8 @@ const UsersTable = ({ view }) => {
 
   const [editingUserId, setEditingUserId] = useState(null);
   const [editUserData, setEditUserData] = useState({});
+
+  const [messageEmail, setMessageEmail] = useState("");
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -143,7 +147,6 @@ const UsersTable = ({ view }) => {
 
   // Filter users by view
   const getFilteredUsers = () => {
-
     if (view === "Registered") {
       // Registered Users with their booking ID
       return users.map((user) => {
@@ -204,6 +207,15 @@ const UsersTable = ({ view }) => {
     ];
   };
 
+  // handleUserMessage
+  const handleUserMessage = (email) => {
+    setMessageEmail(email);
+  };
+  // handleUserMessageCancel
+  const handleUserMessageCancel = () => {
+    setMessageEmail("");
+  };
+
   const filteredUsers = getFilteredUsers();
 
   return (
@@ -229,131 +241,178 @@ const UsersTable = ({ view }) => {
                   <th>Role</th>
                   <th>Bookings</th>
                   <th>Registered</th>
+                  <th>User Notifications</th>
                   <th>User Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredUsers.map((userOrBooking) => (
-                  <tr
-                    key={userOrBooking._id}
-                    className={classNames(styles["user-table-tr"])}
-                  >
-                    {editingUserId === userOrBooking._id ? (
-                      <>
-                        <td>
-                          <input
-                            type="text"
-                            value={editUserData.name}
-                            onChange={(e) => handleInputChange(e, "name")}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="text"
-                            value={editUserData.surname}
-                            onChange={(e) => handleInputChange(e, "surname")}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            type="email"
-                            value={editUserData.email}
-                            onChange={(e) => handleInputChange(e, "email")}
-                          />
-                        </td>
-                        <td colSpan={3}>
-                          {error && <div className="error">{error}</div>}
-                        </td>
-                        <td>
-                          <div
-                            className={classNames(styles["user-table-buttons"])}
-                          >
-                            <button
-                              onClick={() => handleSave(editingUserId._id)}
-                            >
-                              Save
-                            </button>
-                            <button onClick={handleCancelUser}>Cancel</button>
-                          </div>
-                        </td>
-                      </>
-                    ) : (
-                      <>
-                        <td>{userOrBooking.name}</td>
-                        <td>{userOrBooking.surname}</td>
-                        <td>{userOrBooking.email}</td>
-                        <td>
-                          {userOrBooking.role ? userOrBooking.role : "none"}
-                        </td>
-                        <td>
-                          {bookings.find(
-                            (booking) => booking.email === userOrBooking.email
-                          )?.status || "No Bookings"}
-                        </td>
-                        <td>
-                          {users.some(
-                            (user) => user.email === userOrBooking.email
-                          ) ? (
-                            "Yes"
-                          ) : (
+                  <>
+                    <tr
+                      key={userOrBooking._id}
+                      className={classNames(styles["user-table-tr"])}
+                    >
+                      {editingUserId === userOrBooking._id ? (
+                        <>
+                          <td>
+                            <input
+                              type="text"
+                              value={editUserData.name}
+                              onChange={(e) => handleInputChange(e, "name")}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              value={editUserData.surname}
+                              onChange={(e) => handleInputChange(e, "surname")}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="email"
+                              value={editUserData.email}
+                              onChange={(e) => handleInputChange(e, "email")}
+                            />
+                          </td>
+                          <td colSpan={4}>
+                            {error && <div className="error">{error}</div>}
+                          </td>
+                          <td>
                             <div
                               className={classNames(
                                 styles["user-table-buttons"]
                               )}
                             >
                               <button
-                                onClick={() =>
-                                  handleRegistrationEmail(userOrBooking.email)
-                                }
+                                onClick={() => handleSave(editingUserId._id)}
                               >
-                                Request Registration
+                                Save
                               </button>
+                              <button onClick={handleCancelUser}>Cancel</button>
                             </div>
-                          )}
-                        </td>
-                        <td>
-                          <div
-                            className={classNames(styles["user-table-buttons"])}
-                          >
-                            {userOrBooking.role ? (
-                              <>
-                                <button
-                                  onClick={() => handleEditUser(userOrBooking)}
-                                >
-                                  Edit
-                                </button>
+                          </td>
+                        </>
+                      ) : (
+                        <>
+                          <td>{userOrBooking.name}</td>
+                          <td>{userOrBooking.surname}</td>
+                          <td>{userOrBooking.email}</td>
+                          <td>
+                            {userOrBooking.role ? userOrBooking.role : "none"}
+                          </td>
+                          <td>
+                            {bookings.find(
+                              (booking) => booking.email === userOrBooking.email
+                            )?.status || "No Bookings"}
+                          </td>
+                          <td>
+                            {users.some(
+                              (user) => user.email === userOrBooking.email
+                            )
+                              ? "Yes"
+                              : "No"}
+                          </td>
+                          <td>
+                            {users.some(
+                              (user) => user.email === userOrBooking.email
+                            ) ? (
+                              <div
+                                className={classNames(
+                                  styles["user-table-buttons"]
+                                )}
+                              >
+                                {!messageEmail ? (
+                                  <button
+                                    onClick={() =>
+                                      handleUserMessage(userOrBooking.email)
+                                    }
+                                  >
+                                    Send Message
+                                  </button>
+                                ) : (
+                                  <button
+                                    onClick={() => handleUserMessageCancel()}
+                                  >
+                                    Cancel Message
+                                  </button>
+                                )}
+                              </div>
+                            ) : (
+                              <div
+                                className={classNames(
+                                  styles["user-table-buttons"]
+                                )}
+                              >
                                 <button
                                   onClick={() =>
-                                    handleDeleteUser(userOrBooking)
+                                    handleRegistrationEmail(userOrBooking.email)
                                   }
                                 >
-                                  Delete
+                                  Request Registration
                                 </button>
-                              </>
-                            ) : (
-                              <>
-                                <button
-                                  className={classNames(
-                                    styles["user-table-buttons--disabled"]
-                                  )}
-                                >
-                                  Edit
-                                </button>
-                                <button
-                                  className={classNames(
-                                    styles["user-table-buttons--disabled"]
-                                  )}
-                                >
-                                  Delete
-                                </button>
-                              </>
+                              </div>
                             )}
-                          </div>
+                          </td>
+                          <td>
+                            <div
+                              className={classNames(
+                                styles["user-table-buttons"]
+                              )}
+                            >
+                              {userOrBooking.role ? (
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      handleEditUser(userOrBooking)
+                                    }
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      handleDeleteUser(userOrBooking)
+                                    }
+                                  >
+                                    Delete
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  <button
+                                    className={classNames(
+                                      styles["user-table-buttons--disabled"]
+                                    )}
+                                  >
+                                    Edit
+                                  </button>
+                                  <button
+                                    className={classNames(
+                                      styles["user-table-buttons--disabled"]
+                                    )}
+                                  >
+                                    Delete
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </>
+                      )}
+                    </tr>
+                    {messageEmail === userOrBooking.email && (
+                      <tr>
+                        <td
+                          colSpan={9}
+                          className={classNames(styles["user-table-tr-spacer"])}
+                        >
+                          <NotificationForm userRecipient={messageEmail}/>
                         </td>
-                      </>
+                      </tr>
                     )}
-                  </tr>
+                  </>
                 ))}
+
                 <tr>
                   <td
                     colSpan={9}
