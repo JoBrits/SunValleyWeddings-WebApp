@@ -4,12 +4,14 @@ import styles from "./MessagesList.module.scss";
 
 // Hooks
 import useMessagesList from "../../hooks/useMessagesList";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 // Components
 import Spinner from "../../components/Spinner";
 
-const MessagesList = () => {
+const MessagesList = ({type}) => {
   
+  const { user } = useAuthContext();
   const { messages, loading, error } = useMessagesList();
 
   if (loading) return <Spinner/>;
@@ -18,7 +20,21 @@ const MessagesList = () => {
   return (
     <div className={classNames(styles["message-list-container"])}>
       <ul className={classNames(styles["message-list"])}>
-      {messages.map((message) => {
+      {messages
+       // conditionals to return all for admin or specific for user
+       .filter((message) => {
+                    
+        // All Bookings
+        if (type === "Admin")
+          if (user.role === "admin") {
+            return true;
+          } else {
+            return message.email === user.email;
+          }
+        // Filter by booking ID
+        return message;
+      })
+      .map((message) => {
           const createdAtDate = new Date(message.createdAt); // Convert to date
           const formattedCreatedDate = createdAtDate
             ? createdAtDate.toLocaleDateString("en-GB", {

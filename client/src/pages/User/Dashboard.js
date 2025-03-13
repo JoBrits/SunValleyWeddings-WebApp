@@ -1,15 +1,38 @@
+import { useState, useEffect, useContext } from "react";
+
 // Components
 import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
+import Calendar from "../../components/Calendar";
 import BookingList from "../../components/BookingList";
+import MessagesList from "../../components/MessagesList";
 
 // Hooks
 import { useAuthContext } from "../../hooks/useAuthContext";
+import { BookingContext } from "../../context/BookingContext";
 
 const UserDashboard = () => {
-  
   const { user } = useAuthContext();
-  
+  const { confirmedBookings } = useContext(BookingContext);
+
+  // Current Date
+  const currentDate = new Date();
+
+  // State
+  const [selectedDate, setSelectedDate] = useState(currentDate);
+  const [showEventPopup, setShowEventPopup] = useState(false);
+  const [dbEvents, setDbEvents] = useState([]);
+
+  useEffect(() => {
+    if (confirmedBookings) {
+      const confirmedDates = confirmedBookings
+        .filter((booking) => booking.email === user.email)
+        .map((booking) => booking.eventDate);
+
+      setDbEvents(confirmedDates);
+    }
+  }, [confirmedBookings, user.email]);
+
   return (
     <>
       {/* Slide 1 - Landing */}
@@ -38,9 +61,7 @@ const UserDashboard = () => {
             <h2 className="dashboard-sub-heading">
               Bookings for {user.email}{" "}
             </h2>
-            <BookingList
-              view={"byEmail"}
-            />
+            <BookingList view={"byEmail"} />
           </div>
         </ContentBlock>
 
@@ -52,14 +73,29 @@ const UserDashboard = () => {
           alignItems={"start"}
         >
           <div className="dashboard-panel">
-            <h2 className="dashboard-sub-heading">Sun Valley Notifications </h2>
+            <h2 className="dashboard-sub-heading">Upcoming Events</h2>
+            <Calendar
+              setSelectedDate={setSelectedDate}
+              selectedDate={selectedDate}
+              setShowEventPopup={setShowEventPopup}
+              showEventPopup={showEventPopup}
+              dbEvents={dbEvents}
+            />
+
+            <BookingList
+              selectedDate={selectedDate}
+              showEventPopup={showEventPopup}
+              setShowEventPopup={setShowEventPopup}
+              view={"byDate"}
+            />
           </div>
         </ContentBlock>
 
         {/* DASHBOARD NOTIFICATION */}
         <ContentBlock start={10} end={13} alignItems={"start"}>
           <div className="dashboard-panel">
-            <h2 className="dashboard-sub-heading">Guest Notifications</h2>
+            <h2 className="dashboard-sub-heading">Sun Valley Notifications </h2>
+            <MessagesList type={"Admin"} />
           </div>
         </ContentBlock>
       </Section>
