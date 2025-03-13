@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 // Components
 import GuestTable from "../../components/GuestTable";
+import Spinner from "../../components/Spinner";
 
 // Styles
 import classNames from "classnames";
@@ -99,142 +100,161 @@ const RsvpTable = ({ view }) => {
 
   return (
     <>
-      {editingId && (
+      {isLoading && <Spinner />}
+      {!isLoading && (
         <>
-          <h3 className="dashboard-sub-heading">Host</h3>
-          <div className={classNames(styles["rsvp-table"])}>
-            <table>
-              <thead>
-                <tr>
-                  <th width="10%">Title</th>
-                  <th width="10%">Name</th>
-                  <th width="10%">Event Date</th>
-                  <th width="10%">Event Time</th>
-                  <th width="10%">Guests</th>
-                  <th width="10%">Guests Pending</th>
-                  <th width="10%">Guests Confirmed</th>
-                  <th width="10%">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{editData.title}</td>
-                  <td>
-                    {editData.name} : {editData.surname}
-                  </td>
-                  <td>{new Date(editData.eventDate).toLocaleDateString()}</td>
-                  <td>
-                    {editData.eventTime.hours} : {editData.eventTime.minutes}
-                  </td>
-                  <td>{editData.eventGuests}</td>
-                  <td>
-                      {
-                        allGuests.filter(
-                          (guest) =>
-                            guest.eventID === editingId &&
-                            guest.status === "pending"
-                        ).length
-                      }
-                    </td>
-                    <td>
-                      {
-                        allGuests.filter(
-                          (guest) =>
-                            guest.eventID === editingId &&
-                            guest.status === "confirmed"
-                        ).length
-                      }
-                    </td>
-                  <td>
-                    <div className={classNames(styles["rsvp-table-buttons"])}>
-                      <button onClick={handleCancel}>Cancel</button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td
-                    colSpan={8}
-                    className={classNames(styles["rsvp-table-tr-spacer"])}
-                  ></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <GuestTable userEventID={editingId} />
-        </>
-      )}
+          {editingId && (
+            <>
+              <h3 className="dashboard-sub-heading">Host</h3>
+              <div className={classNames(styles["rsvp-table"])}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th width="10%">Title</th>
+                      <th width="10%">Name</th>
+                      <th width="10%">Event Date</th>
+                      <th width="10%">Event Time</th>
+                      <th width="10%">Guests</th>
+                      <th width="10%">Guests Pending</th>
+                      <th width="10%">Guests Confirmed</th>
+                      <th width="10%">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>{editData.title}</td>
+                      <td>
+                        {editData.name} : {editData.surname}
+                      </td>
+                      <td>
+                        {new Date(editData.eventDate).toLocaleDateString()}
+                      </td>
+                      <td>
+                        {editData.eventTime.hours} :{" "}
+                        {editData.eventTime.minutes}
+                      </td>
+                      <td>{editData.eventGuests}</td>
+                      <td>
+                        {
+                          allGuests.filter(
+                            (guest) =>
+                              guest.eventID === editingId &&
+                              guest.status === "pending"
+                          ).length
+                        }
+                      </td>
+                      <td>
+                        {
+                          allGuests.filter(
+                            (guest) =>
+                              guest.eventID === editingId &&
+                              guest.status === "confirmed"
+                          ).length
+                        }
+                      </td>
+                      <td>
+                        <div
+                          className={classNames(styles["rsvp-table-buttons"])}
+                        >
+                          <button onClick={handleCancel}>Cancel</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        colSpan={8}
+                        className={classNames(styles["rsvp-table-tr-spacer"])}
+                      ></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <GuestTable userEventID={editingId} userView={view} />
+            </>
+          )}
 
-      {!editingId && (
-        <div className={classNames(styles["rsvp-table"])}>
-          <table>
-            <thead>
-              <tr>
-                <th width="10%">Title</th>
-                <th width="10%">Name</th>
-                <th width="10%">Event Date</th>
-                <th width="10%">Event Time</th>
-                <th width="10%">Guests</th>
-                <th width="10%">Guests Pending</th>
-                <th width="10%">Guests Confirmed</th>
-                <th width="10%">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings
-                .filter((booking) => {
-                  if (view === "All") return booking.email === user.email;
-                  if (view === "email") return booking.email === user.email; // Filter by email
-                  return booking._id === view; // Filter by booking ID
-                })
-                .map((booking) => (
-                  <tr
-                    key={booking._id}
-                    className={classNames(styles["rsvp-table-tr"])}
-                    onClick={() => handleEdit(booking)}
-                  >
-                    <td>{booking.title}</td>
-                    <td>
-                      {booking.name} {booking.surname}
-                    </td>
-                    <td>{new Date(booking.eventDate).toLocaleDateString()}</td>
-                    <td>{booking.eventTime}</td>
-                    <td>{booking.eventGuests} - Requested</td>
-                    <td>
-                      {
-                        allGuests.filter(
-                          (guest) =>
-                            guest.eventID === booking._id &&
-                            guest.status === "pending"
-                        ).length
-                      }
-                    </td>
-                    <td>
-                      {
-                        allGuests.filter(
-                          (guest) =>
-                            guest.eventID === booking._id &&
-                            guest.status === "confirmed"
-                        ).length
-                      }
-                    </td>
-                    <td>
-                      <div className={classNames(styles["rsvp-table-buttons"])}>
-                        <button onClick={() => handleEdit(booking)}>
-                          View Guests
-                        </button>
-                      </div>
-                    </td>
+          {!editingId && (
+            <div className={classNames(styles["rsvp-table"])}>
+              <table>
+                <thead>
+                  <tr>
+                    <th width="10%">Title</th>
+                    <th width="10%">Name</th>
+                    <th width="10%">Event Date</th>
+                    <th width="10%">Event Time</th>
+                    <th width="10%">Guests</th>
+                    <th width="10%">Guests Pending</th>
+                    <th width="10%">Guests Confirmed</th>
+                    <th width="10%">Actions</th>
                   </tr>
-                ))}
-              <tr>
-                <td
-                  colSpan={8}
-                  className={classNames(styles["rsvp-table-tr-spacer"])}
-                ></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                </thead>
+                <tbody>
+                  {bookings
+                    .filter((booking) => {
+                      // All Bookings
+                      if (view === "All") return booking.email === user.email;
+                      if (view === "Pending")
+                        return booking.email === user.email;
+                      if (view === "Confirmed")
+                        return booking.email === user.email;
+                      // Filter by booking ID
+                      return booking._id === view;
+                    })
+                    .map((booking) => (
+                      <tr
+                        key={booking._id}
+                        className={classNames(styles["rsvp-table-tr"])}
+                        onClick={() => handleEdit(booking)}
+                      >
+                        <td>{booking.title}</td>
+                        <td>
+                          {booking.name} {booking.surname}
+                        </td>
+                        <td>
+                          {new Date(booking.eventDate).toLocaleDateString()}
+                        </td>
+                        <td>{booking.eventTime}</td>
+                        <td>{booking.eventGuests} - Requested</td>
+                        <td>
+                          {
+                            allGuests.filter(
+                              (guest) =>
+                                guest.eventID === booking._id &&
+                                guest.status === "pending"
+                            ).length
+                          }
+                        </td>
+                        <td>
+                          {
+                            allGuests.filter(
+                              (guest) =>
+                                guest.eventID === booking._id &&
+                                guest.status === "confirmed"
+                            ).length
+                          }
+                        </td>
+                        <td>
+                          <div
+                            className={classNames(styles["rsvp-table-buttons"])}
+                          >
+                            <button onClick={() => handleEdit(booking)}>
+                              View Guests
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  <tr>
+                    <td
+                      colSpan={8}
+                      className={classNames(styles["rsvp-table-tr-spacer"])}
+                    ></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          )}
+        </>
       )}
     </>
   );

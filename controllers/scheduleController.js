@@ -84,30 +84,37 @@ const getSchedule = async (req, res) => {
   }
 };
 
-// Update individual Schedule
+// Update individual Schedule section
 const updateSchedule = async (req, res) => {
   try {
     const { eventID } = req.params;
-    const updateData = req.body; // Contains the updated schedule details
+    const { sectionKey, sectionData } = req.body; // Expecting sectionKey to identify the section and sectionData for the updated values
 
-    const updatedSchedule = await Schedule.findOneAndUpdate(
-      { eventID },
-      updateData,
-      { new: true, runValidators: true } // Returns updated document and ensures validation
-    );
+    // Find the schedule by eventID
+    const schedule = await Schedule.findOne({ eventID });
 
-    if (!updatedSchedule) {
-      return res
-        .status(404)
-        .json({ message: "Schedule not found for this event" });
+    if (!schedule) {
+      return res.status(404).json({ message: "Schedule not found for this event" });
     }
 
-    res.status(200).json(updatedSchedule);
+    // Check if the section exists
+    if (!schedule[sectionKey]) {
+      return res.status(404).json({ message: `Section with key ${sectionKey} not found` });
+    }
+
+    // Update the specific section with the new data
+    schedule[sectionKey] = { ...schedule[sectionKey], ...sectionData };
+
+    // Save the updated schedule
+    const updatedSchedule = await schedule.save();
+
+    res.status(200).json(updatedSchedule); // Return the updated schedule
   } catch (error) {
     console.error("Error updating schedule:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 // Delete Schedule details
 const deleteSchedule = async (req, res) => {

@@ -237,13 +237,43 @@ const BookingsTable = ({ view }) => {
               {/* use conditional view as filter from url */}
               <>
                 {bookings
+                  // conditionals to return all for admin or specific for user
                   .filter((booking) => {
-                    if (view === "All") return true;
-                    if (view === "Pending") return booking.status === "pending";
-                    if (view === "Confirmed")
-                      return booking.status === "confirmed";
-                    if (view === "email") return booking.email === user.email; // Filter by email
-                    return booking._id === view; // Filter by booking ID
+                    
+                    // All Bookings
+                    if (view === "All")
+                      if (user.role === "admin") {
+                        return true;
+                      } else {
+                        return booking.email === user.email;
+                      }
+
+                    // All Pending Bookings
+                    if (view === "Pending") {
+                      if (user.role === "admin") {
+                        return booking.status === "pending";
+                      } else {
+                        return (
+                          booking.email === user.email &&
+                          booking.status === "pending"
+                        );
+                      }
+                    }
+
+                    // All Confirmed Bookings
+                    if (view === "Confirmed") {
+                      if (user.role === "admin") {
+                        return booking.status === "confirmed";
+                      } else {
+                        return (
+                          booking.email === user.email &&
+                          booking.status === "confirmed"
+                        );
+                      }
+                    }
+
+                    // Filter by booking ID
+                    return booking._id === view;
                   })
                   .map((booking) => (
                     <tr

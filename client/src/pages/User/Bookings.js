@@ -40,7 +40,7 @@ const Bookings = ({ user }) => {
         {/* DASHBOARD BOOKINGS */}
         <ContentBlock start={4} end={12} alignItems={"center"}>
           <div className="dashboard-panel">
-            <BookingsTable view={view || "email"} />
+            <BookingsTable view={view || "All"} />
           </div>
         </ContentBlock>
       </Section>

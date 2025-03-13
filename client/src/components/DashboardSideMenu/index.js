@@ -47,6 +47,9 @@ const DashboardSideMenuNotification = ({
 };
 
 const DashboardSideMenu = () => {
+  // User Context
+  const { user } = useAuthContext();
+
   // Booking Context
   const {
     bookings,
@@ -54,7 +57,8 @@ const DashboardSideMenu = () => {
     confirmedBookings,
     dispatch: dispatchBookings,
   } = useBookingContext();
-  // User Context
+
+  // Users Context
   const { users, dispatch: dispatchUsers } = useUserContext();
 
   // Guest Context
@@ -66,14 +70,15 @@ const DashboardSideMenu = () => {
   } = useGuestContext();
 
   const [userBookings, setUserBookings] = useState({});
+  const [userBookingsConfirmed, setUserBookingsConfirmed] = useState({});
+  const [userBookingsPending, setUserBookingsPending] = useState({});
   const [nextEvent, setNextEvent] = useState({});
   const [nextEventsLength, setNextEventsLength] = useState("");
+
   const [usersAll, setUsersAll] = useState(0);
   const [usersUnregistered, setUsersUnregistered] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
-  // User Context
-  const { user } = useAuthContext();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -88,10 +93,18 @@ const DashboardSideMenu = () => {
           const userBooking = bookingsData.filter(
             (booking) => booking.email === user.email
           );
+          const userBookingConfirmed = bookingsData.filter(
+            (booking) => booking.email === user.email && booking.status === "confirmed"
+          );
+          const userBookingPending = bookingsData.filter(
+            (booking) => booking.email === user.email && booking.status === "pending"
+          );
 
           dispatchBookings({ type: "SET_BOOKINGS", payload: bookingsData });
           getNextUpcomingEvent(bookingsData);
           setUserBookings(userBooking);
+          setUserBookingsConfirmed(userBookingConfirmed);
+          setUserBookingsPending(userBookingPending);
         }
 
         // Fetch Users
@@ -243,12 +256,12 @@ const DashboardSideMenu = () => {
               <DashboardSideMenuSection heading={"RSVP's"}>
                 <DashboardSideMenuNotification
                   linkLabel={"Pending"}
-                  linkTo={"/user/rsvp/"}
+                  linkTo={"/user/rsvp/Pending"}
                   notification={allPendingGuests.length}
                 />
                 <DashboardSideMenuNotification
                   linkLabel={"Confirmed"}
-                  linkTo={"/user/rsvp/"}
+                  linkTo={"/user/rsvp/Confirmed"}
                   notification={allConfirmedGuests.length}
                 />
                 <DashboardSideMenuNotification
@@ -260,7 +273,17 @@ const DashboardSideMenu = () => {
 
               <DashboardSideMenuSection heading={"Bookings"}>
                 <DashboardSideMenuNotification
-                  linkLabel={"Manage"}
+                  linkLabel={"Pending"}
+                  linkTo={"/user/bookings/Pending"}
+                  notification={userBookingsPending.length}
+                />
+                <DashboardSideMenuNotification
+                  linkLabel={"Confirmed"}
+                  linkTo={"/user/bookings/Confirmed"}
+                  notification={userBookingsConfirmed.length}
+                />
+                <DashboardSideMenuNotification
+                  linkLabel={"All"}
                   linkTo={"/user/bookings"}
                   notification={userBookings.length}
                 />

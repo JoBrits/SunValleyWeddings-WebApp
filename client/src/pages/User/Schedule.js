@@ -38,7 +38,7 @@ const Schedule = () => {
         {/* DASHBOARD BOOKINGS */}
         <ContentBlock start={4} end={12}>
           <div className="dashboard-panel">
-            <ScheduleTable view={view || "email"} />
+            <ScheduleTable view={view || "All"} />
           </div>
         </ContentBlock>
       </Section>

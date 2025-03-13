@@ -8,7 +8,7 @@ import Spinner from "../../components/Spinner";
 import classNames from "classnames";
 import styles from "./GuestTable.module.scss";
 
-const GuestTable = ({ userEventID }) => {
+const GuestTable = ({ userEventID, userView }) => {
   const { guests = [], dispatch } = useGuestContext();
 
   // State to store existing guest input data
@@ -193,7 +193,14 @@ const GuestTable = ({ userEventID }) => {
                 {guests.length > 0 ? (
                   <>
                     {/* Render existing guests in the table */}
-                    {guests.map((guest) => (
+                    {guests
+                    .filter((guest) => {
+                      // All Bookings
+                      if (userView === "Pending") return guest.status === "pending";
+                      if (userView === "Confirmed") return guest.status === "confirmed";
+                      return guest;
+                    })
+                    .map((guest) => (
                       <tr
                         key={guest._id}
                         className={classNames(styles["guest-table-tr"])}

@@ -3,7 +3,7 @@ import { useState } from "react";
 // Components
 import Spinner from "../../components/Spinner";
 
-const ScheduleForm = ({ userEventID }) => {
+const ScheduleForm = ({ userEventID, setFormId, onScheduleUpdate, newSchedule }) => {
   // Initialize form state with an empty eventID and empty objects for each section
   const [formData, setFormData] = useState({
     eventID: userEventID,
@@ -17,6 +17,7 @@ const ScheduleForm = ({ userEventID }) => {
     entertainment: {},
     farewell: {},
   });
+
 
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(null);
@@ -50,12 +51,18 @@ const ScheduleForm = ({ userEventID }) => {
         setError(data.error);
         return data; // Return the error response
       }
-
+      
       if (response.ok) {        
         console.log("Schedule created successfully!"); // Notify user of success
         console.log(data); // Log the response for debugging
 
         // update loading state
+        
+        // callback function to update the list in parent component
+        onScheduleUpdate(newSchedule);
+        // Close form after submission
+        setFormId(null); 
+        
         setIsLoading(false);
         setError(null);
       }
@@ -70,20 +77,6 @@ const ScheduleForm = ({ userEventID }) => {
       {isLoading && <Spinner />}
       {!isLoading && (
         <form  className="general-form"  onSubmit={handleSubmit}>
-          {/* Input field for event ID */}
-          {/* <label>
-            Event ID:
-            <input
-              type="text"
-              value={formData.eventID}
-              onChange={(e) =>
-                setFormData({ ...formData, eventID: e.target.value })
-              }
-              required
-            />
-          </label> */}
-
-          {/* Iterate over each section of the schedule and render input fields */}
           {[
             "arrival",
             "ceremony",

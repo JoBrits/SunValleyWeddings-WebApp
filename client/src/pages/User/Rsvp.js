@@ -6,7 +6,8 @@ import Section from "../../components/Section";
 import ContentBlock from "../../components/ContentBlock";
 import RsvpTable from "../../components/RsvpTable";
 
-const RSVPs = () => {
+const Rsvp = () => {
+  
   const { view } = useParams(); // Get the view param from the URL
 
   return (
@@ -39,7 +40,7 @@ const RSVPs = () => {
         {/* DASHBOARD BOOKINGS */}
         <ContentBlock start={4} end={12}>
           <div className="dashboard-panel">
-            <RsvpTable view={view || "email"} />
+            <RsvpTable view={view || "All"} />
           </div>
         </ContentBlock>
       </Section>
@@ -47,4 +48,4 @@ const RSVPs = () => {
   );
 };
 
-export default RSVPs;
+export default Rsvp;
