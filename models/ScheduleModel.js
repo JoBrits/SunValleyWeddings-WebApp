@@ -1,40 +1,78 @@
-// models/Guest.js
 const mongoose = require("mongoose");
 
 const scheduleSchema = new mongoose.Schema({
-  eventID: { 
-    type: String, 
-    required: true }, // set by user id
-  name: { 
-    type: String, 
-    required: true },
-  surname: { 
-    type: String, 
-    required: true },
-  email: { 
-    type: String, 
-    required: true },
-  contact_number: { 
-    type: String, 
-    required: true },
-  role: { 
-    type: String, 
-    required: true },
-  status: { 
-    type: String, 
-    required: true },
-  restrictions: { 
-    type: String, 
-    required: false },
-  allergies: { 
-    type: String, 
-    required: false },
-  requirements: { 
-    type: String, 
-    required: false },
-  createdAt: { 
-    type: Date, 
-    default: Date.now },
-}); 
+  eventID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Guest",
+    required: true,
+  }, 
+  arrival: {
+    time: { type: String, required: false },
+    heading: { type: String, required: false },
+    location: { type: String, required: false },
+    note: { type: String, required: false },
+    dressCode: { type: String, required: false },
+  },
+  ceremony: {
+    time: { type: String, required: false },
+    heading: { type: String, required: false },
+    location: { type: String, required: false },
+    note: { type: String, required: false },
+    dressCode: { type: String, required: false },
+  },
+  photos: {
+    time: { type: String, required: false },
+    heading: { type: String, required: false },
+    location: { type: String, required: false },
+    note: { type: String, required: false },
+    dressCode: { type: String, required: false },
+  },
+  cocktails: {
+    time: { type: String, required: false },
+    heading: { type: String, required: false },
+    location: { type: String, required: false },
+    note: { type: String, required: false },
+    dressCode: { type: String, required: false },
+  },
+  reception: {
+    time: { type: String, required: false },
+    heading: { type: String, required: false },
+    location: { type: String, required: false },
+    note: { type: String, required: false },
+    dressCode: { type: String, required: false },
+  },
+  speechesAndFirstDance: {
+    time: { type: String, required: false },
+    heading: { type: String, required: false },
+    location: { type: String, required: false },
+    note: { type: String, required: false },
+    dressCode: { type: String, required: false },
+  },
+  cakeCutting: {
+    time: { type: String, required: false },
+    heading: { type: String, required: false },
+    location: { type: String, required: false },
+    note: { type: String, required: false },
+    dressCode: { type: String, required: false },
+  },
+  entertainment: {
+    time: { type: String, required: false },
+    heading: { type: String, required: false },
+    location: { type: String, required: false },
+    note: { type: String, required: false },
+    dressCode: { type: String, required: false },
+  },
+  farewell: {
+    time: { type: String, required: false },
+    heading: { type: String, required: false },
+    location: { type: String, required: false },
+    note: { type: String, required: false },
+    dressCode: { type: String, required: false },
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
 module.exports = mongoose.model("Schedule", scheduleSchema);
