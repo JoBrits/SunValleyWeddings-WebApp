@@ -34,6 +34,16 @@ app.use((req, res, next) => {
 
 app.use(cors());
 
+const path = require('path');
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'client/build')));
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
+
 // route handlers
 // path to be used with routes
 app.use("/api/user", userRoutes);
