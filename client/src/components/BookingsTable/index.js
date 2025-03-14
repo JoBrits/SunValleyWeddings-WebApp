@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 // Styles
 import classNames from "classnames";
 import styles from "./BookingsTable.module.scss";
@@ -28,6 +28,9 @@ const BookingsTable = ({ view }) => {
 
   // State to store new guest input data
   const [newBookingForm, setNewBookingForm] = useState(false);
+
+  // Initialize useNavigate
+  const navigate = useNavigate();
 
   // Handle input change for editing
   const handleInputChange = (e, field) => {
@@ -100,6 +103,7 @@ const BookingsTable = ({ view }) => {
         setEditingId(null);
         setEditData({});
         handleCancelEdit();
+        navigate("/admin/bookings/");
       } else {
         console.error("Failed to update booking:", await response.json());
       }
@@ -138,9 +142,16 @@ const BookingsTable = ({ view }) => {
   };
   // Function to add a new guest
   const handleSaveBookingForm = async () => {
-    // Convert time back to a string before submitting to backend
-    editData.eventTime =
-      editData.eventTime.hours + " : " + editData.eventTime.minutes;
+
+    console.log(editData.eventTime)
+
+    if (editData.eventTime === undefined ) {
+      editData.eventTime = ("00 : 00");
+    } else {
+      // Convert time back to a string before submitting to backend
+      editData.eventTime =
+        editData.eventTime.hours + " : " + editData.eventTime.minutes;
+    }
 
     try {
       // Create new booking
@@ -188,6 +199,8 @@ const BookingsTable = ({ view }) => {
           eventNote: "",
           status: "pending",
         });
+        setNewBookingForm(false);
+        navigate("/admin/bookings/");
       }
     } catch (error) {
       console.error("Failed to add booking:", error);
@@ -239,7 +252,6 @@ const BookingsTable = ({ view }) => {
                 {bookings
                   // conditionals to return all for admin or specific for user
                   .filter((booking) => {
-                    
                     // All Bookings
                     if (view === "All")
                       if (user.role === "admin") {
@@ -372,6 +384,7 @@ const BookingsTable = ({ view }) => {
                               onChange={(e) => handleInputChange(e, "status")}
                               disabled={user.role === "user"} // only admin can approve
                             >
+                              <option>Please select</option>
                               <option value="pending">Pending</option>
                               <option value="confirmed">Confirmed</option>
                             </select>
@@ -480,7 +493,11 @@ const BookingsTable = ({ view }) => {
                         min={0}
                         max={24}
                         className={classNames(styles["hours"])}
-                        value={editData.eventTime?.hours} // Default value
+                        value={
+                          editData.eventTime?.hours
+                            ? editData.eventTime.hours
+                            : "00"
+                        } // Default value
                         onChange={handleTimeChange}
                       />
                       <p>:</p>
@@ -490,7 +507,11 @@ const BookingsTable = ({ view }) => {
                         min={0}
                         max={60}
                         className={classNames(styles["minutes"])}
-                        value={editData.eventTime?.minutes} // Default value
+                        value={
+                          editData.eventTime?.minutes
+                            ? editData.eventTime.minutes
+                            : "00"
+                        } // Default value
                         onChange={handleTimeChange}
                       />
                     </div>
