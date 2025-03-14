@@ -1,0 +1,1 @@
+export const Link = ({ children, ...props }) => <a {...props}>{children}</a>;
