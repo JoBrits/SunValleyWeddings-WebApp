@@ -18,7 +18,6 @@ const BookingForm = ({
   editingEvent,
   setEditingEvent,
   isLoading,
-  setIsLoading,
 }) => {
   // fetch dispatch from useBookingContext
   const { dispatch } = useBookingContext();
@@ -44,13 +43,17 @@ const BookingForm = ({
     // Update local storage
     let storedBookings = JSON.parse(localStorage.getItem("bookings")) || [];
 
+    const date = new Date(selectedDate);
+    date.setDate(date.getDate() + 1); // Add one day
+    const formattedDate = date.toISOString().split("T")[0];
+
     const newBooking = {
       _id: editingEvent ? editingEvent._id : "", //handle creating new and existing event
       title,
       name,
       surname,
       email,
-      eventDate: selectedDate,
+      eventDate: formattedDate,
       eventTime: `${eventTime.hours.padStart(
         2,
         "0"
@@ -141,7 +144,6 @@ const BookingForm = ({
 
       if (response.ok) {
         // Save to local storage
-        console.log(json);
         localStorage.setItem(
           "bookings",
           JSON.stringify([json, ...storedBookings])
