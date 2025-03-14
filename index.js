@@ -9,7 +9,7 @@ const bookingsRoute = require("./routes/bookings");
 const guestsRoute = require("./routes/guests");
 const scheduleRoute = require("./routes/schedule");
 const emailRoutes = require("./routes/email");
-
+const cors = require('cors');
 // Import middleware
 const rejectNonJsonRequests = require("./middleware/rejectNonJsonRequests");
 
@@ -31,6 +31,8 @@ app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();
 });
+
+app.use(cors());
 
 // route handlers
 // path to be used with routes
