@@ -13,13 +13,12 @@ const scheduleRoute = require("./routes/schedule");
 const emailRoutes = require("./routes/email");
 const cors = require("cors");
 
-app.use(cors());
-
 // Import middleware
 const rejectNonJsonRequests = require("./middleware/rejectNonJsonRequests");
 
 // express app
 const app = express();
+app.use(cors());
 
 // middleware - any req that comes in looks if it has body data
 app.use(express.json());
