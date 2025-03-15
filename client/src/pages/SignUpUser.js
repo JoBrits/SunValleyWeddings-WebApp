@@ -4,7 +4,7 @@ import HighLightBlock from "../components/HighLightBlock";
 import ContentBlock from "../components/ContentBlock";
 import SignUpForm from "../components/SignUpForm";
 
-const SignUp = () => {
+const SignUpUser = () => {
 
   return (
     <>
@@ -31,4 +31,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignUpUser;

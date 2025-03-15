@@ -13,7 +13,7 @@ import DashboardSideMenu from "./components/DashboardSideMenu";
 import Home from "./pages/Home";
 import Weddings from "./pages/Weddings";
 import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
+import SignUpUser from "./pages/SignUpUser";
 import Bookings from "./pages/Bookings";
 import Profile from "./pages/Profile";
 // Post-Login - Admin
@@ -60,7 +60,7 @@ function App() {
           {/* Logged out pages */}
           <Route path="/weddings" element={<Weddings />} />
           <Route path="/SignIn" element={<SignIn />} />
-          <Route path="/SignUp" element={<SignUp />} />
+          <Route path="/SignUp" element={<SignUpUser />} />
           <Route path="/bookings" element={<Bookings />} />
 
           {/* Admin Section */}
