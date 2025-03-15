@@ -13,6 +13,8 @@ const scheduleRoute = require("./routes/schedule");
 const emailRoutes = require("./routes/email");
 const cors = require("cors");
 
+app.use(cors());
+
 // Import middleware
 const rejectNonJsonRequests = require("./middleware/rejectNonJsonRequests");
 
@@ -35,7 +37,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors());
+
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "client/build")));
