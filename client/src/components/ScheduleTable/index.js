@@ -53,6 +53,7 @@ const ScheduleTable = ({ view }) => {
 
       if (response.ok) {
         dispatchSchedules({ type: "DELETE_SCHEDULE", payload: { _id: id } });
+
         setFormId(null);
         setScheduleId(null);
 
@@ -121,6 +122,7 @@ const ScheduleTable = ({ view }) => {
         // Fetch Schedules
         const schedulesRes = await fetch("/api/schedule/");
         const schedulesData = await schedulesRes.json();
+
         if (schedulesRes.ok) {
           dispatchSchedules({ type: "SET_SCHEDULES", payload: schedulesData });
         }
@@ -138,6 +140,7 @@ const ScheduleTable = ({ view }) => {
       {isLoading && <Spinner />}
       {!isLoading && (
         <>
+          {/* conditional to edit schedule */}
           {scheduleId && (
             <>
               <h3 className="dashboard-sub-heading">Host</h3>
@@ -189,7 +192,7 @@ const ScheduleTable = ({ view }) => {
               />
             </>
           )}
-
+          {/* conditional to add schedule */}
           {formId && (
             <>
               <h3 className="dashboard-sub-heading">Host</h3>
@@ -235,7 +238,11 @@ const ScheduleTable = ({ view }) => {
                   </tbody>
                 </table>
               </div>
-              <ScheduleForm setFormId={setFormId} userEventID={formId} onScheduleUpdate={handleScheduleUpdate} />
+              <ScheduleForm
+                setFormId={setFormId}
+                userEventID={formId}
+                onScheduleUpdate={handleScheduleUpdate}
+              />
             </>
           )}
 
@@ -275,9 +282,13 @@ const ScheduleTable = ({ view }) => {
                             )}
                           >
                             {(() => {
-                              const matchingSchedules = schedules.filter(
-                                (schedule) => schedule.eventID === booking._id
-                              );
+                              let matchingSchedules = []; // Declare variable outside to ensure scope
+
+                              if (schedules) {
+                                matchingSchedules = schedules.filter(
+                                  (schedule) => schedule.eventID === booking._id
+                                );
+                              }
 
                               return matchingSchedules.length > 0 ? (
                                 <>

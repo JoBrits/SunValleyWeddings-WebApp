@@ -11,7 +11,7 @@ export const scheduleReducer = (state, action) => {
     case "SET_SCHEDULES":
       return {
         ...state,
-        schedules: action.payload,
+        schedules: action.payload || [],
       };
     case "SET_SCHEDULE": {
       return {

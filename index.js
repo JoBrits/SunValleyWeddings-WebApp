@@ -9,7 +9,8 @@ const bookingsRoute = require("./routes/bookings");
 const guestsRoute = require("./routes/guests");
 const scheduleRoute = require("./routes/schedule");
 const emailRoutes = require("./routes/email");
-const cors = require('cors');
+const cors = require("cors");
+
 // Import middleware
 const rejectNonJsonRequests = require("./middleware/rejectNonJsonRequests");
 
@@ -34,15 +35,15 @@ app.use((req, res, next) => {
 
 app.use(cors());
 
-const path = require('path');
+// const path = require("path");
 
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/build')));
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "client/build")));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-  });
-}
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
+//   });
+// }
 
 // route handlers
 // path to be used with routes
@@ -57,15 +58,12 @@ app.use("/api/email", emailRoutes); // Future use
 mongoose
   .connect(process.env.MONG_URI)
   .then(() => {
-    console.log("connected to database");
-    // only listen or requests once connected to database
+    console.log("Connected to database");
     app.listen(process.env.PORT, () => {
-      console.log(
-        "Connected to database and listening on port",
-        process.env.PORT
-      );
+      console.log("Server listening on port", process.env.PORT);
     });
   })
   .catch((error) => {
-    console.log(error);
+    console.error("Database connection error:", error);
+    process.exit(1); // Exits process on failure
   });

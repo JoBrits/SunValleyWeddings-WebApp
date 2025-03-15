@@ -291,15 +291,6 @@ const DashboardSideMenu = () => {
 
               <DashboardSideMenuSection heading={"Schedule"}>
                 <DashboardSideMenuNotification
-                  linkLabel={"Next event"}
-                  linkTo={"/admin/events"}
-                  date={
-                    nextEvent
-                      ? new Date(nextEvent.date).toLocaleDateString()
-                      : "No events"
-                  }
-                />
-                <DashboardSideMenuNotification
                   linkLabel={"Manage"}
                   linkTo={"/user/schedule"}
                   notification={userBookings.length}

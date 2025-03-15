@@ -125,6 +125,7 @@ const BookingsTable = ({ view }) => {
 
       if (response.ok) {
         dispatch({ type: "DELETE_BOOKING", payload: { _id: id } });
+        fetchBookings();
       } else {
         console.error("Failed to delete booking:", await response.json());
       }
@@ -142,15 +143,15 @@ const BookingsTable = ({ view }) => {
   };
   // Function to add a new guest
   const handleSaveBookingForm = async () => {
+    console.log(editData.eventTime);
 
-    console.log(editData.eventTime)
-
-    if (editData.eventTime === undefined ) {
-      editData.eventTime = ("00 : 00");
+    // Convert time back to a string before submitting to backend
+    if (!editData.eventTime) {
+      editData.eventTime = "00 : 00";
     } else {
-      // Convert time back to a string before submitting to backend
-      editData.eventTime =
-        editData.eventTime.hours + " : " + editData.eventTime.minutes;
+      const hours = editData.eventTime.hours || "00";
+      const minutes = editData.eventTime.minutes || "00";
+      editData.eventTime = `${hours} : ${minutes}`;
     }
 
     try {
@@ -200,6 +201,7 @@ const BookingsTable = ({ view }) => {
           status: "pending",
         });
         setNewBookingForm(false);
+        fetchBookings();
         navigate("/admin/bookings/");
       }
     } catch (error) {
@@ -384,7 +386,7 @@ const BookingsTable = ({ view }) => {
                               onChange={(e) => handleInputChange(e, "status")}
                               disabled={user.role === "user"} // only admin can approve
                             >
-                              <option>Please select</option>
+                              <option value="">Please select</option>
                               <option value="pending">Pending</option>
                               <option value="confirmed">Confirmed</option>
                             </select>
@@ -536,7 +538,9 @@ const BookingsTable = ({ view }) => {
                     <select
                       value={editData.status}
                       onChange={(e) => handleInputChange(e, "status")}
+                      disabled={user.role === "user"}
                     >
+                      <option value="">Please</option>
                       <option value="pending">Pending</option>
                       <option value="confirmed">Confirmed</option>
                     </select>
@@ -557,21 +561,18 @@ const BookingsTable = ({ view }) => {
                   </td>
                 </tr>
               ) : (
-                // Only administrators can add new bookings from the table
-                user.role === "admin" && (
-                  <tr>
-                    <td colSpan={10}>
-                      <div
-                        className={classNames(styles["bookings-table-buttons"])}
-                      >
-                        {/*handleAddBookingForm sets newBookingForm to true  */}
-                        <button onClick={handleAddBookingForm}>
-                          Add a new booking
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                )
+                <tr>
+                  <td colSpan={10}>
+                    <div
+                      className={classNames(styles["bookings-table-buttons"])}
+                    >
+                      {/*handleAddBookingForm sets newBookingForm to true  */}
+                      <button onClick={handleAddBookingForm}>
+                        Add a new booking
+                      </button>
+                    </div>
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
