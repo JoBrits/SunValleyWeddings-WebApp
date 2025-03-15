@@ -18,10 +18,19 @@ const rejectNonJsonRequests = require("./middleware/rejectNonJsonRequests");
 
 // express app
 const app = express();
-app.use(cors());
+
+// CORS Configuration
+const corsOptions = {
+  origin: ["https://sunvalleyweddings-webapp-1888a64d91e3.herokuapp.com", "http://localhost:3000"], // Allow your frontend
+  methods: "GET,POST,PUT,DELETE",
+  credentials: true, // Allow cookies/auth headers
+};
+
+app.use(cors(corsOptions)); // Apply CORS
 
 // middleware - any req that comes in looks if it has body data
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // express router
 const router = express.Router();
