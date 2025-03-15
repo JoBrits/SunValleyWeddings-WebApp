@@ -2,9 +2,9 @@
 import Section from "../components/Section";
 import HighLightBlock from "../components/HighLightBlock";
 import ContentBlock from "../components/ContentBlock";
-import SignInForm from "../components/SignInForm";
+import SignInUserForm from "../components/SignInUserForm";
 
-const SignIn = () => {
+const SignInUser = () => {
   return (
     <>
       <Section height={"100vh"} padding={"7.5rem 0"}>
@@ -18,11 +18,11 @@ const SignIn = () => {
         </ContentBlock>
 
         <ContentBlock start={8} end={12} alignItems={"center"}>
-          <SignInForm/>
+          <SignInUserForm/>
         </ContentBlock>
       </Section>
     </>
   );
 };
 
-export default SignIn;
+export default SignInUser;

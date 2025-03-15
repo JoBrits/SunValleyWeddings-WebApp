@@ -12,7 +12,7 @@ import DashboardSideMenu from "./components/DashboardSideMenu";
 // Pre-Login
 import Home from "./pages/Home";
 import Weddings from "./pages/Weddings";
-import SignIn from "./pages/SignIn";
+import SignInUser from "./pages/SignInUser";
 import SignUpUser from "./pages/SignUpUser";
 import Bookings from "./pages/Bookings";
 import Profile from "./pages/Profile";
@@ -59,7 +59,7 @@ function App() {
 
           {/* Logged out pages */}
           <Route path="/weddings" element={<Weddings />} />
-          <Route path="/SignIn" element={<SignIn />} />
+          <Route path="/SignIn" element={<SignInUser />} />
           <Route path="/SignUp" element={<SignUpUser />} />
           <Route path="/bookings" element={<Bookings />} />
 

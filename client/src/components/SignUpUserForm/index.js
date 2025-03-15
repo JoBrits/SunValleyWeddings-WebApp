@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 // Hooks
 import { useSignup } from "../../hooks/useSignup";
 
-const SignUpForm = () => {
+const SignUpUserForm = () => {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
@@ -71,4 +71,4 @@ const SignUpForm = () => {
   );
 };
 
-export default SignUpForm;
+export default SignUpUserForm;

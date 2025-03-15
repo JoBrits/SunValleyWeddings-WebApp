@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate
 // Hooks
 import { useLogin } from "../../hooks/useLogin";
 
-const SignInForm = () => {
+const SignInUserForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -55,4 +55,4 @@ const SignInForm = () => {
   );
 };
 
-export default SignInForm;
+export default SignInUserForm;
