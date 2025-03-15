@@ -1,5 +1,6 @@
 //environment
 require("dotenv").config();
+const bodyParser = require("body-parser");
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -18,6 +19,9 @@ const rejectNonJsonRequests = require("./middleware/rejectNonJsonRequests");
 
 // express app
 const app = express();
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 // CORS Configuration
 const corsOptions = {
