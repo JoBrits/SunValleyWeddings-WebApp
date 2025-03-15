@@ -40,6 +40,11 @@ router.use(rejectNonJsonRequests);
 
 // middleware - next runs next function
 app.use((req, res, next) => {
+  // force CORS headers in your routes
+  res.header("Access-Control-Allow-Origin", "*"); // Allow all origins
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
   // simple cl to show path and method
   console.log(req.path, req.method);
   next();
