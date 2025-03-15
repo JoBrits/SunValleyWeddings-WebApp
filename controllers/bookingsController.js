@@ -4,6 +4,7 @@ const Booking = require("../models/BookingsModel");
 // Fetch all bookings
 const getBookingsRequest = async (req, res) => {
   try {
+    res.set('Cache-Control', 'no-store'); // Disable caching for this request
     const bookingRequests = await Booking.find();
     res.status(200).json(bookingRequests);
   } catch (error) {

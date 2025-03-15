@@ -28,10 +28,7 @@ const BookingList = ({ view, selectedDate }) => {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch('/api/bookings/bookings', {
-          method: 'GET',
-          headers: {'Content-Type': 'application/json'}
-        })
+        const response = await fetch("/api/bookings/bookings");
 
         // error handling
         if (!response.ok) throw new Error("Failed to fetch bookings");
