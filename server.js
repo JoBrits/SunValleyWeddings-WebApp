@@ -57,16 +57,6 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-app.use(express.static(path.join(__dirname, "client/build")));
-
-app.get("/manifest.json", (req, res) => {
-  res.sendFile(path.join(__dirname, "client/build", "manifest.json"));
-});
-
-app.get("/favicon.ico", (req, res) => {
-  res.sendFile(path.join(__dirname, "client/build", "favicon.ico"));
-});
-
 // route handlers
 // path to be used with routes
 app.use("/api/user", userRoutes);
