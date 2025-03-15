@@ -2,7 +2,7 @@
 import Section from "../components/Section";
 import HighLightBlock from "../components/HighLightBlock";
 import ContentBlock from "../components/ContentBlock";
-import SignupForm from "../components/SignupForm";
+import SignUpForm from "../components/SignUpForm";
 
 const SignUp = () => {
 
@@ -23,7 +23,7 @@ const SignUp = () => {
         </ContentBlock>
 
         <ContentBlock start={8} end={12} alignItems={"center"}>
-          <SignupForm/>
+          <SignUpForm/>
         </ContentBlock>
 
       </Section>
