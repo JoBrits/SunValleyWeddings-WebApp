@@ -1,5 +1,10 @@
 ## !NB
-After sitting with a mentor I advised that deployment to Heroku is no longer mandatory. 
+After sitting with a mentor I was advised that deployment to Heroku is no longer mandatory. 
+
+## Project Links
+Git Repo - https://github.com/JoBrits/SunValleyWeddings-WebApp 
+Mongo DB - https://cloud.mongodb.com/v2/6657de4ff03b2142c1f3da51#/metrics/replicaSet/6657e07eb485d34be012a15c/explorer/sunvalley-weddings 
+
 
 ## To run application: 
 1. Open SunValleyWeddings-WebApp folder 
