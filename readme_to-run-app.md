@@ -56,6 +56,11 @@ Mongo DB - https://cloud.mongodb.com/v2/6657de4ff03b2142c1f3da51#/metrics/replic
 - Manage Guests dietary restrictions
 - Create a Wedding Day Schedule 
 
+(Existing user email and password)
+- You can use the below to login with an existing user
+- email: rianalb@gmail.com
+- password: rmJ7nH6bG%s
+
 (Logout)
 - To logout click the Logout button top right
 
